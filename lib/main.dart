@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_)=> SensorsProvider()),
       ],
       child: MaterialApp(
-        title: 'Flutter Demo',
+        title: 'TMRA',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.blue,

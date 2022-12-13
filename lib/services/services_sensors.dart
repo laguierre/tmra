@@ -11,11 +11,16 @@ class SensorsTMRAServices {
     //print(url);
     final response = await http.get(url);
 
-    Sensors info = Sensors(channelUsed: [],
+    Sensors info = Sensors(
+        channelUsed: [],
         logLastAddress: "",
         timeStampUtc: "",
         tensionDeBateria: "",
-        channels: []);
+        channels: [],
+        em: '',
+        cpu: [],
+        daq: [],
+        wifi: []);
     //print(decodedData);
     if (response.statusCode == 200) {
       final decodedData = json.decode(response.body);

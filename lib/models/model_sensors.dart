@@ -1,6 +1,8 @@
 // To parse this JSON data, do
 //
 //     final sensors = sensorsFromJson(jsonString);
+
+import 'package:meta/meta.dart';
 import 'dart:convert';
 
 Sensors sensorsFromJson(String str) => Sensors.fromJson(json.decode(str));
@@ -9,6 +11,10 @@ String sensorsToJson(Sensors data) => json.encode(data.toJson());
 
 class Sensors {
   Sensors({
+    required this.em,
+    required this.cpu,
+    required this.daq,
+    required this.wifi,
     required this.channelUsed,
     required this.logLastAddress,
     required this.timeStampUtc,
@@ -16,6 +22,10 @@ class Sensors {
     required this.channels,
   });
 
+  final String em;
+  final List<String> cpu;
+  final List<String> daq;
+  final List<String> wifi;
   final List<String> channelUsed;
   final String logLastAddress;
   final String timeStampUtc;
@@ -23,6 +33,10 @@ class Sensors {
   final List<Channel> channels;
 
   factory Sensors.fromJson(Map<String, dynamic> json) => Sensors(
+    em: json["EM"],
+    cpu: List<String>.from(json["CPU"].map((x) => x)),
+    daq: List<String>.from(json["DAQ"].map((x) => x)),
+    wifi: List<String>.from(json["WIFI"].map((x) => x)),
     channelUsed: List<String>.from(json["channelUsed"].map((x) => x)),
     logLastAddress: json["LogLastAddress"],
     timeStampUtc: json["TimeStamp (UTC)"],
@@ -31,6 +45,10 @@ class Sensors {
   );
 
   Map<String, dynamic> toJson() => {
+    "EM": em,
+    "CPU": List<dynamic>.from(cpu.map((x) => x)),
+    "DAQ": List<dynamic>.from(daq.map((x) => x)),
+    "WIFI": List<dynamic>.from(wifi.map((x) => x)),
     "channelUsed": List<dynamic>.from(channelUsed.map((x) => x)),
     "LogLastAddress": logLastAddress,
     "TimeStamp (UTC)": timeStampUtc,
@@ -62,3 +80,4 @@ class Channel {
     "valor": valor,
   };
 }
+

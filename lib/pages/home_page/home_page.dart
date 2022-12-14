@@ -29,7 +29,6 @@ class HomePage extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
           Sensors info = snapshot.data!;
-          print(info.channels.length);
           return Padding(
             padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
             child: Column(
@@ -40,42 +39,51 @@ class HomePage extends StatelessWidget {
                   color: Colors.white,
                 ),
                 SizedBox(height: 10),
-                CustomRichText(
-                    title: 'Channel Used [0]: ',
-                    value: info.channelUsed[0],
-                    size: kFontSize),
-                CustomRichText(
-                    title: 'Channel Used [1]: ',
-                    value: info.channelUsed[1],
-                    size: kFontSize),
-                CustomRichText(
-                    title: 'Batería: ',
-                    value: '${info.tensionDeBateria}V',
-                    size: kFontSize),
-                CustomRichText(
+                InfoConfig(
+                  title: 'Channel Used [0]: ',
+                  value: info.channelUsed[0],
+                  size: kFontSize,
+                  icon: settingsIcon,
+                ),
+                InfoConfig(
+                  title: 'Channel Used [1]: ',
+                  value: info.channelUsed[1],
+                  size: kFontSize,
+                  icon: settingsIcon,
+                ),
+                InfoConfig(
+                  title: 'Batería: ',
+                  value: '${info.tensionDeBateria}V',
+                  size: kFontSize,
+                  icon: batteryIcon,
+                ),
+                InfoConfig(
                     title: 'Último valor grabado: ',
                     value: info.logLastAddress,
-                    size: kFontSize),
-                CustomRichText(
+                    size: kFontSize,
+                    icon: cpuIcon),
+                InfoConfig(
                     title: 'Time Stamp: ',
                     value: info.timeStampUtc,
-                    size: kFontSize),
+                    size: kFontSize,
+                    icon: clockIcon),
                 Expanded(
                   child: ListView.builder(
-                    physics: const BouncingScrollPhysics(),
+                      physics: const BouncingScrollPhysics(),
                       itemCount: info.channels.length,
                       itemBuilder: (context, index) {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            SensorCard(info: info, index: index),
                             Text(
                               'Canal: ${info.channels[index].ch}',
                               style: const TextStyle(fontSize: kFontSize),
                             ),
-                            CustomRichText(
+                            /* InfoConfig(
                                 title: '${info.channels[index].nombre} :',
                                 value: info.channels[index].valor,
-                                size: kFontSize - 5),
+                                size: kFontSize - 5),*/
                           ],
                         );
                       }),
@@ -85,6 +93,55 @@ class HomePage extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+}
+
+class SensorCard extends StatelessWidget {
+  const SensorCard({Key? key, required this.info, required this.index})
+      : super(key: key);
+  final Sensors info;
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height * 0.13;
+    return Stack(
+      alignment: Alignment.centerLeft,
+      children: [
+        Container(
+          margin: EdgeInsets.only(left: 50),
+          height: height * 0.8,
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Colors.grey,
+              width: height * (0.5 - 0.48),
+            ),
+            borderRadius: BorderRadius.only(
+                topRight: Radius.circular(20),
+                bottomRight: Radius.circular(20)),
+            color: Colors.white,
+          ),
+        ),
+        CircleAvatar(
+          radius: height * 0.5,
+          backgroundColor: Colors.grey,
+          child: CircleAvatar(
+            radius: height * 0.48,
+            backgroundColor: Colors.white,
+            child: Image.asset(sensorsImagesList[1],
+                height: height * 0.75, fit: BoxFit.fill),
+          ),
+        ),
+        Positioned(
+            child: InfoConfig(
+              color: Colors.black,
+          title: '${info.channels[index].nombre} :',
+          value: info.channels[index].valor,
+          size: kFontSize - 5,
+          icon: '',
+        ))
+      ],
     );
   }
 }
@@ -102,7 +159,10 @@ class TopAppBar extends StatelessWidget {
     return Row(
       children: [
         Text('Estación ${info.em}',
-            style: const TextStyle(color: Colors.white, fontSize: kFontSize)),
+            style: const TextStyle(
+                color: Colors.white,
+                fontSize: kFontSize + 8,
+                fontWeight: FontWeight.bold)),
         const Spacer(),
         IconButton(
             onPressed: () {
@@ -116,13 +176,14 @@ class TopAppBar extends StatelessWidget {
               );
             },
             icon: Image.asset(
-              'lib/assets/icons/information.png',
+              infoIcon,
               color: Colors.white,
             )),
+        SizedBox(width: 10),
         IconButton(
             onPressed: () {},
             icon: Image.asset(
-              'lib/assets/icons/save.png',
+              saveIcon,
               color: Colors.white,
             )),
       ],
@@ -130,34 +191,45 @@ class TopAppBar extends StatelessWidget {
   }
 }
 
-class CustomRichText extends StatelessWidget {
-  const CustomRichText({
+class InfoConfig extends StatelessWidget {
+  const InfoConfig({
     Key? key,
     required this.title,
     required this.value,
     this.size = kFontSize,
+    required this.icon,  this.color = Colors.white,
   }) : super(key: key);
 
   final String title;
   final String value;
   final double size;
+  final String icon;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
-    return RichText(
-        text: TextSpan(children: [
-      TextSpan(
-          text: title, style: TextStyle(color: Colors.white, fontSize: size)),
-      TextSpan(
-          text: value,
-          style: TextStyle(
-              color: Colors.white,
-              fontSize: size,
-              fontWeight: FontWeight.bold)),
-      const WidgetSpan(
-          alignment: PlaceholderAlignment.baseline,
-          baseline: TextBaseline.alphabetic,
-          child: SizedBox(height: 30)),
-    ]));
+    return Container(
+      margin: const EdgeInsets.only(bottom: 7),
+      alignment: Alignment.centerLeft,
+      height: 40,
+      child: Row(
+        children: [
+          if (icon != '') Image.asset(icon, color: color, height: 30),
+          if (icon != '') const SizedBox(width: 15),
+          RichText(
+              text: TextSpan(children: [
+            TextSpan(
+                text: title,
+                style: TextStyle(color: color, fontSize: size)),
+            TextSpan(
+                text: value,
+                style: TextStyle(
+                    color: color,
+                    fontSize: size,
+                    fontWeight: FontWeight.bold)),
+          ]))
+        ],
+      ),
+    );
   }
 }

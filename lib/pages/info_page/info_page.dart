@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tmra/constants.dart';
 import 'package:tmra/models/model_sensors.dart';
 import 'package:tmra/pages/home_page/home_page.dart';
+import 'package:tmra/provider/sensors_provider.dart';
 
 class InfoBoards extends StatelessWidget {
   const InfoBoards({
-    Key? key,
-    required this.info,
+    Key? key, required this.info,
   }) : super(key: key);
+
   final Sensors info;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15),
         child: SingleChildScrollView(
@@ -57,12 +60,12 @@ class InfoBoards extends StatelessWidget {
                     InfoConfig(
                         icon: '',
                         title: 'Sw version: ',
-                        value: info.wifi[0],
+                        value: info.wifi![0],
                         size: kFontSize - 4),
                     InfoConfig(
                         icon: '',
                         title: 'Hw version: ',
-                        value: info.wifi[1],
+                        value: info.wifi![1],
                         size: kFontSize - 4),
                   ],
                 ),
@@ -83,12 +86,12 @@ class InfoBoards extends StatelessWidget {
                     InfoConfig(
                         icon: '',
                         title: 'Sw version: ',
-                        value: info.cpu[0],
+                        value: info.cpu![0],
                         size: kFontSize - 4),
                     InfoConfig(
                         icon: '',
                         title: 'Hw version: ',
-                        value: info.cpu[1],
+                        value: info.cpu![1],
                         size: kFontSize - 4),
                   ],
                 ),
@@ -108,12 +111,12 @@ class InfoBoards extends StatelessWidget {
                     InfoConfig(
                       icon: '',
                         title: 'Sw version: ',
-                        value: info.daq[0],
+                        value: info.daq![0],
                         size: kFontSize - 4),
                     InfoConfig(
                       icon: '',
                         title: 'Hw version: ',
-                        value: info.daq[1],
+                        value: info.daq![1],
                         size: kFontSize - 4),
                   ],
                 ),

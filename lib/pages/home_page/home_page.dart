@@ -79,7 +79,7 @@ class _HomePageState extends State<HomePage> {
                     icon: clockIcon),
                 Expanded(
                   child: ListView.builder(
-                    padding: const EdgeInsets.all(0),
+                    padding: const EdgeInsets.only(top: 10, bottom: 20),
                       physics: const BouncingScrollPhysics(),
                       itemCount: sensors.length, //info.channels!.length,
                       itemBuilder: (context, index) {
@@ -103,7 +103,7 @@ class _HomePageState extends State<HomePage> {
           sensorType.sensorName = 'PMB25';
           sensorType.imageSensor = sensorsImagesList[0];
           sensorType.variableName.add('Precipación acumulada');
-          sensorType.variableValue.add(info.channels![0].valor!);
+          sensorType.variableValue.add('${info.channels![0].valor!} mm');
           break;
         case '1':
           sensorType.variableName.add('Intensidad precipitación');
@@ -120,7 +120,7 @@ class _HomePageState extends State<HomePage> {
           break;
         case '3':
           sensorType = SensorType();
-          sensorType.sensorName = 'Windsonic 2D';
+          sensorType.sensorName = 'Windsonic\n2D';
           sensorType.imageSensor = sensorsImagesList[2];
           sensorType.variableName.add('Dirección del viento');
           sensorType.variableValue.add(info.channels![3].valor!);
@@ -205,21 +205,21 @@ class _HomePageState extends State<HomePage> {
           break;
         case '17':
           sensorType = SensorType();
-          sensorType.sensorName = 'CS655';
+          sensorType.sensorName = 'CS655\nSup.';
           sensorType.imageSensor = sensorsImagesList[9];
-          sensorType.variableName.add('Permitividad (Sup.)');
+          sensorType.variableName.add('Permitividad: ');
           sensorType.variableValue.add(info.channels![17].valor!);
           break;
         case '18':
-          sensorType.variableName.add('Cont. volumétrico (Sup.)');
+          sensorType.variableName.add('Cont. volumétrico: ');
           sensorType.variableValue.add(info.channels![18].valor!);
           break;
         case '19':
-          sensorType.variableName.add('Conductividad (Sup.) (CS655)');
+          sensorType.variableName.add('Conductividad: ');
           sensorType.variableValue.add(info.channels![19].valor!);
           break;
         case '20':
-          sensorType.variableName.add('Temp. suelo (Sup.) (CS655)');
+          sensorType.variableName.add('Temp. suelo: ');
           sensorType.variableValue.add(info.channels![20].valor!);
           sensors.add(sensorType);
           break;
@@ -227,11 +227,11 @@ class _HomePageState extends State<HomePage> {
           sensorType = SensorType();
           sensorType.sensorName = 'SNR-NIR';
           sensorType.imageSensor = sensorsImagesList[10];
-          sensorType.variableName.add('Incidente NIR (SNR)');
+          sensorType.variableName.add('Incidente NIR (SNR): ');
           sensorType.variableValue.add(info.channels![21].valor!);
           break;
         case '22':
-          sensorType.variableName.add('Incidente RED (SNR)');
+          sensorType.variableName.add('Incidente RED (SNR): ');
           sensorType.variableValue.add(info.channels![22].valor!);
           sensors.add(sensorType);
           break;
@@ -239,11 +239,11 @@ class _HomePageState extends State<HomePage> {
           sensorType = SensorType();
           sensorType.sensorName = 'SNR-NIR';
           sensorType.imageSensor = sensorsImagesList[10];
-          sensorType.variableName.add('Incidente NIR (SNR)');
+          sensorType.variableName.add('Incidente NIR (SNR): ');
           sensorType.variableValue.add(info.channels![23].valor!);
           break;
         case '24':
-          sensorType.variableName.add('Incidente RED (SNR)');
+          sensorType.variableName.add('Incidente RED (SNR): ');
           sensorType.variableValue.add(info.channels![24].valor!);
           sensors.add(sensorType);
           break;
@@ -251,7 +251,7 @@ class _HomePageState extends State<HomePage> {
           sensorType = SensorType();
           sensorType.sensorName = 'HFP01';
           sensorType.imageSensor = sensorsImagesList[11];
-          sensorType.variableName.add('Flujo de calor suelo');
+          sensorType.variableName.add('Flujo de calor suelo: ');
           sensorType.variableValue.add(info.channels![25].valor!);
           sensors.add(sensorType);
           break;
@@ -259,31 +259,31 @@ class _HomePageState extends State<HomePage> {
           sensorType = SensorType();
           sensorType.sensorName = 'SI-111';
           sensorType.imageSensor = sensorsImagesList[12];
-          sensorType.variableName.add('Temp. de superficie');
+          sensorType.variableName.add('Temp. de superficie: ');
           sensorType.variableValue.add(info.channels![26].valor!);
           break;
         case '27':
-          sensorType.variableName.add('Temp. del cuerpo');
+          sensorType.variableName.add('Temp. del cuerpo: ');
           sensorType.variableValue.add(info.channels![27].valor!);
           sensors.add(sensorType);
           break;
         case '28':
           sensorType = SensorType();
-          sensorType.sensorName = 'CS655';
+          sensorType.sensorName = 'CS655\nInf.';
           sensorType.imageSensor = sensorsImagesList[9];
-          sensorType.variableName.add('Permitividad (Inf.)');
+          sensorType.variableName.add('Permitividad: ');
           sensorType.variableValue.add(info.channels![28].valor!);
           break;
         case '29':
-          sensorType.variableName.add('Cont. volumetrico (Inf.)');
+          sensorType.variableName.add('Cont. volumetrico: ');
           sensorType.variableValue.add(info.channels![29].valor!);
           break;
         case '30':
-          sensorType.variableName.add('Conductividad  (Inf.)');
+          sensorType.variableName.add('Conductividad: ');
           sensorType.variableValue.add(info.channels![30].valor!);
           break;
         case '31':
-          sensorType.variableName.add('Temp. suelo (Inf.)');
+          sensorType.variableName.add('Temp. suelo: ');
           sensorType.variableValue.add(info.channels![31].valor!);
           sensors.add(sensorType);
           break;
@@ -291,11 +291,11 @@ class _HomePageState extends State<HomePage> {
           sensorType = SensorType();
           sensorType.sensorName = '034B';
           sensorType.imageSensor = sensorsImagesList[13];
-          sensorType.variableName.add('Dirección del viento');
+          sensorType.variableName.add('Dirección del viento: ');
           sensorType.variableValue.add(info.channels![32].valor!);
           break;
         case '33':
-          sensorType.variableName.add('Velocidad del viento');
+          sensorType.variableName.add('Velocidad del viento: ');
           sensorType.variableValue.add(info.channels![33].valor!);
           sensors.add(sensorType);
           break;
@@ -303,11 +303,11 @@ class _HomePageState extends State<HomePage> {
           sensorType = SensorType();
           sensorType.sensorName = 'CSIM11';
           sensorType.imageSensor = sensorsImagesList[14];
-          sensorType.variableName.add('ORP');
+          sensorType.variableName.add('ORP: ');
           sensorType.variableValue.add(info.channels![34].valor!);
           break;
         case '35':
-          sensorType.variableName.add('PH');
+          sensorType.variableName.add('PH: ');
           sensorType.variableValue.add(info.channels![35].valor!);
           sensors.add(sensorType);
           break;
@@ -330,7 +330,7 @@ class SensorCard extends StatelessWidget {
       alignment: Alignment.centerLeft,
       children: [
         Container(
-          margin: const EdgeInsets.only(top: 10, bottom: 10),
+          margin: const EdgeInsets.only(top: 10, bottom: 20, left: 97),
           //padding: EdgeInsets.only(top: 10, bottom: 10),
           height: height * 0.9,
           decoration: BoxDecoration(
@@ -339,30 +339,33 @@ class SensorCard extends StatelessWidget {
               width: height * (0.4 - 0.38),
             ),
             borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(40),
+                topLeft: Radius.circular(0),
                 bottomLeft: Radius.circular(40),
-                topRight: Radius.circular(20),
-                bottomRight: Radius.circular(20)),
+                topRight: Radius.circular(40),
+                bottomRight: Radius.circular(0)),
             color: Colors.white,
           ),
         ),
         Positioned(
-            left: 20,
+            left: 0,
+            top: 10,
             child: Image.asset(info.imageSensor,
                 height: height * 0.7, width: width, fit: BoxFit.contain)),
         Positioned(
-            left: 120,
-            top: 20,
+            left: 0,
+            bottom: 30,
             child: Text(
               info.sensorName,
+              textAlign: TextAlign.center,
+
               style: const TextStyle(
-                  color: Colors.black,
+                  color: Colors.white,
                   fontWeight: FontWeight.bold,
-                  fontSize: 18),
+                  fontSize: 24),
             )),
         Positioned(
             left: 120,
-            top: 20 + 30,
+            top: 0,
             right: 0,
             bottom: 0,
             child: ListView.builder(
@@ -372,6 +375,7 @@ class SensorCard extends StatelessWidget {
                 return Text(
                   '${info.variableName[index]}: ${info.variableValue[index]}',
                   style: const TextStyle(
+
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
                       fontSize: 14),

@@ -3,4 +3,6 @@ class SensorType {
   String imageSensor = '';
   List<String> variableName = [];
   List<String> variableValue = [];
+  double fontSize = 25;
+
 }

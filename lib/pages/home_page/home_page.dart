@@ -3,6 +3,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:tmra/constants.dart';
 import 'package:tmra/models/model_sensors.dart';
 import 'package:tmra/models/sensors_type.dart';
+import 'package:tmra/pages/download_page/download_page.dart';
 import 'package:tmra/pages/info_page/info_page.dart';
 import 'package:tmra/services/services_sensors.dart';
 
@@ -155,8 +156,8 @@ class _HomePageState extends State<HomePage> {
           sensorType.sensorName = 'CS451';
           sensorType.imageSensor = sensorsImagesList[5];
           sensorType.variableName.add('Nivel freático | Altura del arroyo');
-          sensorType.variableValue.add(info.channels![8].valor!);
-          sensorType.kFactorContainer = 0.23;
+          sensorType.variableValue.add('${info.channels![8].valor!} mbns|mts');
+          sensorType.kFactorContainer = 0.235;
           break;
         case '9':
           sensorType.variableName.add('Temperatura del agua');
@@ -368,9 +369,10 @@ class SensorCard extends StatelessWidget {
         Positioned(
             left: 0,
             bottom: 0,
-            top: 10,
+            top: 0,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Image.asset(info.imageSensor,
                     height: height * 0.5, width: width, fit: BoxFit.contain),
@@ -449,7 +451,16 @@ class TopAppBar extends StatelessWidget {
             )),
         const SizedBox(width: 10),
         IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                PageTransition(
+                    type: PageTransitionType.rightToLeft,
+                    child: DownloadPage(info: info),
+                    inheritTheme: true,
+                    ctx: context),
+              );
+            },
             icon: Image.asset(
               saveIcon,
               color: Colors.white,

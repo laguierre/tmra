@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:tmra/constants.dart';
 import 'package:tmra/models/model_sensors.dart';
 import 'package:tmra/pages/home_page/home_page.dart';
+import 'package:tmra/pages/widgets,dart.dart';
 import 'package:tmra/provider/sensors_provider.dart';
 
 class InfoBoards extends StatelessWidget {
@@ -22,25 +23,7 @@ class InfoBoards extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                margin: const EdgeInsets.only(top: 50),
-                child: Row(
-                  children: [
-                    IconButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        icon: Image.asset(
-                          'lib/assets/icons/back.png',
-                          color: Colors.white,
-                        )),
-                    const SizedBox(width: 10),
-                    Text('Estación ${info.em}',
-                        style: const TextStyle(
-                            color: Colors.white, fontSize: kFontSize + 3)),
-                  ],
-                ),
-              ),
+              TopAppBarBack(info: info),
               Container(
                 margin: const EdgeInsets.only(top: 30, bottom: 10),
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),

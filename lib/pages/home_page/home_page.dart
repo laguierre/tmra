@@ -156,6 +156,7 @@ class _HomePageState extends State<HomePage> {
           sensorType.imageSensor = sensorsImagesList[5];
           sensorType.variableName.add('Nivel freático | Altura del arroyo');
           sensorType.variableValue.add(info.channels![8].valor!);
+          sensorType.kFactorContainer = 0.23;
           break;
         case '9':
           sensorType.variableName.add('Temperatura del agua');
@@ -176,6 +177,8 @@ class _HomePageState extends State<HomePage> {
           sensorType.imageSensor = sensorsImagesList[7];
           sensorType.variableName.add('Piranómetro Sup. SW');
           sensorType.variableValue.add('${info.channels![11].valor!} W/m2');
+          sensorType.kFactorContainer = 0.485;
+
           break;
         case '12':
           sensorType.variableName.add('Piranómetro Inf. SW');
@@ -208,6 +211,7 @@ class _HomePageState extends State<HomePage> {
           sensorType.imageSensor = sensorsImagesList[9];
           sensorType.variableName.add('Permitividad: ');
           sensorType.variableValue.add(info.channels![17].valor!);
+          sensorType.kFactorContainer = 0.39;
           break;
         case '18':
           sensorType.variableName.add('Cont. volumétrico: ');
@@ -228,15 +232,20 @@ class _HomePageState extends State<HomePage> {
           sensorType.imageSensor = sensorsImagesList[10];
           sensorType.variableName.add('Incidente NI (NI): ');
           sensorType.variableValue.add('${info.channels![21].valor!} W/m2');
+          sensorType.fontSize = 24;
+
           break;
         case '22':
           sensorType.variableName.add('Incidente RED (NI): ');
           sensorType.variableValue.add('${info.channels![22].valor!} W/m2');
           sensors.add(sensorType);
+
           break;
         case '23':
           sensorType = SensorType();
           sensorType.sensorName = 'SNR-NR';
+          sensorType.fontSize = 24;
+
           sensorType.imageSensor = sensorsImagesList[10];
           sensorType.variableName.add('Incidente NIR (NR): ');
           sensorType.variableValue.add('${info.channels![23].valor!} W/m2');
@@ -272,6 +281,8 @@ class _HomePageState extends State<HomePage> {
           sensorType.imageSensor = sensorsImagesList[9];
           sensorType.variableName.add('Permitividad: ');
           sensorType.variableValue.add(info.channels![28].valor!);
+          sensorType.kFactorContainer = 0.39;
+
           break;
         case '29':
           sensorType.variableName.add('Cont. volumetrico: ');
@@ -301,6 +312,7 @@ class _HomePageState extends State<HomePage> {
         case '34':
           sensorType = SensorType();
           sensorType.sensorName = 'CSIM11';
+          sensorType.fontSize = 24;
           sensorType.imageSensor = sensorsImagesList[14];
           sensorType.variableName.add('ORP: ');
           sensorType.variableValue.add('${info.channels![34].valor!} mV');
@@ -323,43 +335,55 @@ class SensorCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height * 0.20;
+    double height = MediaQuery.of(context).size.height * info.kFactorContainer;
     double width = MediaQuery.of(context).size.width * 0.2;
     return Stack(
       alignment: Alignment.centerLeft,
       children: [
         Container(
-          margin: const EdgeInsets.only(top: 10, bottom: 20, left: 97),
-          //padding: EdgeInsets.only(top: 10, bottom: 10),
+          margin:
+              const EdgeInsets.only(top: 10, bottom: 20, left: 97, right: 5),
           height: height * 0.9,
           decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 5,
+                blurRadius: 7,
+                offset: const Offset(1, 3), // changes position of shadow
+              ),
+            ],
             border: Border.all(
               color: Colors.grey,
               width: height * (0.4 - 0.38),
             ),
             borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(0),
-                bottomLeft: Radius.circular(40),
-                topRight: Radius.circular(40),
+                bottomLeft: Radius.circular(35),
+                topRight: Radius.circular(35),
                 bottomRight: Radius.circular(0)),
             color: Colors.white,
           ),
         ),
         Positioned(
             left: 0,
+            bottom: 0,
             top: 10,
-            child: Image.asset(info.imageSensor,
-                height: height * 0.7, width: width, fit: BoxFit.contain)),
-        Positioned(
-            left: 0,
-            bottom: 30,
-            child: Text(
-              info.sensorName,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: info.fontSize),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(info.imageSensor,
+                    height: height * 0.5, width: width, fit: BoxFit.contain),
+                const SizedBox(height: 10),
+                Text(
+                  info.sensorName,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: info.fontSize),
+                ),
+              ],
             )),
         Positioned(
             left: 120,
@@ -370,13 +394,19 @@ class SensorCard extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               itemCount: info.variableName.length,
               itemBuilder: (BuildContext context, int index) {
-                return Text(
-                  '${info.variableName[index]}: ${info.variableValue[index]}',
-                  style: const TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20),
-                );
+                return RichText(
+                    text: TextSpan(
+                        text: '${info.variableName[index]} ',
+                        style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.normal,
+                            fontSize: 21),
+                        children: [
+                      TextSpan(
+                          text: '\n${info.variableValue[index]}\n',
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 19))
+                    ]));
               },
             )),
       ],

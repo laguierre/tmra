@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:tmra/constants.dart';
 import '../../models/model_sensors.dart';
-import '../widgets,dart.dart';
+import '../widgets.dart';
+import 'package:http/http.dart' as http;
 
 class DownloadPage extends StatefulWidget {
   DownloadPage({Key? key, required this.info}) : super(key: key);
@@ -68,8 +71,19 @@ class _DownloadPageState extends State<DownloadPage> {
                       borderRadius: BorderRadius.circular(15)),
                   width: MediaQuery.of(context).size.width * 0.5,
                   child: IconButton(
-                      onPressed: () {
-                        debugPrint('${infTextEditingController.text} ${supTextEditingController.text}');
+                      onPressed: ()  async {
+                        /*debugPrint(
+                            '${infTextEditingController.text} ${supTextEditingController.text}');*/
+                        final queryParameters = {
+                          'inf': '0',
+                          'sup': '2000',
+                        };
+                        final url =
+                            Uri.http(urlBase, 'download.html', queryParameters);
+
+                        print(url);
+                        final response =  await http.get(url);
+                        print(response.body);
                       },
                       icon: Row(
                         mainAxisAlignment: MainAxisAlignment.center,

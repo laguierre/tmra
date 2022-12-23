@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:tmra/constants.dart';
 import 'package:tmra/models/model_sensors.dart';
 import 'package:tmra/pages/home_page/home_page.dart';
-import 'package:tmra/pages/widgets,dart.dart';
+import 'package:tmra/pages/widgets.dart';
 import 'package:tmra/provider/sensors_provider.dart';
 
 class InfoBoards extends StatelessWidget {

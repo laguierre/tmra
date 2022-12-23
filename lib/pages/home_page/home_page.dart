@@ -96,17 +96,17 @@ class _HomePageState extends State<HomePage> {
   void fillSensor(Sensors info) {
     late SensorType sensorType = SensorType();
     sensors = [];
-    for (var sensor in info.channels!) {
-      switch (sensor.ch) {
+    for(int i = 0; i < info.channels!.length; i++) {
+      switch (info.channels![i].ch) {
         case '0':
           sensorType.sensorName = 'PMB25';
           sensorType.imageSensor = sensorsImagesList[0];
           sensorType.variableName.add('Precipación acumulada');
-          sensorType.variableValue.add('${info.channels![0].valor!} mm');
+          sensorType.variableValue.add('${info.channels![i].valor!} mm');
           break;
         case '1':
           sensorType.variableName.add('Intensidad precipitación');
-          sensorType.variableValue.add('${info.channels![1].valor!} mm/h');
+          sensorType.variableValue.add('${info.channels![i].valor!} mm/h');
           sensors.add(sensorType);
           break;
         case '2':
@@ -114,7 +114,7 @@ class _HomePageState extends State<HomePage> {
           sensorType.sensorName = 'TR525';
           sensorType.imageSensor = sensorsImagesList[1];
           sensorType.variableName.add('Precipación acumulada');
-          sensorType.variableValue.add('${info.channels![2].valor!} mm');
+          sensorType.variableValue.add('${info.channels![i].valor!} mm');
           sensors.add(sensorType);
           break;
         case '3':
@@ -122,12 +122,12 @@ class _HomePageState extends State<HomePage> {
           sensorType.sensorName = 'Windsonic\n2D';
           sensorType.imageSensor = sensorsImagesList[2];
           sensorType.variableName.add('Dirección del viento');
-          sensorType.variableValue.add('${info.channels![3].valor!}°');
+          sensorType.variableValue.add('${info.channels![i].valor!}°');
           sensorType.fontSize = 18;
           break;
         case '4':
           sensorType.variableName.add('Intensidad del viento');
-          sensorType.variableValue.add('${info.channels![4].valor!} m/s');
+          sensorType.variableValue.add('${info.channels![i].valor!} m/s');
           sensors.add(sensorType);
           break;
         case '5':
@@ -135,11 +135,11 @@ class _HomePageState extends State<HomePage> {
           sensorType.sensorName = 'CS215';
           sensorType.imageSensor = sensorsImagesList[3];
           sensorType.variableName.add('Temperatura del aire');
-          sensorType.variableValue.add('${info.channels![5].valor!}°C');
+          sensorType.variableValue.add('${info.channels![i].valor!}°C');
           break;
         case '6':
           sensorType.variableName.add('Humedad del aire');
-          sensorType.variableValue.add('${info.channels![6].valor!}%');
+          sensorType.variableValue.add('${info.channels![i].valor!}%');
           sensors.add(sensorType);
           break;
         case '7':
@@ -147,21 +147,21 @@ class _HomePageState extends State<HomePage> {
           sensorType.sensorName = 'CS100';
           sensorType.imageSensor = sensorsImagesList[4];
           sensorType.variableName.add('Presión atmosférica');
-          sensorType.variableValue.add('${info.channels![7].valor!} hPa');
+          sensorType.variableValue.add('${info.channels![i].valor!} hPa');
           sensors.add(sensorType);
           break;
-
         case '8':
           sensorType = SensorType();
           sensorType.sensorName = 'CS451';
           sensorType.imageSensor = sensorsImagesList[5];
           sensorType.variableName.add('Nivel freático | Altura del arroyo');
-          sensorType.variableValue.add('${info.channels![8].valor!} mbns|mts');
+          sensorType.variableValue.add('${info.channels![i].valor!} mbns|mts');
           sensorType.kFactorContainer = 0.235;
           break;
         case '9':
           sensorType.variableName.add('Temperatura del agua');
-          sensorType.variableValue.add('${info.channels![9].valor!}°C');
+         sensorType.variableValue.add('${info.channels![i].valor!}°C');
+
           sensors.add(sensorType);
           break;
         case '10':
@@ -169,7 +169,7 @@ class _HomePageState extends State<HomePage> {
           sensorType.sensorName = 'SR50';
           sensorType.imageSensor = sensorsImagesList[6];
           sensorType.variableName.add('Nivel de agua');
-          sensorType.variableValue.add(info.channels![10].valor!);
+          sensorType.variableValue.add(info.channels![i].valor!);
           sensors.add(sensorType);
           break;
         case '11':
@@ -177,25 +177,25 @@ class _HomePageState extends State<HomePage> {
           sensorType.sensorName = 'CNR4';
           sensorType.imageSensor = sensorsImagesList[7];
           sensorType.variableName.add('Piranómetro Sup. SW');
-          sensorType.variableValue.add('${info.channels![11].valor!} W/m2');
+          sensorType.variableValue.add('${info.channels![i].valor!} W/m2');
           sensorType.kFactorContainer = 0.485;
 
           break;
         case '12':
           sensorType.variableName.add('Piranómetro Inf. SW');
-          sensorType.variableValue.add('${info.channels![12].valor!} W/m2');
+          sensorType.variableValue.add('${info.channels![i].valor!} W/m2');
           break;
         case '13':
           sensorType.variableName.add('Piranómetro Sup. LW');
-          sensorType.variableValue.add('${info.channels![13].valor!} W/m2');
+          sensorType.variableValue.add('${info.channels![i].valor!} W/m2');
           break;
         case '14':
           sensorType.variableName.add('Piranómetro Inf. LW');
-          sensorType.variableValue.add('${info.channels![14].valor!} W/m2');
+          sensorType.variableValue.add('${info.channels![i].valor!} W/m2');
           break;
         case '15':
           sensorType.variableName.add('Termistor');
-          sensorType.variableValue.add('${info.channels![15].valor!}°C');
+          sensorType.variableValue.add('${info.channels![i].valor!}°C');
           sensors.add(sensorType);
           break;
         case '16':
@@ -203,7 +203,7 @@ class _HomePageState extends State<HomePage> {
           sensorType.sensorName = 'CMP3';
           sensorType.imageSensor = sensorsImagesList[8];
           sensorType.variableName.add('Piranómetro');
-          sensorType.variableValue.add('${info.channels![16].valor!} W/m2');
+          sensorType.variableValue.add('${info.channels![i].valor!} W/m2');
           sensors.add(sensorType);
           break;
         case '17':
@@ -211,20 +211,20 @@ class _HomePageState extends State<HomePage> {
           sensorType.sensorName = 'CS655\nSup.';
           sensorType.imageSensor = sensorsImagesList[9];
           sensorType.variableName.add('Permitividad: ');
-          sensorType.variableValue.add(info.channels![17].valor!);
+          sensorType.variableValue.add(info.channels![i].valor!);
           sensorType.kFactorContainer = 0.39;
           break;
         case '18':
           sensorType.variableName.add('Cont. volumétrico: ');
-          sensorType.variableValue.add('${info.channels![18].valor!} m3/m3');
+          sensorType.variableValue.add('${info.channels![i].valor!} m3/m3');
           break;
         case '19':
           sensorType.variableName.add('Conductividad: ');
-          sensorType.variableValue.add('${info.channels![19].valor!} dS/m');
+          sensorType.variableValue.add('${info.channels![i].valor!} dS/m');
           break;
         case '20':
           sensorType.variableName.add('Temp. suelo: ');
-          sensorType.variableValue.add('${info.channels![20].valor!}°C');
+          sensorType.variableValue.add('${info.channels![i].valor!}°C');
           sensors.add(sensorType);
           break;
         case '21':
@@ -232,13 +232,13 @@ class _HomePageState extends State<HomePage> {
           sensorType.sensorName = 'SNR-NI';
           sensorType.imageSensor = sensorsImagesList[10];
           sensorType.variableName.add('Incidente NI (NI): ');
-          sensorType.variableValue.add('${info.channels![21].valor!} W/m2');
+          sensorType.variableValue.add('${info.channels![i].valor!} W/m2');
           sensorType.fontSize = 24;
 
           break;
         case '22':
           sensorType.variableName.add('Incidente RED (NI): ');
-          sensorType.variableValue.add('${info.channels![22].valor!} W/m2');
+          sensorType.variableValue.add('${info.channels![i].valor!} W/m2');
           sensors.add(sensorType);
 
           break;
@@ -249,11 +249,11 @@ class _HomePageState extends State<HomePage> {
 
           sensorType.imageSensor = sensorsImagesList[10];
           sensorType.variableName.add('Incidente NIR (NR): ');
-          sensorType.variableValue.add('${info.channels![23].valor!} W/m2');
+          sensorType.variableValue.add('${info.channels![i].valor!} W/m2');
           break;
         case '24':
           sensorType.variableName.add('Incidente RED (NR): ');
-          sensorType.variableValue.add('${info.channels![24].valor!} W/m2');
+          sensorType.variableValue.add('${info.channels![i].valor!} W/m2');
           sensors.add(sensorType);
           break;
         case '25':
@@ -261,7 +261,7 @@ class _HomePageState extends State<HomePage> {
           sensorType.sensorName = 'HFP01';
           sensorType.imageSensor = sensorsImagesList[11];
           sensorType.variableName.add('Flujo de calor suelo: ');
-          sensorType.variableValue.add('${info.channels![25].valor!} W/m2');
+          sensorType.variableValue.add('${info.channels![i].valor!} W/m2');
           sensors.add(sensorType);
           break;
         case '26':
@@ -269,11 +269,11 @@ class _HomePageState extends State<HomePage> {
           sensorType.sensorName = 'SI-111';
           sensorType.imageSensor = sensorsImagesList[12];
           sensorType.variableName.add('Temp. de superficie: ');
-          sensorType.variableValue.add('${info.channels![26].valor!}°C');
+          sensorType.variableValue.add('${info.channels![i].valor!}°C');
           break;
         case '27':
           sensorType.variableName.add('Temp. del cuerpo: ');
-          sensorType.variableValue.add('${info.channels![27].valor!}°C');
+          sensorType.variableValue.add('${info.channels![i].valor!}°C');
           sensors.add(sensorType);
           break;
         case '28':
@@ -281,21 +281,21 @@ class _HomePageState extends State<HomePage> {
           sensorType.sensorName = 'CS655\nInf.';
           sensorType.imageSensor = sensorsImagesList[9];
           sensorType.variableName.add('Permitividad: ');
-          sensorType.variableValue.add(info.channels![28].valor!);
+          sensorType.variableValue.add(info.channels![i].valor!);
           sensorType.kFactorContainer = 0.39;
 
           break;
         case '29':
           sensorType.variableName.add('Cont. volumetrico: ');
-          sensorType.variableValue.add('${info.channels![29].valor!} m3/m3');
+          sensorType.variableValue.add('${info.channels![i].valor!} m3/m3');
           break;
         case '30':
           sensorType.variableName.add('Conductividad: ');
-          sensorType.variableValue.add('${info.channels![30].valor!} dS/m');
+          sensorType.variableValue.add('${info.channels![i].valor!} dS/m');
           break;
         case '31':
           sensorType.variableName.add('Temp. suelo: ');
-          sensorType.variableValue.add('${info.channels![31].valor!}°C');
+          sensorType.variableValue.add('${info.channels![i].valor!}°C');
           sensors.add(sensorType);
           break;
         case '32':
@@ -303,11 +303,11 @@ class _HomePageState extends State<HomePage> {
           sensorType.sensorName = '034B';
           sensorType.imageSensor = sensorsImagesList[13];
           sensorType.variableName.add('Dirección del viento: ');
-          sensorType.variableValue.add('${info.channels![32].valor!}°');
+          sensorType.variableValue.add('${info.channels![i].valor!}°');
           break;
         case '33':
           sensorType.variableName.add('Velocidad del viento: ');
-          sensorType.variableValue.add('${info.channels![33].valor!} s/m');
+          sensorType.variableValue.add('${info.channels![i].valor!} s/m');
           sensors.add(sensorType);
           break;
         case '34':
@@ -316,11 +316,11 @@ class _HomePageState extends State<HomePage> {
           sensorType.fontSize = 24;
           sensorType.imageSensor = sensorsImagesList[14];
           sensorType.variableName.add('ORP: ');
-          sensorType.variableValue.add('${info.channels![34].valor!} mV');
+          sensorType.variableValue.add('${info.channels![i].valor!} mV');
           break;
         case '35':
           sensorType.variableName.add('PH: ');
-          sensorType.variableValue.add(info.channels![35].valor!);
+          sensorType.variableValue.add(info.channels![i].valor!);
           sensors.add(sensorType);
           break;
       }

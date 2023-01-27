@@ -28,7 +28,7 @@ class Sensors {
     channelUsed = json['channelUsed'].cast<String>();
     logLastAddress = json['LogLastAddress'];
     timeStampUtc = json['TimeStamp (UTC)'];
-    tensionDeBateria = json['Tension de bateria'];
+    tensionDeBateria = json['Tension de bateria']?? "0.0V";
     if (json['channels'] != null) {
       channels = <Channels>[];
       json['channels'].forEach((v) {
@@ -38,7 +38,7 @@ class Sensors {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['EM'] = em;
     data['CPU'] = cpu;
     data['DAQ'] = daq;

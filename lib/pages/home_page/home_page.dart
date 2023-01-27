@@ -27,7 +27,9 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.refresh),
         onPressed: () {
-          services.getSensorsValues();
+          setState(() {
+            services.getSensorsValues();
+          });
         },
       ),
       body: FutureBuilder(
@@ -38,6 +40,7 @@ class _HomePageState extends State<HomePage> {
           }
           Sensors info = snapshot.data!;
           fillSensor(info);
+
           return Padding(
             padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
             child: Column(
@@ -96,7 +99,7 @@ class _HomePageState extends State<HomePage> {
   void fillSensor(Sensors info) {
     late SensorType sensorType = SensorType();
     sensors = [];
-    for(int i = 0; i < info.channels!.length; i++) {
+    for (int i = 0; i < info.channels!.length; i++) {
       switch (info.channels![i].ch) {
         case '0':
           sensorType.sensorName = 'PMB25';
@@ -160,8 +163,7 @@ class _HomePageState extends State<HomePage> {
           break;
         case '9':
           sensorType.variableName.add('Temperatura del agua');
-         sensorType.variableValue.add('${info.channels![i].valor!}°C');
-
+          sensorType.variableValue.add('${info.channels![i].valor!}°C');
           sensors.add(sensorType);
           break;
         case '10':
@@ -179,7 +181,6 @@ class _HomePageState extends State<HomePage> {
           sensorType.variableName.add('Piranómetro Sup. SW');
           sensorType.variableValue.add('${info.channels![i].valor!} W/m2');
           sensorType.kFactorContainer = 0.485;
-
           break;
         case '12':
           sensorType.variableName.add('Piranómetro Inf. SW');
@@ -234,19 +235,16 @@ class _HomePageState extends State<HomePage> {
           sensorType.variableName.add('Incidente NI (NI): ');
           sensorType.variableValue.add('${info.channels![i].valor!} W/m2');
           sensorType.fontSize = 24;
-
           break;
         case '22':
           sensorType.variableName.add('Incidente RED (NI): ');
           sensorType.variableValue.add('${info.channels![i].valor!} W/m2');
           sensors.add(sensorType);
-
           break;
         case '23':
           sensorType = SensorType();
           sensorType.sensorName = 'SNR-NR';
           sensorType.fontSize = 24;
-
           sensorType.imageSensor = sensorsImagesList[10];
           sensorType.variableName.add('Incidente NIR (NR): ');
           sensorType.variableValue.add('${info.channels![i].valor!} W/m2');
@@ -283,7 +281,6 @@ class _HomePageState extends State<HomePage> {
           sensorType.variableName.add('Permitividad: ');
           sensorType.variableValue.add(info.channels![i].valor!);
           sensorType.kFactorContainer = 0.39;
-
           break;
         case '29':
           sensorType.variableName.add('Cont. volumetrico: ');
@@ -389,10 +386,11 @@ class SensorCard extends StatelessWidget {
             )),
         Positioned(
             left: 120,
-            top: 0,
+            top: 25,
             right: 0,
             bottom: 0,
             child: ListView.builder(
+              padding: const EdgeInsets.only(top: 0),
               physics: const NeverScrollableScrollPhysics(),
               itemCount: info.variableName.length,
               itemBuilder: (BuildContext context, int index) {
@@ -431,7 +429,7 @@ class TopAppBar extends StatelessWidget {
         Text('Estación ${info.em}',
             style: const TextStyle(
                 color: Colors.white,
-                fontSize: kFontSize + 8,
+                fontSize: kFontSize + 4,
                 fontWeight: FontWeight.bold)),
         const Spacer(),
         IconButton(

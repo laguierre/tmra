@@ -19,6 +19,13 @@ class _HomePageState extends State<HomePage> {
   var services = SensorsTMRAServices();
 
   @override
+  void initState() {
+    services.getSensorsValues();
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     services.getSensorsValues();
     return Scaffold(
@@ -27,70 +34,71 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.refresh),
         onPressed: () {
-          setState(() {
-            services.getSensorsValues();
-          });
+          services.getSensorsValues();
+          //setState(() {});
         },
       ),
-      body: FutureBuilder(
+      body: FutureBuilder<Sensors>(
         future: services.getSensorsValues(),
-        builder: (BuildContext context, AsyncSnapshot<Sensors> snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (!snapshot.hasData) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            Sensors info = snapshot.data!;
+            fillSensor(info);
+            return Padding(
+              padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TopAppBar(info: info),
+                  const Divider(
+                    color: Colors.white,
+                  ),
+                  const SizedBox(height: 10),
+                  InfoConfig(
+                    title: 'Channel Used [0]: ',
+                    value: info.channelUsed![0],
+                    size: kFontSize,
+                    icon: settingsIcon,
+                  ),
+                  InfoConfig(
+                    title: 'Channel Used [1]: ',
+                    value: info.channelUsed![1],
+                    size: kFontSize,
+                    icon: settingsIcon,
+                  ),
+                  InfoConfig(
+                    title: 'Batería: ',
+                    value: '${info.tensionDeBateria}V',
+                    size: kFontSize,
+                    icon: batteryIcon,
+                  ),
+                  InfoConfig(
+                      title: 'Último valor grabado: ',
+                      value: info.logLastAddress!,
+                      size: kFontSize,
+                      icon: cpuIcon),
+                  InfoConfig(
+                      title: 'Time Stamp: ',
+                      value: info.timeStampUtc!,
+                      size: kFontSize,
+                      icon: clockIcon),
+                  Expanded(
+                    child: ListView.builder(
+                        padding: const EdgeInsets.only(top: 10, bottom: 20),
+                        physics: const BouncingScrollPhysics(),
+                        itemCount: sensors.length, //info.channels!.length,
+                        itemBuilder: (context, index) {
+                          return SensorCard(info: sensors[index], index: index);
+                        }),
+                  )
+                ],
+              ),
+            );
           }
-          Sensors info = snapshot.data!;
-          fillSensor(info);
-
-          return Padding(
-            padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TopAppBar(info: info),
-                const Divider(
-                  color: Colors.white,
-                ),
-                const SizedBox(height: 10),
-                InfoConfig(
-                  title: 'Channel Used [0]: ',
-                  value: info.channelUsed![0],
-                  size: kFontSize,
-                  icon: settingsIcon,
-                ),
-                InfoConfig(
-                  title: 'Channel Used [1]: ',
-                  value: info.channelUsed![1],
-                  size: kFontSize,
-                  icon: settingsIcon,
-                ),
-                InfoConfig(
-                  title: 'Batería: ',
-                  value: '${info.tensionDeBateria}V',
-                  size: kFontSize,
-                  icon: batteryIcon,
-                ),
-                InfoConfig(
-                    title: 'Último valor grabado: ',
-                    value: info.logLastAddress!,
-                    size: kFontSize,
-                    icon: cpuIcon),
-                InfoConfig(
-                    title: 'Time Stamp: ',
-                    value: info.timeStampUtc!,
-                    size: kFontSize,
-                    icon: clockIcon),
-                Expanded(
-                  child: ListView.builder(
-                      padding: const EdgeInsets.only(top: 10, bottom: 20),
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: sensors.length, //info.channels!.length,
-                      itemBuilder: (context, index) {
-                        return SensorCard(info: sensors[index], index: index);
-                      }),
-                )
-              ],
-            ),
-          );
+          return const Center(child: CircularProgressIndicator());
         },
       ),
     );

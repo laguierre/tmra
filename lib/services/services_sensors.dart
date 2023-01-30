@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:tmra/models/model_sensors.dart';
 import '../constants.dart';
@@ -9,15 +7,16 @@ class SensorsTMRAServices {
   Future<Sensors> getSensorsValues() async {
     Sensors info = Sensors();
     final url = Uri.http(urlBase, 'resumenJSON.html', {});
-    HttpClient().idleTimeout = const Duration(seconds: 15);
-    try{
-      var response = await Dio().get(url.toString());
+    try {
+      var response =
+          await Dio().get(url.toString(), options: Options(sendTimeout: 2000));
       print(response.statusCode);
-      var decodedData = await json.decode(response.data);
-      info =  Sensors.fromJson(decodedData);
-      //print(response);
-
-    }catch(e){
+      if (response.statusCode == 200) {
+        var decodedData = await json.decode(response.data);
+        info = Sensors.fromJson(decodedData);
+        //print(response);
+      }
+    } catch (e) {
       print('Error ->: $e');
     }
 

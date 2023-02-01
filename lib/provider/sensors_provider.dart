@@ -16,10 +16,10 @@ class SensorsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<Sensors> getSensorsInfo() async {
+  /*Future<Sensors> getSensorsInfo() async {
     var services = SensorsTMRAServices();
     info = await services.getSensorsValues();
     print(info.timeStampUtc);
     return info;
-  }
+  }*/
 }

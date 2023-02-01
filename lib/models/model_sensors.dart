@@ -1,12 +1,12 @@
 class Sensors {
   String? em;
+  String? logLastAddress;
+  String? timeStampUtc;
+  String? tensionDeBateria;
   List<String>? cpu;
   List<String>? daq;
   List<String>? wifi;
   List<String>? channelUsed;
-  String? logLastAddress;
-  String? timeStampUtc;
-  String? tensionDeBateria;
   List<Channels>? channels;
 
   Sensors(

@@ -7,7 +7,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:tmra/constants.dart';
 import '../../models/model_sensors.dart';
 import '../widgets.dart';
-import 'package:http/http.dart' as http;
 import 'downloadFile.dart';
 
 class DownloadPage extends StatefulWidget {

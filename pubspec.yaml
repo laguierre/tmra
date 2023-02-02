@@ -37,10 +37,11 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   provider: ^6.0.4
-  http: ^0.13.5
   page_transition: ^2.0.9
   path_provider: ^2.0.11
   dio: ^4.0.6
+  wifi_iot: ^0.3.18
+  plugin_wifi_connect: ^1.0.2
 
 dev_dependencies:
   flutter_test:

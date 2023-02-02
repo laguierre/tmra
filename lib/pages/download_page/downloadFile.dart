@@ -2,17 +2,17 @@ import 'dart:typed_data';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
 downloadFile(String url, {required String filename}) async {
-  var httpClient = http.Client();
+  List<List<int>> chunks = [];
+  int downloaded = 0;
+  /*var httpClient = http.Client();
   var request = http.Request('GET', Uri.parse(url));
   var response = httpClient.send(request);
   String dir = (await getApplicationDocumentsDirectory()).path;
 
-  List<List<int>> chunks = [];
-  int downloaded = 0;
+
 
   response.asStream().listen((http.StreamedResponse r) {
     r.stream.listen((List<int> chunk) {
@@ -36,5 +36,5 @@ downloadFile(String url, {required String filename}) async {
       await file.writeAsBytes(bytes);
       return;
     });
-  });
+  });*/
 }

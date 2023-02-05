@@ -42,6 +42,8 @@ dependencies:
   dio: ^4.0.6
   wifi_iot: ^0.3.18
   plugin_wifi_connect: ^1.0.2
+  network_info_plus: ^3.0.1
+  permission_handler: ^10.2.0
 
 dev_dependencies:
   flutter_test:

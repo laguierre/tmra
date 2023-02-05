@@ -8,10 +8,11 @@ import 'package:tmra/pages/info_page/info_page.dart';
 import 'package:tmra/services/services_sensors.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({Key? key, required this.wifiName}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
+  final String wifiName;
 }
 
 class _HomePageState extends State<HomePage> {

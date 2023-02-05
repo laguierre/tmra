@@ -27,3 +27,4 @@ const infoIcon = 'lib/assets/icons/information.png';
 const saveIcon = 'lib/assets/icons/download.png';
 const wifiIcon = 'lib/assets/icons/processor.png';
 const adcIcon = 'lib/assets/icons/radio-waves.png';
+const nextIcon = 'lib/assets/icons/next.png';

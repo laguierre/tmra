@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.dark,
           /* dark theme settings */
         ),
-        home: FlutterWifiIoT(),
+        home: IntroPage(),
       ),
     );
   }

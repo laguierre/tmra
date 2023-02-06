@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tmra/pages/intro_page/intro_page.dart';
 import 'package:tmra/provider/sensors_provider.dart';
-import 'pages/home_page/home_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -28,7 +27,7 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.dark,
           /* dark theme settings */
         ),
-        home: IntroPage(),
+        home: const IntroPage(),
       ),
     );
   }

@@ -27,7 +27,7 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
   }
   @override
   void dispose() {
-    WidgetsBinding.instance?.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
   @override
@@ -50,7 +50,7 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
           await locationPermission.serviceStatus.isEnabled;
       if (isLocationServiceOn) {
         wifiName = await info.getWifiName();
-        isConnectedESP = wifiName?.contains('EM') ?? false;
+        isConnectedESP = wifiName!.contains('EM') ||  wifiName!.contains('Est') ?? false;
         setState(() {});
       } else {
         debugPrint('Location Service is not enabled');
@@ -69,53 +69,53 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const _TopAppBar(),
-            Center(
-              child: Column(
-                children: [
-                  Icon(isConnectedESP ? Icons.wifi_outlined : Icons.wifi_off,
-                      color: Colors.white, size: 100),
-                  const SizedBox(height: 10),
-                  Text(wifiName!,
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: kFontSize + 4,
-                          fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 50),
-                  !isConnectedESP
-                      ? GestureDetector(
-                          child: Container(
-                            alignment: Alignment.center,
-                            margin: const EdgeInsets.symmetric(horizontal: 45),
-                            height: 50,
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(15)),
-                            child: const Text(
-                              'Conectarse a una EM',
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: kFontSize + 4,
-                                  fontWeight: FontWeight.bold),
-                            ),
+            Column(
+
+              children: [
+                const SizedBox(height: 50),
+                Icon(isConnectedESP ? Icons.wifi_outlined : Icons.wifi_off,
+                    color: Colors.white, size: 100),
+                const SizedBox(height: 10),
+                Text(wifiName!,
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: kFontSize + 4,
+                        fontWeight: FontWeight.bold)),
+                const SizedBox(height: 50),
+                !isConnectedESP
+                    ? GestureDetector(
+                        child: Container(
+                          alignment: Alignment.center,
+                          margin: const EdgeInsets.symmetric(horizontal: 45),
+                          height: 50,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(15)),
+                          child: const Text(
+                            'Buscar a una red Estacion xx',
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: kFontSize+1,
+                                fontWeight: FontWeight.bold),
                           ),
-                          onTap: () async {
-                            _listenForPermissionStatus();
-                            if (!isConnectedESP) {
-                              WiFiForIoTPlugin.setEnabled(false,
-                                  shouldOpenSettings: true);
-                            }
-                            /*if (await WiFiForIoTPlugin.isConnected()) {
-                      var wifiName = await info.getWifiName();
-                      print(wifiName);
-                      } else {
-                      print('----->>>');
-                      }*/
-                            setState(() {});
-                          },
-                        )
-                      : Container()
-                ],
-              ),
+                        ),
+                        onTap: () async {
+                          _listenForPermissionStatus();
+                          if (!isConnectedESP) {
+                            WiFiForIoTPlugin.setEnabled(false,
+                                shouldOpenSettings: true);
+                          }
+                          /*if (await WiFiForIoTPlugin.isConnected()) {
+                    var wifiName = await info.getWifiName();
+                    print(wifiName);
+                    } else {
+                    print('----->>>');
+                    }*/
+                          setState(() {});
+                        },
+                      )
+                    : Container()
+              ],
             ),
             const Spacer(),
             isConnectedESP

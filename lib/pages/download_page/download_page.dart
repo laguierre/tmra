@@ -3,12 +3,11 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:tmra/constants.dart';
 import '../../models/model_sensors.dart';
 import '../widgets.dart';
-import 'downloadFile.dart';
-import 'dart:html' as html;
 
 
 class DownloadPage extends StatefulWidget {
@@ -30,7 +29,6 @@ class _DownloadPageState extends State<DownloadPage> {
     infTextEditingController = TextEditingController(text: '0');
     supTextEditingController =
         TextEditingController(text: widget.info.logLastAddress);
-    // TODO: implement initState
     super.initState();
   }
 
@@ -41,11 +39,8 @@ class _DownloadPageState extends State<DownloadPage> {
     supTextEditingController.dispose();
   }
 
-  void downloadFile(String url) {
-    html.AnchorElement anchorElement =  html.AnchorElement(href: url);
-    anchorElement.download = url;
-    anchorElement.click();
-  }
+  void downloadFile(String url) {}
+
 
   @override
   Widget build(BuildContext context) {
@@ -89,44 +84,43 @@ class _DownloadPageState extends State<DownloadPage> {
                           'inf': '0',
                           'sup': '0',
                         };
-                        final url =
-                            Uri.http(urlBase, 'download.html');
+                        final url = Uri.http(urlBase, 'download.html');
 
-                        print(url);
-                        //final response =  await http.get(url);
-                        //print(response.body);
                         //downloadFile(url.toString(), filename: '1.raw');
-                        var dio = Dio();
-                       // await Dio().get(url.toString(), options: Options(sendTimeout: 20000,  responseType: ResponseType.stream));
+                        // await Dio().get(url.toString(), options: Options(sendTimeout: 20000,  responseType: ResponseType.stream));
+
 
                         try {
-                          downloadFile(url.toString());
-                          /*var dir = await getApplicationDocumentsDirectory();
+                          //downloadFile(url.toString());
+                          var dir = await getApplicationDocumentsDirectory();
                           print(dir);
 
-                          await dio.download(url.toString(), '${dir.path}/1.raw',
+
+
+                          final options = BaseOptions(
+                            baseUrl: 'https://jsonplaceholder.typicode.com/',
+                            connectTimeout: 5000,
+                            receiveTimeout: 30000,
+                            responseType: ResponseType.bytes,
+                          );
+
+
+                          var response = await Dio(options).download(
+                              url.toString(), '${dir.path}/1.raw',
                               queryParameters: queryParameters,
-                              options: Options(headers: {HttpHeaders.acceptEncodingHeader: "*"}),
+                              options: Options(
+                                  headers: {HttpHeaders.acceptEncodingHeader: '*'},
+                                  responseType: ResponseType.bytes,
+                                  followRedirects: false,
+                                  validateStatus: (status) { return status! < 500; }
+                              ),
                               onReceiveProgress: (rec, total) {
-                                setState(() {
-                                 /* _downloading = true;
-                                  _progressString = ((rec / total) * 100).toStringAsFixed(0) + "%";
-                                  print(progressString);
-                                  if (_progressString == "100%") {
-                                    Scaffold.of(context)
-                                        .showSnackBar(SnackBar(content: Text("Next Action...")));
-                                    // NextAction();
-                                  }*/
-                                }
-                              });*/
+                            setState(() {});
+                          });
+                          print(response);
                         } catch (exp) {
                           print('Error Download->: $exp');
                         }
-
-
-
-
-
                       },
                       icon: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -149,17 +143,6 @@ class _DownloadPageState extends State<DownloadPage> {
       ),
     );
   }
-/*Future<File> _downloadFile(String url, String filename) async {
-
-    var request = await httpClient.getUrl(Uri.parse(url));
-    var response = await request.close();
-    var bytes = await consolidateHttpClientResponseBytes(response);
-    String dir = (await getApplicationDocumentsDirectory()).path;
-    File file = new File('$dir/$filename');
-    await file.writeAsBytes(bytes);
-    return file;
-  }*/
-
 }
 
 class CustomFieldText extends StatelessWidget {

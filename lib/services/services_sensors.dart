@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:flutter/services.dart';
 import 'package:tmra/models/model_sensors.dart';
 import '../constants.dart';
 
@@ -22,7 +23,7 @@ class SensorsTMRAServices {
     }
 
     ///Datos duros
-    /*final String response = await rootBundle.loadString('lib/assets/json/allsensors.json');
+    /*final String response = await rootBundle.loadString('lib/assets/json/sensor.json');
     final decodedData = await json.decode(response);
 
     info = Sensors.fromJson(decodedData);*/

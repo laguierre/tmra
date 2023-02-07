@@ -1,0 +1,64 @@
+{
+  "EM":"0",
+  "CPU":[
+    "3.3",
+    "1.3"
+  ],
+  "DAQ":[
+    "3.3",
+    "3.3"
+  ],
+  "WIFI":[
+    "2.2 [23-01-23]",
+    "ESP-12"
+  ],
+  "channelUsed":[
+    "0x80",
+    "0x1E00303"
+  ],
+  "LogLastAddress":"13865",
+  "TimeStamp (UTC)":"01/01/2000  00:01:20",
+  "Tension de bateria":"13.94",
+  "channels":[
+    {
+      "ch":"0",
+      "nombre":"Precipitaci&oacute;n acumulada (PMB25)",
+      "valor":"0.00"
+    },
+    {
+      "ch":"1",
+      "nombre":"Intensidad precipitaci&oacute;n (PMB25)",
+      "valor":"0.00"
+    },
+    {
+      "ch":"8",
+      "nombre":"Nivel freatico | Altura del arroyo (CS451)",
+      "valor":"0.00"
+    },
+    {
+      "ch":"9",
+      "nombre":"Temperatura del agua (CS451)",
+      "valor":"27.20"
+    },
+    {
+      "ch":"21",
+      "nombre":"Incidente NIR (SNR)",
+      "valor":"0.07"
+    },
+    {
+      "ch":"22",
+      "nombre":"Incidente RED (SNR)",
+      "valor":"0.10"
+    },
+    {
+      "ch":"23",
+      "nombre":"Reflectado NIR (SNR)",
+      "valor":"0.02"
+    },
+    {
+      "ch":"24",
+      "nombre":"Reflectado RED (SNR)",
+      "valor":"0.00"
+    }
+  ]
+}

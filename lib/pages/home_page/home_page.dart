@@ -37,26 +37,26 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
         backgroundColor: Colors.black,
         extendBody: true,
-        body: sensors.isNotEmpty
-            ? Padding(
-                padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
-                child: RefreshIndicator(
-                  strokeWidth: 2,
-                  displacement: MediaQuery.of(context).size.height / 2 - 200,
-                  color: Colors.white,
-                  onRefresh: () async {
-                    getSensorInfo();
-                    //Future<void>.delayed(const Duration(seconds: 3));
-                  },
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      TopAppBar(info: info),
-                      const Divider(
-                        color: Colors.white,
-                      ),
-                      const SizedBox(height: 10),
-                      InfoConfig(
+        body: RefreshIndicator(
+            strokeWidth: 2,
+            displacement: MediaQuery.of(context).size.height / 2 - 200,
+            color: Colors.white,
+            onRefresh: () async {
+              getSensorInfo();
+              //Future<void>.delayed(const Duration(seconds: 3));
+            },
+            child: sensors.isNotEmpty
+                ? Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TopAppBar(info: info),
+                        const Divider(
+                          color: Colors.white,
+                        ),
+                        const SizedBox(height: 10),
+                        /*InfoConfig(
                         title: 'Channel Used [0]: ',
                         value: info.channelUsed![0],
                         size: kFontSize,
@@ -67,50 +67,52 @@ class _HomePageState extends State<HomePage> {
                         value: info.channelUsed![1],
                         size: kFontSize,
                         icon: settingsIcon,
-                      ),
-                      InfoConfig(
-                        title: 'Batería: ',
-                        value: '${info.tensionDeBateria}V',
-                        size: kFontSize,
-                        icon: batteryIcon,
-                      ),
-                      InfoConfig(
-                          title: 'Último valor grabado: ',
-                          value: info.logLastAddress!,
+                      ),*/
+                        InfoConfig(
+                          title: 'Batería: ',
+                          value: '${info.tensionDeBateria}V',
                           size: kFontSize,
-                          icon: cpuIcon),
-                      InfoConfig(
-                          title: 'Time Stamp: ',
-                          value: info.timeStampUtc!,
-                          size: kFontSize,
-                          icon: clockIcon),
-                      Expanded(
-                        child: ListView.builder(
-                            padding: const EdgeInsets.only(top: 10, bottom: 20),
-                            physics: const BouncingScrollPhysics(),
-                            itemCount: sensors.length, //info.channels!.length,
-                            itemBuilder: (context, index) {
-                              return SensorCard(
-                                  info: sensors[index], index: index);
-                            }),
-                      )
-                    ],
-                  ),
-                ),
-              )
-            : Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Text('Espere...',
-                        style: TextStyle(color: Colors.white, fontSize: 18)),
-                    SizedBox(height: 20),
-                    CircularProgressIndicator(
-                      color: Colors.white,
+                          icon: batteryIcon,
+                        ),
+                        InfoConfig(
+                            title: 'Último valor grabado: ',
+                            value: info.logLastAddress!,
+                            size: kFontSize,
+                            icon: cpuIcon),
+                        InfoConfig(
+                            title: 'Time Stamp: ',
+                            value: info.timeStampUtc!,
+                            size: kFontSize,
+                            icon: clockIcon),
+                        Expanded(
+                          child: ListView.builder(
+                              padding:
+                                  const EdgeInsets.only(top: 10, bottom: 20),
+                              physics: const BouncingScrollPhysics(),
+                              itemCount:
+                                  sensors.length, //info.channels!.length,
+                              itemBuilder: (context, index) {
+                                return SensorCard(
+                                    info: sensors[index], index: index);
+                              }),
+                        )
+                      ],
                     ),
-                  ],
-                ),
-              ));
+                  )
+                : Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Text('Espere...',
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 18)),
+                        SizedBox(height: 20),
+                        CircularProgressIndicator(
+                          color: Colors.white,
+                        ),
+                      ],
+                    ),
+                  )));
   }
 
   List<SensorType> fillSensor(Sensors info) {

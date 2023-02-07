@@ -25,17 +25,20 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
     _listenForPermissionStatus();
     super.initState();
   }
+
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       _listenForPermissionStatus();
     }
   }
+
   void _listenForPermissionStatus() async {
     PermissionWithService locationPermission = Permission.locationWhenInUse;
     var permissionStatus = await locationPermission.status;
@@ -50,7 +53,7 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
           await locationPermission.serviceStatus.isEnabled;
       if (isLocationServiceOn) {
         wifiName = await info.getWifiName();
-        isConnectedESP = wifiName!.contains('EM') ||  wifiName!.contains('Est') ?? false;
+        isConnectedESP = wifiName!.contains('EM') || wifiName!.contains('Est');
         setState(() {});
       } else {
         debugPrint('Location Service is not enabled');
@@ -70,7 +73,6 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
           children: [
             const _TopAppBar(),
             Column(
-
               children: [
                 const SizedBox(height: 50),
                 Icon(isConnectedESP ? Icons.wifi_outlined : Icons.wifi_off,
@@ -95,7 +97,7 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
                             'Buscar a una red Estacion xx',
                             style: TextStyle(
                                 color: Colors.black,
-                                fontSize: kFontSize+1,
+                                fontSize: kFontSize + 1,
                                 fontWeight: FontWeight.bold),
                           ),
                         ),
@@ -105,12 +107,6 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
                             WiFiForIoTPlugin.setEnabled(false,
                                 shouldOpenSettings: true);
                           }
-                          /*if (await WiFiForIoTPlugin.isConnected()) {
-                    var wifiName = await info.getWifiName();
-                    print(wifiName);
-                    } else {
-                    print('----->>>');
-                    }*/
                           setState(() {});
                         },
                       )

@@ -20,6 +20,7 @@ class InfoBoards extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15),
         child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -50,6 +51,7 @@ class InfoBoards extends StatelessWidget {
                         title: 'Hw version: ',
                         value: info.wifi![1],
                         size: kFontSize - 4),
+
                   ],
                 ),
               ),
@@ -76,6 +78,18 @@ class InfoBoards extends StatelessWidget {
                         title: 'Hw version: ',
                         value: info.cpu![1],
                         size: kFontSize - 4),
+                    InfoConfig(
+                      title: 'Channel Used [0]: ',
+                      value: info.channelUsed![0],
+                      size: kFontSize - 4,
+                      icon: "",
+                    ),
+                    InfoConfig(
+                      title: 'Channel Used [1]: ',
+                      value: info.channelUsed![1],
+                      size: kFontSize - 4,
+                      icon: "",
+                    ),
                   ],
                 ),
               ),

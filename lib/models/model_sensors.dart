@@ -29,7 +29,8 @@ class Sensors {
     logLastAddress = json['LogLastAddress'];
     timeStampUtc = json['TimeStamp (UTC)'];
     tensionDeBateria = json['Tension de bateria']?? "0.0V";
-    if (json['channels'] != null) {
+   //if (json['channels'] != null)
+    {
       channels = <Channels>[];
       json['channels'].forEach((v) {
         channels!.add(Channels.fromJson(v));

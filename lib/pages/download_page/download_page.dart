@@ -8,6 +8,8 @@ import 'package:tmra/constants.dart';
 import '../../models/model_sensors.dart';
 import '../widgets.dart';
 import 'downloadFile.dart';
+import 'dart:html' as html;
+
 
 class DownloadPage extends StatefulWidget {
   DownloadPage({Key? key, required this.info}) : super(key: key);
@@ -37,6 +39,12 @@ class _DownloadPageState extends State<DownloadPage> {
     // TODO: implement dispose
     infTextEditingController.dispose();
     supTextEditingController.dispose();
+  }
+
+  void downloadFile(String url) {
+    html.AnchorElement anchorElement =  html.AnchorElement(href: url);
+    anchorElement.download = url;
+    anchorElement.click();
   }
 
   @override
@@ -82,59 +90,23 @@ class _DownloadPageState extends State<DownloadPage> {
                           'sup': '0',
                         };
                         final url =
-                            Uri.http(urlBase, 'download.html', queryParameters);
+                            Uri.http(urlBase, 'download.html');
 
                         print(url);
                         //final response =  await http.get(url);
                         //print(response.body);
                         //downloadFile(url.toString(), filename: '1.raw');
                         var dio = Dio();
-                        /*var response = await dio.download(
-                            url.toString(), "1.raw",
-                            options: Options(headers: {
-                              HttpHeaders.acceptEncodingHeader: "*"
-                            }), // disable gzip
-
-                            onReceiveProgress: (received, total) {
-                          if (total != -1) {
-                            print((received / total * 100).toStringAsFixed(0) +
-                                "%");
-                          }
-                        });*/
-                        /*try {
-                          Response response = await dio.get(
-                            url.toString(),
-                            //onReceiveProgress: showDownloadProgress,
-                            //Received data with List<int>
-                            options: Options(
-                                responseType: ResponseType.bytes,
-                                followRedirects: false,
-                                validateStatus: (status) {
-                                  return status! < 500;
-                                }),
-                          );
-                          //print(response.headers);
-                          File file = File('1.raw');
-                          var raf = file.openSync(mode: FileMode.write);
-                          // response.data is List<int> type
-                          raf.writeFromSync(response.data);
-                          await raf.close();
-                        } catch (e) {
-                          print('Error ->: ${e}');
-                        }*/
-
-
+                       // await Dio().get(url.toString(), options: Options(sendTimeout: 20000,  responseType: ResponseType.stream));
 
                         try {
-                          var dir = await getApplicationDocumentsDirectory();
+                          downloadFile(url.toString());
+                          /*var dir = await getApplicationDocumentsDirectory();
                           print(dir);
 
-
-                          await dio.download(Uri.http(urlBase, 'download.html').toString(), '${dir.path}/1.raw',
-                              queryParameters: {
-                                'inf': '0',
-                                'sup': '0',
-                              },
+                          await dio.download(url.toString(), '${dir.path}/1.raw',
+                              queryParameters: queryParameters,
+                              options: Options(headers: {HttpHeaders.acceptEncodingHeader: "*"}),
                               onReceiveProgress: (rec, total) {
                                 setState(() {
                                  /* _downloading = true;
@@ -145,10 +117,10 @@ class _DownloadPageState extends State<DownloadPage> {
                                         .showSnackBar(SnackBar(content: Text("Next Action...")));
                                     // NextAction();
                                   }*/
-                                });
-                              });
+                                }
+                              });*/
                         } catch (exp) {
-                          print('Error->: $exp');
+                          print('Error Download->: $exp');
                         }
 
 

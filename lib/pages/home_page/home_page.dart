@@ -31,7 +31,6 @@ class _HomePageState extends State<HomePage> {
     getSensorInfo();
     super.initState();
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

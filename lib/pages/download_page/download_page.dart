@@ -5,10 +5,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:tmra/constants.dart';
 import '../../models/model_sensors.dart';
 import '../widgets.dart';
-
 
 class DownloadPage extends StatefulWidget {
   DownloadPage({Key? key, required this.info}) : super(key: key);
@@ -40,7 +40,6 @@ class _DownloadPageState extends State<DownloadPage> {
   }
 
   void downloadFile(String url) {}
-
 
   @override
   Widget build(BuildContext context) {
@@ -78,48 +77,58 @@ class _DownloadPageState extends State<DownloadPage> {
                   width: MediaQuery.of(context).size.width * 0.5,
                   child: IconButton(
                       onPressed: () async {
-                        /*debugPrint(
-                            '${infTextEditingController.text} ${supTextEditingController.text}');*/
-                        final queryParameters = {
-                          'inf': '0',
-                          'sup': '0',
-                        };
-                        final url = Uri.http(urlBase, 'download.html');
-
-                        //downloadFile(url.toString(), filename: '1.raw');
-                        // await Dio().get(url.toString(), options: Options(sendTimeout: 20000,  responseType: ResponseType.stream));
-
-
+                        Map<Permission, PermissionStatus> statuses = await [
+                          Permission.storage,
+                          //Permission.manageExternalStorage,
+                          //add more permission to request here.
+                        ].request();
+                        if (statuses[Permission.storage]!.isGranted) {
+                          print('Churrasco');
+                        }
                         try {
                           //downloadFile(url.toString());
                           var dir = await getApplicationDocumentsDirectory();
-                          print(dir);
+                          print(dir.absolute);
+                          print(await dir.exists());
 
+                          final queryParameters = {
+                            'inf': '0',
+                            'sup': '100',
+                          };
+                          final url =
+                              Uri.http(urlBase, 'download.html\?inf=0\&sup=1000');
+                          Uri.http(urlBase, 'download.html');
 
-
-                          final options = BaseOptions(
-                            baseUrl: 'https://jsonplaceholder.typicode.com/',
-                            connectTimeout: 5000,
-                            receiveTimeout: 30000,
-                            responseType: ResponseType.bytes,
-                          );
-
-
-                          var response = await Dio(options).download(
-                              url.toString(), '${dir.path}/1.raw',
-                              queryParameters: queryParameters,
+                         var response = await Dio().download(
+                              'http://192.168.4.1/download.html?inf=0&sup=1000', '${dir.path}/1.raw',
+                              //queryParameters: queryParameters,
                               options: Options(
-                                  headers: {HttpHeaders.acceptEncodingHeader: '*'},
+                                  headers: {
+                                    //HttpHeaders.acceptEncodingHeader: '*',
+                                    HttpHeaders.connectionHeader: 'keep-alive',
+                                    HttpHeaders.contentTypeHeader: 'application/octet-stream',
+
+                                  },
                                   responseType: ResponseType.bytes,
                                   followRedirects: false,
-                                  validateStatus: (status) { return status! < 500; }
-                              ),
-                              onReceiveProgress: (rec, total) {
+                                  validateStatus: (status) {
+                                    return status! < 500;
+                                  }), onReceiveProgress: (rec, total) {
+                            if (total != -1) {
+                              print(
+                                  "${(rec / total * 100).toStringAsFixed(0)}%");
+                              //you can build progressbar feature too
+                            }
                             setState(() {});
                           });
-                          print(response);
-                        } catch (exp) {
-                          print('Error Download->: $exp');
+
+
+
+
+
+                          print(response.data);
+                        } on DioError catch (exp) {
+                          print('Error ---->>> $exp.message');
                         }
                       },
                       icon: Row(

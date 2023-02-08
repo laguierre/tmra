@@ -83,10 +83,9 @@ class _DownloadPageState extends State<DownloadPage> {
                           //add more permission to request here.
                         ].request();
                         if (statuses[Permission.storage]!.isGranted) {
-                          print('Churrasco');
+                          print('Acceso garantizado');
                         }
                         try {
-                          //downloadFile(url.toString());
                           var dir = await getApplicationDocumentsDirectory();
                           print(dir.absolute);
                           print(await dir.exists());
@@ -95,18 +94,20 @@ class _DownloadPageState extends State<DownloadPage> {
                             'inf': '0',
                             'sup': '100',
                           };
-                          final url =
-                              Uri.http(urlBase, 'download.html\?inf=0\&sup=1000');
+                          final url = Uri.http(
+                              urlBase, 'download.html\?inf=0\&sup=1000');
                           Uri.http(urlBase, 'download.html');
 
-                         var response = await Dio().download(
-                              'http://192.168.4.1/download.html?inf=0&sup=1000', '${dir.path}/1.raw',
+                          var response = await Dio().download(
+                              'http://192.168.4.1/download.html?inf=10&sup=300',
+                              '${dir.path}/1.raw',
                               //queryParameters: queryParameters,
                               options: Options(
+                                  receiveTimeout: 10000,
                                   headers: {
-                                    //HttpHeaders.acceptEncodingHeader: '*',
+                                    HttpHeaders.acceptEncodingHeader: '*',
                                     HttpHeaders.connectionHeader: 'keep-alive',
-                                    HttpHeaders.contentTypeHeader: 'application/octet-stream',
+                                    //HttpHeaders.contentTypeHeader:                                       'application/octet-stream',
 
                                   },
                                   responseType: ResponseType.bytes,
@@ -122,13 +123,15 @@ class _DownloadPageState extends State<DownloadPage> {
                             setState(() {});
                           });
 
-
-
-
-
                           print(response.data);
-                        } on DioError catch (exp) {
-                          print('Error ---->>> $exp.message');
+                        } on DioError catch (e) {
+                          if (e.type == DioErrorType.connectTimeout) {
+                            debugPrint('Error Connect Timeout');
+                          }
+                          if (e.type == DioErrorType.receiveTimeout) {
+                            debugPrint('Error Receive Timeout');
+                          }
+                          print('Error ---->>> $e.message');
                         }
                       },
                       icon: Row(

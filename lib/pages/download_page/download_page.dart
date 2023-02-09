@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'dart:io';
 
@@ -6,13 +5,14 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:tmra/constants.dart';
+import 'package:tmra/pages/web_page/web_page.dart';
 import '../../models/model_sensors.dart';
 import '../widgets.dart';
 import 'package:sync_http/sync_http.dart';
-
 
 class DownloadPage extends StatefulWidget {
   DownloadPage({Key? key, required this.info}) : super(key: key);
@@ -71,19 +71,15 @@ class _DownloadPageState extends State<DownloadPage> {
             CustomFieldText(textEditingController: supTextEditingController),
             const SizedBox(height: 45),
             Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                const Spacer(),
                 Container(
                   decoration: BoxDecoration(
                       color: Colors.yellowAccent,
                       borderRadius: BorderRadius.circular(15)),
-                  width: MediaQuery
-                      .of(context)
-                      .size
-                      .width * 0.5,
+                  width: MediaQuery.of(context).size.width * 0.5,
                   child: IconButton(
                       onPressed: () async {
-
                         Map<Permission, PermissionStatus> statuses = await [
                           Permission.storage,
                           //Permission.manageExternalStorage,
@@ -93,31 +89,35 @@ class _DownloadPageState extends State<DownloadPage> {
                           print('Acceso garantizado');
                         }
                         //try {
-                          var dir = await getApplicationDocumentsDirectory();
-                          print(dir.absolute);
-                          print(await dir.exists());
+                        var dir = await getApplicationDocumentsDirectory();
+                        print(dir.absolute);
+                        print(await dir.exists());
 
-                          final queryParameters = {
-                            'inf': '0',
-                            'sup': '100',
-                          };
-                          final url = Uri.http(
-                              urlBase, 'download.html\?inf=0\&sup=1000');
-                          Uri.http(urlBase, 'download.html');
+                        final queryParameters = {
+                          'inf': '0',
+                          'sup': '100',
+                        };
+                        final url =
+                            Uri.http(urlBase, 'download.html\?inf=0\&sup=1000');
+                        Uri.http(urlBase, 'download.html');
 
-                        final apiUri = Uri.parse('http://192.168.4.1/download.html?inf=0&sup=300');
+                        final apiUri = Uri.parse(
+                            'http://192.168.4.1/download.html?inf=0&sup=300');
 
                         var request = await HttpClient()
-                            .getUrl(Uri.parse('http://192.168.4.1/download.html?inf=0&sup=300')) // produces a request object
-                            .then((request) => request.close()) // sends the request
-                            .then((response) =>
-                            response.transform(Utf8Decoder()).listen(print)); // transforms and prints the response
+                            .getUrl(Uri.parse(
+                                'http://192.168.4.1/download.html?inf=0&sup=300')) // produces a request object
+                            .then((request) =>
+                                request.close()) // sends the request
+                            .then((response) => response
+                                .transform(Utf8Decoder())
+                                .listen(
+                                    print)); // transforms and prints the response
                         var response = await request.cancel();
                         //var response = request.close();
-                       // print(response.toString());
-
-}
-                          /* var response = await Dio(BaseOptions(
+                        // print(response.toString());
+                      }
+                      /* var response = await Dio(BaseOptions(
                                   receiveDataWhenStatusError: true,
                                   connectTimeout: 60 * 1000, // 60 seconds
                                   receiveTimeout: 60 * 1000 // 60 seconds
@@ -177,7 +177,43 @@ class _DownloadPageState extends State<DownloadPage> {
                       )),
                 ),
               ],
-            )
+            ),
+            SizedBox(height: 100),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                      color: Colors.yellowAccent,
+                      borderRadius: BorderRadius.circular(15)),
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  child: IconButton(
+                      onPressed: () async {
+                        Navigator.push(
+                          context,
+                          PageTransition(
+                              type: PageTransitionType.rightToLeft,
+                              child: WebViewPage(),
+                              inheritTheme: true,
+                              ctx: context),
+                        );
+                      },
+                      icon: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset('lib/assets/icons/save.png',
+                              color: Colors.black),
+                          const SizedBox(width: 10),
+                          const Text('Pág. web',
+                              style: TextStyle(
+                                  fontSize: 24,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold))
+                        ],
+                      )),
+                ),
+              ],
+            ),
           ],
         ),
       ),
@@ -211,7 +247,7 @@ class CustomFieldText extends StatelessWidget {
           enabledBorder: InputBorder.none,
           border: InputBorder.none,
           hintStyle:
-          TextStyle(color: Colors.grey, decoration: TextDecoration.none),
+              TextStyle(color: Colors.grey, decoration: TextDecoration.none),
           contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
           isDense: true,
         ),

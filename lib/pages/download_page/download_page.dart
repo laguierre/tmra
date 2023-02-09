@@ -1,3 +1,5 @@
+
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -9,6 +11,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:tmra/constants.dart';
 import '../../models/model_sensors.dart';
 import '../widgets.dart';
+import 'package:sync_http/sync_http.dart';
+
 
 class DownloadPage extends StatefulWidget {
   DownloadPage({Key? key, required this.info}) : super(key: key);
@@ -22,7 +26,6 @@ class DownloadPage extends StatefulWidget {
 class _DownloadPageState extends State<DownloadPage> {
   late TextEditingController infTextEditingController;
   late TextEditingController supTextEditingController;
-  static var httpClient = HttpClient();
 
   @override
   void initState() {
@@ -74,9 +77,13 @@ class _DownloadPageState extends State<DownloadPage> {
                   decoration: BoxDecoration(
                       color: Colors.yellowAccent,
                       borderRadius: BorderRadius.circular(15)),
-                  width: MediaQuery.of(context).size.width * 0.5,
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width * 0.5,
                   child: IconButton(
                       onPressed: () async {
+
                         Map<Permission, PermissionStatus> statuses = await [
                           Permission.storage,
                           //Permission.manageExternalStorage,
@@ -85,7 +92,7 @@ class _DownloadPageState extends State<DownloadPage> {
                         if (statuses[Permission.storage]!.isGranted) {
                           print('Acceso garantizado');
                         }
-                        try {
+                        //try {
                           var dir = await getApplicationDocumentsDirectory();
                           print(dir.absolute);
                           print(await dir.exists());
@@ -98,23 +105,44 @@ class _DownloadPageState extends State<DownloadPage> {
                               urlBase, 'download.html\?inf=0\&sup=1000');
                           Uri.http(urlBase, 'download.html');
 
-                          var response = await Dio().download(
-                              'http://192.168.4.1/download.html?inf=10&sup=300',
-                              '${dir.path}/1.raw',
-                              //queryParameters: queryParameters,
-                              options: Options(
-                                  receiveTimeout: 10000,
-                                  headers: {
-                                    HttpHeaders.acceptEncodingHeader: '*',
-                                    HttpHeaders.connectionHeader: 'keep-alive',
-                                    //HttpHeaders.contentTypeHeader:                                       'application/octet-stream',
+                        final apiUri = Uri.parse('http://192.168.4.1/download.html?inf=0&sup=300');
 
-                                  },
-                                  responseType: ResponseType.bytes,
-                                  followRedirects: false,
-                                  validateStatus: (status) {
-                                    return status! < 500;
-                                  }), onReceiveProgress: (rec, total) {
+                        var request = await HttpClient()
+                            .getUrl(Uri.parse('http://192.168.4.1/download.html?inf=0&sup=300')) // produces a request object
+                            .then((request) => request.close()) // sends the request
+                            .then((response) =>
+                            response.transform(Utf8Decoder()).listen(print)); // transforms and prints the response
+                        var response = await request.cancel();
+                        //var response = request.close();
+                       // print(response.toString());
+
+}
+                          /* var response = await Dio(BaseOptions(
+                                  receiveDataWhenStatusError: true,
+                                  connectTimeout: 60 * 1000, // 60 seconds
+                                  receiveTimeout: 60 * 1000 // 60 seconds
+                                  ))
+                              .download(
+                                  'http://192.168.4.1/download.html?inf=0&sup=300',
+                                  '${dir.path}/1.raw',
+                                  //queryParameters: queryParameters,
+
+                                  options: Options(
+
+                                      //receiveTimeout: 10000,
+                                      headers: {
+                                        //HttpHeaders.acceptCharsetHeader: 'UTF-8',
+                                        //HttpHeaders.acceptEncodingHeader: '*',
+
+                                        HttpHeaders.connectionHeader:
+                                            'keep-alive',
+                                        //HttpHeaders.contentTypeHeader:                                       'application/octet-stream',
+                                      },
+                                      //responseType: ResponseType.plain,
+                                      //followRedirects: false,
+                                      validateStatus: (status) {
+                                        return status! < 500;
+                                      }), onReceiveProgress: (rec, total) {
                             if (total != -1) {
                               print(
                                   "${(rec / total * 100).toStringAsFixed(0)}%");
@@ -123,7 +151,7 @@ class _DownloadPageState extends State<DownloadPage> {
                             setState(() {});
                           });
 
-                          print(response.data);
+                          print(response.statusCode);
                         } on DioError catch (e) {
                           if (e.type == DioErrorType.connectTimeout) {
                             debugPrint('Error Connect Timeout');
@@ -131,9 +159,9 @@ class _DownloadPageState extends State<DownloadPage> {
                           if (e.type == DioErrorType.receiveTimeout) {
                             debugPrint('Error Receive Timeout');
                           }
-                          print('Error ---->>> $e.message');
-                        }
-                      },
+                          print('Error ---->>> $e.message');*/
+
+                      ,
                       icon: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -183,7 +211,7 @@ class CustomFieldText extends StatelessWidget {
           enabledBorder: InputBorder.none,
           border: InputBorder.none,
           hintStyle:
-              TextStyle(color: Colors.grey, decoration: TextDecoration.none),
+          TextStyle(color: Colors.grey, decoration: TextDecoration.none),
           contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
           isDense: true,
         ),

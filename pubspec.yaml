@@ -45,8 +45,14 @@ dependencies:
   permission_handler: ^10.2.0
   external_path: ^1.0.3
   sync_http: ^0.3.1
-  dio: ^4.0.6
+  dio: ^5.0.0
   webview_flutter: ^4.0.2
+  flutter_inappwebview: ^5.7.2+3
+  flutter_file_downloader: ^1.1.0+1
+  lecle_downloads_path_provider: ^0.0.2+8
+  share_plus: ^6.3.1
+  filesystem_picker: ^3.1.0
+
 
 dev_dependencies:
   flutter_test:

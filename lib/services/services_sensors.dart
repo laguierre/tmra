@@ -9,8 +9,9 @@ class SensorsTMRAServices {
     Sensors info = Sensors();
     final url = Uri.http(urlBase, 'resumenJSON.html');
     try {
-      var response =
-          await Dio().get(url.toString(), options: Options(sendTimeout: 20000,  responseType: ResponseType.plain));
+      var response = await Dio().get(url.toString(),
+          options:
+              Options(sendTimeout: const Duration(seconds: 20), responseType: ResponseType.plain));
       print(response.statusCode);
       if (response.statusCode == 200) {
         response.headers.value("application/json");

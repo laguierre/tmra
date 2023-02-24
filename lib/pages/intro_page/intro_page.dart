@@ -53,7 +53,7 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
           await locationPermission.serviceStatus.isEnabled;
       if (isLocationServiceOn) {
         wifiName = await info.getWifiName();
-        isConnectedESP = wifiName!.contains('EM') || wifiName!.contains('Est');
+        isConnectedESP = wifiName!.contains('EM') || wifiName!.contains('Est') || wifiName!.contains('And');
         setState(() {});
       } else {
         debugPrint('Location Service is not enabled');

@@ -2,17 +2,18 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:filesystem_picker/filesystem_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:page_transition/page_transition.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:lecle_downloads_path_provider/lecle_downloads_path_provider.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:tmra/constants.dart';
-import 'package:tmra/pages/web_page/web_page.dart';
 import '../../models/model_sensors.dart';
 import '../widgets.dart';
-import 'package:sync_http/sync_http.dart';
 
 class DownloadPage extends StatefulWidget {
   DownloadPage({Key? key, required this.info}) : super(key: key);
@@ -37,9 +38,13 @@ class _DownloadPageState extends State<DownloadPage> {
 
   @override
   void dispose() {
+    super.dispose();
     // TODO: implement dispose
-    infTextEditingController.dispose();
-    supTextEditingController.dispose();
+    if (infTextEditingController != null) {
+      infTextEditingController.dispose();
+      supTextEditingController.dispose();
+    }
+
   }
 
   void downloadFile(String url) {}
@@ -77,7 +82,10 @@ class _DownloadPageState extends State<DownloadPage> {
                   decoration: BoxDecoration(
                       color: Colors.yellowAccent,
                       borderRadius: BorderRadius.circular(15)),
-                  width: MediaQuery.of(context).size.width * 0.5,
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width * 0.5,
                   child: IconButton(
                       onPressed: () async {
                         Map<Permission, PermissionStatus> statuses = await [
@@ -98,7 +106,7 @@ class _DownloadPageState extends State<DownloadPage> {
                           'sup': '100',
                         };
                         final url =
-                            Uri.http(urlBase, 'download.html\?inf=0\&sup=1000');
+                        Uri.http(urlBase, 'download.html\?inf=0\&sup=1000');
                         Uri.http(urlBase, 'download.html');
 
                         final apiUri = Uri.parse(
@@ -106,13 +114,14 @@ class _DownloadPageState extends State<DownloadPage> {
 
                         var request = await HttpClient()
                             .getUrl(Uri.parse(
-                                'http://192.168.4.1/download.html?inf=0&sup=300')) // produces a request object
+                            'http://192.168.4.1/download.html?inf=0&sup=300')) // produces a request object
                             .then((request) =>
-                                request.close()) // sends the request
-                            .then((response) => response
+                            request.close()) // sends the request
+                            .then((response) =>
+                            response
                                 .transform(Utf8Decoder())
                                 .listen(
-                                    print)); // transforms and prints the response
+                                print)); // transforms and prints the response
                         var response = await request.cancel();
                         //var response = request.close();
                         // print(response.toString());
@@ -178,7 +187,7 @@ class _DownloadPageState extends State<DownloadPage> {
                 ),
               ],
             ),
-            SizedBox(height: 100),
+            const SizedBox(height: 50),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -186,17 +195,13 @@ class _DownloadPageState extends State<DownloadPage> {
                   decoration: BoxDecoration(
                       color: Colors.yellowAccent,
                       borderRadius: BorderRadius.circular(15)),
-                  width: MediaQuery.of(context).size.width * 0.5,
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width * 0.5,
                   child: IconButton(
                       onPressed: () async {
-                        Navigator.push(
-                          context,
-                          PageTransition(
-                              type: PageTransitionType.rightToLeft,
-                              child: WebViewPage(),
-                              inheritTheme: true,
-                              ctx: context),
-                        );
+                        _OpenWithSystemBrowser();
                       },
                       icon: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -214,10 +219,146 @@ class _DownloadPageState extends State<DownloadPage> {
                 ),
               ],
             ),
+            const SizedBox(height: 50),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                      color: Colors.yellowAccent,
+                      borderRadius: BorderRadius.circular(15)),
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width * 0.5,
+                  child: IconButton(
+                      onPressed: () async {
+
+                        ///Ver aca
+                        var hasStoragePermission = await Permission.manageExternalStorage.isGranted;
+                        if (!hasStoragePermission) {
+                          final status = await Permission.manageExternalStorage.request();
+                          hasStoragePermission = status.isGranted;
+                          print('Has Permission');
+                        }
+                        else{
+                          print('Has not Permission!!!');
+                        }
+                        var dir = await DownloadsPath.downloadsDirectory();
+                        print('Dir: $dir');
+                        /*if (!Directory("${dir!.path}").existsSync()) {
+                          Directory("${dir.path}").createSync(recursive: true);
+                        }*/
+
+
+                        final Dio _dio = Dio();
+                        //var dir = await getApplicationDocumentsDirectory();
+                        String? downloadsDirectoryPath =
+                            (await DownloadsPath.downloadsDirectory())?.path;
+                        print('DownloadsPath: $downloadsDirectoryPath');
+                        final response = await _dio.download(
+                          //'http://192.168.4.1/download.html?inf=0&sup=0',
+                          'http://192.168.4.1/downloadFile.html',
+                          //'${dir.path}/raw/test.raw',
+                          '$downloadsDirectoryPath/11.raw',
+                          onReceiveProgress: (received, total) async {
+                            if (total != -1) {
+                              print(
+                                  (received / total * 100).toStringAsFixed(0) +
+                                      "%");
+                              showAlertDialog('$downloadsDirectoryPath/11.raw',
+                                  '$downloadsDirectoryPath');
+                              print('Archivo guardado $downloadsDirectoryPath');
+                            }
+                          },
+                        );
+                      },
+                      icon: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset('lib/assets/icons/save.png',
+                              color: Colors.black),
+                          const SizedBox(width: 10),
+                          const Text('downloadFile',
+                              style: TextStyle(
+                                  fontSize: 24,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold))
+                        ],
+                      )),
+                ),
+              ],
+            ),
           ],
         ),
       ),
     );
+  }
+
+  void _OpenWithSystemBrowser() {
+    InAppBrowser.openWithSystemBrowser(
+        url: Uri.parse('http://192.168.4.1/confDownload.html'));
+  }
+
+  Future<void> checkPermission() async {
+    var hasStoragePermission = await Permission.storage.isGranted;
+    if (!hasStoragePermission) {
+      final status = await Permission.storage.request();
+      hasStoragePermission = status.isGranted;
+    }
+    var dir = await getExternalStorageDirectory();
+    if (!Directory("${dir!.path}/RAW").existsSync()) {
+      Directory("${dir.path}/RAW").createSync(recursive: true);
+    }
+  }
+
+  void showAlertDialog(String file, String folder) async {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Archivo descargado'),
+            content: const Text(''),
+            actions: [
+              ElevatedButton(
+                  style:
+                  ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                  onPressed: () async {
+                    print('Folder: $folder');
+                    if (await File(file).exists()) {
+                      String? path = await FilesystemPicker.openDialog(
+                          title: 'Archivo',
+                          context: context,
+                          rootDirectory: Directory(folder),
+                          fsType: FilesystemType.folder,
+                          //pickText: 'Save file to this folder',
+                          folderIconColor: Colors.black,
+                          allowedExtensions: ['.raw']
+                      );
+                      print('Picker: $path');
+                    }
+                  },
+                  child: const Text('Abrir en explorador')),
+              ElevatedButton(
+                  style:
+                  ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                  onPressed: () async {
+                    if (await File(file).exists()) {
+                      Share.shareXFiles([XFile(file)],
+                          text: 'Archivo descargado');
+                    }
+                  },
+                  child: const Text('Compartir')),
+              ElevatedButton(
+                  style:
+                  ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Ok')),
+            ],
+          );
+        });
   }
 }
 
@@ -247,7 +388,7 @@ class CustomFieldText extends StatelessWidget {
           enabledBorder: InputBorder.none,
           border: InputBorder.none,
           hintStyle:
-              TextStyle(color: Colors.grey, decoration: TextDecoration.none),
+          TextStyle(color: Colors.grey, decoration: TextDecoration.none),
           contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
           isDense: true,
         ),

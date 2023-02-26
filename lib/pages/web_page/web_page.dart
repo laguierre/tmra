@@ -76,7 +76,7 @@ class _WebViewPageState extends State<WebViewPage> {
           );
         },
       )
-      ..loadRequest(Uri.parse('http://192.168.4.1/confDownload.html'));
+      ..loadRequest(Uri.parse('http://192.168.4.1/confDownload.html')); //'http://192.168.4.1/download.html?inf=0&sup=100',
 
     // #docregion platform_features
     if (controller.platform is AndroidWebViewController) {

@@ -4,6 +4,7 @@ import 'package:tmra/pages/intro_page/intro_page.dart';
 import 'package:tmra/provider/sensors_provider.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 

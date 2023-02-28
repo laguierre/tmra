@@ -155,15 +155,15 @@ class _DownloadPageState extends State<DownloadPage> {
                   child: IconButton(
                       onPressed: () async {
                         ///Ver aca
-                        /*var hasStoragePermission = await Permission.manageExternalStorage.isGranted;
+                        var hasStoragePermission = await Permission.manageExternalStorage.isGranted;
                         if (!hasStoragePermission) {
-                          final status = await Permission.manageExternalStorage.request();
-                          hasStoragePermission = status.isGranted;
+                          final status = await Permission.manageExternalStorage.request().isGranted;
+                          //hasStoragePermission = status.isGranted;
                           print('Has Permission');
                         }
                         else{
                           print('Has not Permission!!!');
-                        }*/
+                        }
                         var dir = await DownloadsPath.downloadsDirectory();
                         print('Dir: $dir');
                         /*if (!Directory("${dir!.path}").existsSync()) {
@@ -176,11 +176,12 @@ class _DownloadPageState extends State<DownloadPage> {
                             (await DownloadsPath.downloadsDirectory())?.path;
                         print('DownloadsPath: $downloadsDirectoryPath');
                         final response = await _dio.download(
-                          //'http://192.168.4.1/download.html?inf=0&sup=0',
-                          'http://192.168.4.1/downloadFile.html',
+                          'http://192.168.4.1/downloadFile.html?inf=0&sup=30',
+                          //'http://192.168.4.1/downloadFile.html',
                           //'${dir.path}/raw/test.raw',
-                          '$downloadsDirectoryPath/11.raw',
+                          '$downloadsDirectoryPath/13.txt',
                           onReceiveProgress: (received, total) async {
+                            print(total);
                             if (total != -1) {
                               print(
                                   (received / total * 100).toStringAsFixed(0) +

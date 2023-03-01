@@ -1,7 +1,13 @@
+import 'dart:io';
+
+import 'package:filesystem_picker/filesystem_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:lecle_downloads_path_provider/lecle_downloads_path_provider.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:tmra/common.dart';
 import 'package:tmra/constants.dart';
 import 'package:tmra/pages/home_page/home_page.dart';
 import 'package:wifi_iot/wifi_iot.dart';
@@ -53,7 +59,9 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
           await locationPermission.serviceStatus.isEnabled;
       if (isLocationServiceOn) {
         wifiName = await info.getWifiName();
-        isConnectedESP = wifiName!.contains('EM') || wifiName!.contains('Est') || wifiName!.contains('And');
+        isConnectedESP = wifiName!.contains('EM') ||
+            wifiName!.contains('Est') ||
+            wifiName!.contains('And');
         setState(() {});
       } else {
         debugPrint('Location Service is not enabled');
@@ -114,11 +122,22 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
               ],
             ),
             const Spacer(),
-            isConnectedESP
-                ? Row(
-                    children: [
-                      const Spacer(),
-                      GestureDetector(
+            Row(
+              children: [
+                const  SizedBox(width: 20),
+                GestureDetector(
+                  child: Image.asset(
+                    sharingIcon,
+                    color: Colors.white,
+                    height: 50,
+                  ),
+                  onTap: () async {
+                    openSharingFile(context);
+                  },
+                ),
+                const Spacer(),
+                isConnectedESP
+                    ? GestureDetector(
                         child: Image.asset(
                           nextIcon,
                           color: Colors.white,
@@ -134,11 +153,11 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
                                 ctx: context),
                           );
                         },
-                      ),
-                      const SizedBox(width: 20)
-                    ],
-                  )
-                : Container(),
+                      )
+                    : Container(),
+                const SizedBox(width: 20)
+              ],
+            ),
             const SizedBox(height: 10),
           ],
         ),

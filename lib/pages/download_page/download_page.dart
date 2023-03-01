@@ -176,7 +176,7 @@ class _DownloadPageState extends State<DownloadPage> {
                             (await DownloadsPath.downloadsDirectory())?.path;
                         print('DownloadsPath: $downloadsDirectoryPath');
                         final response = await _dio.download(
-                          'http://192.168.4.1/downloadFile.html?inf=0&sup=30',
+                          'http://192.168.4.1/downloadFile.html?inf=0&sup=10',
                           //'http://192.168.4.1/downloadFile.html',
                           //'${dir.path}/raw/test.raw',
                           '$downloadsDirectoryPath/13.txt',

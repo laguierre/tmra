@@ -52,6 +52,7 @@ dependencies:
   lecle_downloads_path_provider: ^0.0.2+8
   share_plus: ^6.3.1
   filesystem_picker: ^3.1.0
+  intl: ^0.18.0
 
 
 dev_dependencies:

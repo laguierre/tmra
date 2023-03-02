@@ -7,11 +7,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:intl/intl.dart';
 import 'package:lecle_downloads_path_provider/lecle_downloads_path_provider.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:tmra/common.dart';
 import 'package:tmra/constants.dart';
 import '../../models/model_sensors.dart';
 import '../web_page/web_page.dart';
@@ -47,7 +49,6 @@ class _DownloadPageState extends State<DownloadPage> {
       supTextEditingController.dispose();
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +107,6 @@ class _DownloadPageState extends State<DownloadPage> {
               ],
             ),
             const SizedBox(height: 50),
-
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -125,7 +125,6 @@ class _DownloadPageState extends State<DownloadPage> {
                               inheritTheme: true,
                               ctx: context),
                         );
-
                       },
                       icon: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -155,13 +154,15 @@ class _DownloadPageState extends State<DownloadPage> {
                   child: IconButton(
                       onPressed: () async {
                         ///Ver aca
-                        var hasStoragePermission = await Permission.manageExternalStorage.isGranted;
+                        var hasStoragePermission =
+                            await Permission.manageExternalStorage.isGranted;
                         if (!hasStoragePermission) {
-                          final status = await Permission.manageExternalStorage.request().isGranted;
+                          final status = await Permission.manageExternalStorage
+                              .request()
+                              .isGranted;
                           //hasStoragePermission = status.isGranted;
                           print('Has Permission');
-                        }
-                        else{
+                        } else {
                           print('Has not Permission!!!');
                         }
                         var dir = await DownloadsPath.downloadsDirectory();
@@ -175,18 +176,21 @@ class _DownloadPageState extends State<DownloadPage> {
                         String? downloadsDirectoryPath =
                             (await DownloadsPath.downloadsDirectory())?.path;
                         print('DownloadsPath: $downloadsDirectoryPath');
+                        String address =
+                            'http://192.168.4.1/downloadFile.html?inf=${infTextEditingController.text}&sup=${supTextEditingController.text}';
+
+                        String fileName = 'EM${widget.info.em!.toUpperCase()}_${DateFormat('yyyyMMdd').format(DateTime.now())}.raw';
+
                         final response = await _dio.download(
-                          'http://192.168.4.1/downloadFile.html?inf=0&sup=10',
-                          //'http://192.168.4.1/downloadFile.html',
-                          //'${dir.path}/raw/test.raw',
-                          '$downloadsDirectoryPath/13.txt',
+                          address,
+                          '$downloadsDirectoryPath/$fileName',
                           onReceiveProgress: (received, total) async {
                             print(total);
                             if (total != -1) {
-                              print(
+                              debugPrint(
                                   (received / total * 100).toStringAsFixed(0) +
                                       "%");
-                              showAlertDialog('$downloadsDirectoryPath/11.raw',
+                              showAlertDialog('$downloadsDirectoryPath/$fileName',
                                   '$downloadsDirectoryPath');
                               print('Archivo guardado $downloadsDirectoryPath');
                             }
@@ -244,25 +248,7 @@ class _DownloadPageState extends State<DownloadPage> {
                   style:
                       ElevatedButton.styleFrom(backgroundColor: Colors.green),
                   onPressed: () async {
-                    var rootPath = await DownloadsPath.downloadsDirectory();
-                    print('Folder: $rootPath');
-                    if (await File(file).exists()) {
-                      String? path = await FilesystemPicker.openDialog(
-                        fileTileSelectMode: FileTileSelectMode.wholeTile,
-                        title: 'Archivo',
-                        context: context,
-                        rootDirectory: rootPath!,
-                        fsType: FilesystemType.file,
-                        pickText: 'Save file to this folder',
-                        folderIconColor: Colors.black,
-                        allowedExtensions: ['.raw'],
-                      );
-                      print('Picker: $path');
-                      if (path!.isNotEmpty) {
-                        Share.shareXFiles([XFile(path)],
-                            text: 'Archivo descargado');
-                      }
-                    }
+                    openSharingFile(context);
                   },
                   child: const Text('Abrir en explorador')),
               ElevatedButton(
@@ -305,7 +291,7 @@ class _SaveWithLimits extends StatelessWidget {
           width: MediaQuery.of(context).size.width * 0.5,
           child: IconButton(
               onPressed: () async {
-                var dir =  await DownloadsPath.downloadsDirectory();
+                var dir = await DownloadsPath.downloadsDirectory();
                 print(dir);
 
                 var request = await HttpClient()

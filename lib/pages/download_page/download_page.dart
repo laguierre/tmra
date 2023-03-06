@@ -155,7 +155,7 @@ class _DownloadPageState extends State<DownloadPage> {
                       onPressed: () async {
                         ///Ver aca
                         var hasStoragePermission =
-                            await Permission.manageExternalStorage.isGranted;
+                        await Permission.manageExternalStorage.isGranted;
                         if (!hasStoragePermission) {
                           final status = await Permission.manageExternalStorage
                               .request()
@@ -185,7 +185,7 @@ class _DownloadPageState extends State<DownloadPage> {
                           address,
                           '$downloadsDirectoryPath/$fileName',
                           onReceiveProgress: (received, total) async {
-                            print(total);
+                            print('Recibido: ${received}, Total: ${total}');
                             if (total != -1) {
                               debugPrint(
                                   (received / total * 100).toStringAsFixed(0) +
@@ -246,14 +246,14 @@ class _DownloadPageState extends State<DownloadPage> {
             actions: [
               ElevatedButton(
                   style:
-                      ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                  ElevatedButton.styleFrom(backgroundColor: Colors.green),
                   onPressed: () async {
                     openSharingFile(context);
                   },
                   child: const Text('Abrir en explorador')),
               ElevatedButton(
                   style:
-                      ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                  ElevatedButton.styleFrom(backgroundColor: Colors.green),
                   onPressed: () async {
                     if (await File(file).exists()) {
                       Share.shareXFiles([XFile(file)],
@@ -263,7 +263,7 @@ class _DownloadPageState extends State<DownloadPage> {
                   child: const Text('Compartir')),
               ElevatedButton(
                   style:
-                      ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                  ElevatedButton.styleFrom(backgroundColor: Colors.green),
                   onPressed: () {
                     Navigator.pop(context);
                   },
@@ -296,14 +296,14 @@ class _SaveWithLimits extends StatelessWidget {
 
                 var request = await HttpClient()
                     .getUrl(
-                      Uri.parse(
-                          //'http://192.168.4.1/download.html?inf=0&sup=300'),
-                          'http://192.168.4.1/downloadFile.html'),
-                    ) // produces a request object
+                  Uri.parse(
+                    //'http://192.168.4.1/download.html?inf=0&sup=300'),
+                      'http://192.168.4.1/downloadFile.html'),
+                ) // produces a request object
                     .then((request) => request.close()) // sends the request
                     .then((response) => response
-                        .transform(Utf8Decoder())
-                        .listen(print)); // transforms and prints the response
+                    .transform(Utf8Decoder())
+                    .listen(print)); // transforms and prints the response
                 var response = await request.cancel();
                 //var response = request.close();
                 // print(response.toString());
@@ -397,7 +397,7 @@ class CustomFieldText extends StatelessWidget {
           enabledBorder: InputBorder.none,
           border: InputBorder.none,
           hintStyle:
-              TextStyle(color: Colors.grey, decoration: TextDecoration.none),
+          TextStyle(color: Colors.grey, decoration: TextDecoration.none),
           contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
           isDense: true,
         ),

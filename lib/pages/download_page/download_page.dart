@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:lecle_downloads_path_provider/lecle_downloads_path_provider.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:tmra/common.dart';
@@ -31,6 +32,9 @@ class DownloadPage extends StatefulWidget {
 class _DownloadPageState extends State<DownloadPage> {
   late TextEditingController infTextEditingController;
   late TextEditingController supTextEditingController;
+  double receivedData = 0;
+  bool isDownload = false;
+
 
   @override
   void initState() {
@@ -53,176 +57,138 @@ class _DownloadPageState extends State<DownloadPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBody: true,
+      extendBody: false,
       backgroundColor: Colors.black,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TopAppBarBack(info: widget.info),
-            const SizedBox(height: 30),
-            const Text(
-              'Límite inferior',
-              style: TextStyle(color: Colors.white, fontSize: kFontSize),
-            ),
-            const SizedBox(height: 15),
-            CustomFieldText(textEditingController: infTextEditingController),
-            const SizedBox(height: 15),
-            const Text(
-              'Límite superior',
-              style: TextStyle(color: Colors.white, fontSize: kFontSize),
-            ),
-            const SizedBox(height: 15),
-            CustomFieldText(textEditingController: supTextEditingController),
-            const SizedBox(height: 45),
-            const _SaveWithLimits(),
-            const SizedBox(height: 50),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                      color: Colors.yellowAccent,
-                      borderRadius: BorderRadius.circular(15)),
-                  width: MediaQuery.of(context).size.width * 0.5,
-                  child: IconButton(
-                      onPressed: () async {
-                        _OpenWithSystemBrowser();
-                      },
-                      icon: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset('lib/assets/icons/save.png',
-                              color: Colors.black),
-                          const SizedBox(width: 10),
-                          const Text('En Browser',
-                              style: TextStyle(
-                                  fontSize: 24,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold))
-                        ],
-                      )),
-                ),
-              ],
-            ),
-            const SizedBox(height: 50),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                      color: Colors.yellowAccent,
-                      borderRadius: BorderRadius.circular(15)),
-                  width: MediaQuery.of(context).size.width * 0.5,
-                  child: IconButton(
-                      onPressed: () async {
-                        Navigator.push(
-                          context,
-                          PageTransition(
-                              type: PageTransitionType.rightToLeft,
-                              child: WebViewPage(),
-                              inheritTheme: true,
-                              ctx: context),
-                        );
-                      },
-                      icon: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset('lib/assets/icons/save.png',
-                              color: Colors.black),
-                          const SizedBox(width: 10),
-                          const Text('Abrir Web',
-                              style: TextStyle(
-                                  fontSize: 24,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold))
-                        ],
-                      )),
-                ),
-              ],
-            ),
-            const SizedBox(height: 50),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                      color: Colors.yellowAccent,
-                      borderRadius: BorderRadius.circular(15)),
-                  width: MediaQuery.of(context).size.width * 0.5,
-                  child: IconButton(
-                      onPressed: () async {
-                        ///Ver aca
-                        var hasStoragePermission =
-                        await Permission.manageExternalStorage.isGranted;
-                        if (!hasStoragePermission) {
-                          final status = await Permission.manageExternalStorage
-                              .request()
-                              .isGranted;
-                          //hasStoragePermission = status.isGranted;
-                          print('Has Permission');
-                        } else {
-                          print('Has not Permission!!!');
-                        }
-                        var dir = await DownloadsPath.downloadsDirectory();
-                        print('Dir: $dir');
-                        /*if (!Directory("${dir!.path}").existsSync()) {
-                          Directory("${dir.path}").createSync(recursive: true);
-                        }*/
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TopAppBarBack(info: widget.info),
+              const SizedBox(height: 30),
+              const Text(
+                'Límite inferior',
+                style: TextStyle(color: Colors.white, fontSize: kFontSize),
+              ),
+              const SizedBox(height: 15),
+              CustomFieldText(textEditingController: infTextEditingController),
+              const SizedBox(height: 15),
+              const Text(
+                'Límite superior',
+                style: TextStyle(color: Colors.white, fontSize: kFontSize),
+              ),
+              const SizedBox(height: 15),
+              CustomFieldText(textEditingController: supTextEditingController),
+              const SizedBox(height: 45),
+              //const _SaveWithLimits(),
+              //const SizedBox(height: 50),
+              const _OpenInBrowser(),
+              const SizedBox(height: 50),
+              //const _OpenInWebView(),
+              //const SizedBox(height: 50),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Colors.yellowAccent,
+                        borderRadius: BorderRadius.circular(15)),
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    child: IconButton(
+                        onPressed: () async {
+                          isDownload = true;
+                          ///Ver aca
+                          var hasStoragePermission =
+                          await Permission.manageExternalStorage.isGranted;
+                          if (!hasStoragePermission) {
+                            final status = await Permission.manageExternalStorage
+                                .request()
+                                .isGranted;
+                            //hasStoragePermission = status.isGranted;
+                            print('Has Permission');
+                          } else {
+                            print('Has not Permission!!!');
+                          }
+                          var dir = await DownloadsPath.downloadsDirectory();
+                          print('Dir: $dir');
+                          /*if (!Directory("${dir!.path}").existsSync()) {
+                            Directory("${dir.path}").createSync(recursive: true);
+                          }*/
 
-                        final Dio _dio = Dio();
-                        //var dir = await getApplicationDocumentsDirectory();
-                        String? downloadsDirectoryPath =
-                            (await DownloadsPath.downloadsDirectory())?.path;
-                        print('DownloadsPath: $downloadsDirectoryPath');
-                        String address =
-                            'http://192.168.4.1/downloadFile.html?inf=${infTextEditingController.text}&sup=${supTextEditingController.text}';
+                          final Dio _dio = Dio();
+                          //var dir = await getApplicationDocumentsDirectory();
+                          String? downloadsDirectoryPath =
+                              (await DownloadsPath.downloadsDirectory())?.path;
+                          print('DownloadsPath: $downloadsDirectoryPath');
+                          String address =
+                              'http://192.168.4.1/downloadFile.html?inf=${infTextEditingController.text}&sup=${supTextEditingController.text}';
 
-                        String fileName = 'EM${widget.info.em!.toUpperCase()}_${DateFormat('yyyyMMdd').format(DateTime.now())}.raw';
+                          String fileName = 'EM${widget.info.em!.toUpperCase()}_${DateFormat('yyyyMMdd').format(DateTime.now())}.raw';
 
-                        final response = await _dio.download(
-                          address,
-                          '$downloadsDirectoryPath/$fileName',
-                          onReceiveProgress: (received, total) async {
-                            print('Recibido: ${received}, Total: ${total}');
-                            if (total != -1) {
-                              debugPrint(
-                                  (received / total * 100).toStringAsFixed(0) +
-                                      "%");
-                              showAlertDialog('$downloadsDirectoryPath/$fileName',
-                                  '$downloadsDirectoryPath');
-                              print('Archivo guardado $downloadsDirectoryPath');
-                            }
-                          },
-                        );
-                      },
-                      icon: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset('lib/assets/icons/save.png',
-                              color: Colors.black),
-                          const SizedBox(width: 10),
-                          const Text('downloadFile',
-                              style: TextStyle(
-                                  fontSize: 24,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold))
-                        ],
-                      )),
+                          final response = await _dio.download(
+                            address,
+                            '$downloadsDirectoryPath/$fileName',
+                            onReceiveProgress: (received, total) async {
+                              print('Recibido: ${received}, Total: ${total}');
+                              setState(() {
+                                receivedData = received/total;
+                              });
+                              if (total != -1) {
+                                debugPrint(
+                                    (received / total * 100).toStringAsFixed(0) +
+                                        "%");
+                              }
+                              if(received/total == 1){
+                                Future.delayed(Duration(seconds: 1), () async {
+                                 isDownload = false;
+                                 showAlertDialog('$downloadsDirectoryPath/$fileName',
+                                     '$downloadsDirectoryPath');
+                                 print('Archivo guardado $downloadsDirectoryPath');
+                                 setState(() {
+
+                                 });
+                                });
+
+                              }
+                            },
+                          );
+                        },
+                        icon: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset('lib/assets/icons/save.png',
+                                color: Colors.black),
+                            const SizedBox(width: 10),
+                            const Text('downloadFile',
+                                style: TextStyle(
+                                    fontSize: 24,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold))
+                          ],
+                        )),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 50),
+              isDownload? Center(
+                child: CircularPercentIndicator(
+                  backgroundColor: Colors.white,
+                  progressColor: Colors.yellowAccent,
+                  radius: 60.0,
+                  lineWidth: 7.0,
+                  percent: receivedData,
+                  center: Text("${receivedData*100}%", style: TextStyle(fontSize: 24, color: Colors.white),),
                 ),
-              ],
-            ),
-          ],
+              ):Container()
+            ],
+          ),
         ),
       ),
     );
   }
 
-  void _OpenWithSystemBrowser() {
-    InAppBrowser.openWithSystemBrowser(
-        url: Uri.parse('http://192.168.4.1/confDownload.html'));
-  }
+
 
   Future<void> checkPermission() async {
     var hasStoragePermission = await Permission.storage.isGranted;
@@ -271,6 +237,90 @@ class _DownloadPageState extends State<DownloadPage> {
             ],
           );
         });
+  }
+}
+
+class _OpenInWebView extends StatelessWidget {
+  const _OpenInWebView({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+              color: Colors.yellowAccent,
+              borderRadius: BorderRadius.circular(15)),
+          width: MediaQuery.of(context).size.width * 0.5,
+          child: IconButton(
+              onPressed: () async {
+                Navigator.push(
+                  context,
+                  PageTransition(
+                      type: PageTransitionType.rightToLeft,
+                      child: WebViewPage(),
+                      inheritTheme: true,
+                      ctx: context),
+                );
+              },
+              icon: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset('lib/assets/icons/save.png',
+                      color: Colors.black),
+                  const SizedBox(width: 10),
+                  const Text('Abrir Web',
+                      style: TextStyle(
+                          fontSize: 24,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold))
+                ],
+              )),
+        ),
+      ],
+    );
+  }
+}
+
+class _OpenInBrowser extends StatelessWidget {
+  const _OpenInBrowser({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+              color: Colors.yellowAccent,
+              borderRadius: BorderRadius.circular(15)),
+          width: MediaQuery.of(context).size.width * 0.5,
+          child: IconButton(
+              onPressed: () async {
+                InAppBrowser.openWithSystemBrowser(
+                    url: Uri.parse('http://192.168.4.1/confDownload.html'));
+              },
+              icon: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset('lib/assets/icons/save.png',
+                      color: Colors.black),
+                  const SizedBox(width: 10),
+                  const Text('En Browser',
+                      style: TextStyle(
+                          fontSize: 24,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold))
+                ],
+              )),
+        ),
+      ],
+    );
   }
 }
 

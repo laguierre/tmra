@@ -53,6 +53,7 @@ dependencies:
   share_plus: ^6.3.1
   filesystem_picker: ^3.1.0
   intl: ^0.18.0
+  percent_indicator: ^4.2.3
 
 
 dev_dependencies:

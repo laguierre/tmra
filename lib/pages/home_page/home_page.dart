@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:tmra/constants.dart';
@@ -6,6 +7,8 @@ import 'package:tmra/models/sensors_type.dart';
 import 'package:tmra/pages/download_page/download_page.dart';
 import 'package:tmra/pages/info_page/info_page.dart';
 import 'package:tmra/services/services_sensors.dart';
+
+import 'home_page_widgets.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key, required this.wifiName}) : super(key: key);
@@ -31,6 +34,7 @@ class _HomePageState extends State<HomePage> {
     getSensorInfo();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,7 +50,7 @@ class _HomePageState extends State<HomePage> {
             },
             child: sensors.isNotEmpty
                 ? Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
+                    padding: const EdgeInsets.fromLTRB(kPadding, 50, kPadding, kPadding),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -55,18 +59,6 @@ class _HomePageState extends State<HomePage> {
                           color: Colors.white,
                         ),
                         const SizedBox(height: 10),
-                        /*InfoConfig(
-                        title: 'Channel Used [0]: ',
-                        value: info.channelUsed![0],
-                        size: kFontSize,
-                        icon: settingsIcon,
-                      ),
-                      InfoConfig(
-                        title: 'Channel Used [1]: ',
-                        value: info.channelUsed![1],
-                        size: kFontSize,
-                        icon: settingsIcon,
-                      ),*/
                         InfoConfig(
                           title: 'Batería: ',
                           value: '${info.tensionDeBateria}V',
@@ -144,7 +136,7 @@ class _HomePageState extends State<HomePage> {
           sensorType.imageSensor = sensorsImagesList[2];
           sensorType.variableName.add('Dirección del viento');
           sensorType.variableValue.add('${info.channels![i].valor!}°');
-          sensorType.fontSize = 18;
+          //sensorType.fontSize = 18;
           break;
         case '4':
           sensorType.variableName.add('Intensidad del viento');
@@ -177,7 +169,7 @@ class _HomePageState extends State<HomePage> {
           sensorType.imageSensor = sensorsImagesList[5];
           sensorType.variableName.add('Nivel freático | Altura del arroyo');
           sensorType.variableValue.add('${info.channels![i].valor!} mbns|mts');
-          sensorType.kFactorContainer = 0.235;
+          sensorType.kFactorContainer = 0.230;
           break;
         case '9':
           sensorType.variableName.add('Temperatura del agua');
@@ -198,7 +190,7 @@ class _HomePageState extends State<HomePage> {
           sensorType.imageSensor = sensorsImagesList[7];
           sensorType.variableName.add('Piranómetro Sup. SW');
           sensorType.variableValue.add('${info.channels![i].valor!} W/m2');
-          sensorType.kFactorContainer = 0.485;
+          sensorType.kFactorContainer = 0.52;
           break;
         case '12':
           sensorType.variableName.add('Piranómetro Inf. SW');
@@ -231,7 +223,7 @@ class _HomePageState extends State<HomePage> {
           sensorType.imageSensor = sensorsImagesList[9];
           sensorType.variableName.add('Permitividad: ');
           sensorType.variableValue.add(info.channels![i].valor!);
-          sensorType.kFactorContainer = 0.39;
+          sensorType.kFactorContainer = 0.41;
           break;
         case '18':
           sensorType.variableName.add('Cont. volumétrico: ');
@@ -252,7 +244,7 @@ class _HomePageState extends State<HomePage> {
           sensorType.imageSensor = sensorsImagesList[10];
           sensorType.variableName.add('Incidente NI (NI): ');
           sensorType.variableValue.add('${info.channels![i].valor!} W/m2');
-          sensorType.fontSize = 24;
+          //sensorType.fontSize = 24;
           break;
         case '22':
           sensorType.variableName.add('Incidente RED (NI): ');
@@ -262,7 +254,7 @@ class _HomePageState extends State<HomePage> {
         case '23':
           sensorType = SensorType();
           sensorType.sensorName = 'SNR-NR';
-          sensorType.fontSize = 24;
+          //sensorType.fontSize = 24;
           sensorType.imageSensor = sensorsImagesList[10];
           sensorType.variableName.add('Incidente NIR (NR): ');
           sensorType.variableValue.add('${info.channels![i].valor!} W/m2');
@@ -328,7 +320,7 @@ class _HomePageState extends State<HomePage> {
         case '34':
           sensorType = SensorType();
           sensorType.sensorName = 'CSIM11';
-          sensorType.fontSize = 24;
+          //sensorType.fontSize = 24;
           sensorType.imageSensor = sensorsImagesList[14];
           sensorType.variableName.add('ORP: ');
           sensorType.variableValue.add('${info.channels![i].valor!} mV');
@@ -344,94 +336,7 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class SensorCard extends StatelessWidget {
-  const SensorCard({Key? key, required this.info, required this.index})
-      : super(key: key);
-  final SensorType info;
-  final int index;
 
-  @override
-  Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height * info.kFactorContainer;
-    double width = MediaQuery.of(context).size.width * 0.2;
-    return Stack(
-      alignment: Alignment.centerLeft,
-      children: [
-        Container(
-          margin:
-              const EdgeInsets.only(top: 10, bottom: 20, left: 97, right: 5),
-          height: height * 0.9,
-          decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                spreadRadius: 5,
-                blurRadius: 7,
-                offset: const Offset(1, 3), // changes position of shadow
-              ),
-            ],
-            border: Border.all(
-              color: Colors.grey,
-              width: height * (0.4 - 0.38),
-            ),
-            borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(0),
-                bottomLeft: Radius.circular(35),
-                topRight: Radius.circular(35),
-                bottomRight: Radius.circular(0)),
-            color: Colors.white,
-          ),
-        ),
-        Positioned(
-            left: 0,
-            bottom: 0,
-            top: 0,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Image.asset(info.imageSensor,
-                    height: height * 0.5, width: width, fit: BoxFit.contain),
-                const SizedBox(height: 10),
-                Text(
-                  info.sensorName,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: info.fontSize),
-                ),
-              ],
-            )),
-        Positioned(
-            left: 120,
-            top: 25,
-            right: 0,
-            bottom: 0,
-            child: ListView.builder(
-              padding: const EdgeInsets.only(top: 0),
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: info.variableName.length,
-              itemBuilder: (BuildContext context, int index) {
-                return RichText(
-                    text: TextSpan(
-                        text: '${info.variableName[index]} ',
-                        style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.normal,
-                            fontSize: 21),
-                        children: [
-                      TextSpan(
-                          text: '\n${info.variableValue[index]}\n',
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 19))
-                    ]));
-              },
-            )),
-      ],
-    );
-  }
-}
 
 class TopAppBar extends StatelessWidget {
   const TopAppBar({
@@ -513,15 +418,17 @@ class InfoConfig extends StatelessWidget {
         children: [
           if (icon != '') Image.asset(icon, color: color, height: 30),
           if (icon != '') const SizedBox(width: 15),
-          RichText(
-              text: TextSpan(children: [
-            TextSpan(
-                text: title, style: TextStyle(color: color, fontSize: size)),
-            TextSpan(
-                text: value,
-                style: TextStyle(
-                    color: color, fontSize: size, fontWeight: FontWeight.bold)),
-          ]))
+          AutoSizeText.rich(
+              TextSpan(children: [
+                TextSpan(text: title, style: TextStyle(color: color)),
+                TextSpan(
+                    text: value,
+                    style:
+                        TextStyle(color: color, fontWeight: FontWeight.bold)),
+              ]),
+              minFontSize: size - 2,
+              maxFontSize: size,
+          stepGranularity: 0.1,)
         ],
       ),
     );

@@ -54,6 +54,7 @@ dependencies:
   filesystem_picker: ^3.1.0
   intl: ^0.18.0
   percent_indicator: ^4.2.3
+  auto_size_text: ^3.0.0
 
 
 dev_dependencies:

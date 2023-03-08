@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:filesystem_picker/filesystem_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:lecle_downloads_path_provider/lecle_downloads_path_provider.dart';
@@ -60,9 +61,9 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
       if (isLocationServiceOn) {
         wifiName = await info.getWifiName();
         isConnectedESP = wifiName!.contains('EM') ||
-            wifiName!.contains('Est') ||
-            wifiName!.contains('And');
-        setState(() {});
+            wifiName!.contains('Est')
+            || wifiName!.contains('And')
+            ;setState(() {});
       } else {
         debugPrint('Location Service is not enabled');
       }
@@ -101,11 +102,13 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
                           decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(15)),
-                          child: const Text(
+                          child: const AutoSizeText(
                             'Buscar a una red Estacion xx',
+                            maxLines: 1,
+                            maxFontSize: kFontSize + 1,
+                            minFontSize: kFontSize - 3,
                             style: TextStyle(
                                 color: Colors.black,
-                                fontSize: kFontSize + 1,
                                 fontWeight: FontWeight.bold),
                           ),
                         ),
@@ -124,7 +127,7 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
             const Spacer(),
             Row(
               children: [
-                const  SizedBox(width: 20),
+                const SizedBox(width: 20),
                 GestureDetector(
                   child: Image.asset(
                     sharingIcon,

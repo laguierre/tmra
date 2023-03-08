@@ -1,5 +1,6 @@
 const urlBase = '192.168.4.1';
 const kFontSize = 19.0;
+const kPadding = 20.0;
 
 List<String> sensorsImagesList = [
   'lib/assets/images/sensors/pmb25.png',        //0 *

@@ -12,6 +12,7 @@ import 'package:lecle_downloads_path_provider/lecle_downloads_path_provider.dart
 import 'package:page_transition/page_transition.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:tmra/common.dart';
@@ -32,7 +33,8 @@ class DownloadPage extends StatefulWidget {
 class _DownloadPageState extends State<DownloadPage> {
   late TextEditingController infTextEditingController;
   late TextEditingController supTextEditingController;
-  double receivedData = 0;
+  double receivedDataPercent = 0.0;
+  int receivedData = 0, totalData = 0;
   bool isDownload = false;
 
   @override
@@ -126,7 +128,7 @@ class _DownloadPageState extends State<DownloadPage> {
                               'http://192.168.4.1/downloadFile.html?inf=${infTextEditingController.text}&sup=${supTextEditingController.text}';
 
                           String fileName =
-                              'EM${widget.info.em!.toUpperCase()}_${DateFormat('yyyyMMdd').format(DateTime.now())}.raw';
+                              'EM${widget.info.em!.toUpperCase()}_${DateFormat('yyyyMMdd').format(DateTime.now())}_${infTextEditingController.text}_${supTextEditingController.text}.raw';
 
                           final response = await _dio.download(
                             address,
@@ -134,15 +136,18 @@ class _DownloadPageState extends State<DownloadPage> {
                             onReceiveProgress: (received, total) async {
                               print('Recibido: ${received}, Total: ${total}');
                               setState(() {
-                                receivedData = received / total;
+                                receivedDataPercent = received / total;
+                                receivedData = received;
+                                totalData = total;
                               });
                               if (total != -1) {
-                                debugPrint((received / total * 100)
+                                debugPrint((receivedDataPercent * 100)
                                         .toStringAsFixed(0) +
                                     "%");
                               }
                               if (received / total == 1) {
-                                Future.delayed(Duration(seconds: 1), () async {
+                                Future.delayed(const Duration(seconds: 1),
+                                    () async {
                                   isDownload = false;
                                   showAlertDialog(
                                       '$downloadsDirectoryPath/$fileName',
@@ -171,25 +176,13 @@ class _DownloadPageState extends State<DownloadPage> {
                   ),
                 ],
               ),
-              const SizedBox(height: 50),
+              const SizedBox(height: 20),
               isDownload
-                  ? Center(
-                      child: CircularPercentIndicator(
-                        backgroundColor: Colors.white,
-                        progressColor: Colors.yellowAccent,
-                        radius: 60.0,
-                        lineWidth: 7.0,
-                        percent: receivedData,
-                        center: Text(
-                          "${(receivedData * 100).toStringAsFixed(1)}%",
-                          style: TextStyle(
-                              fontSize: 24,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    )
-                  : Container()
+                  ? ProgressBar(
+                      receivedDataPercent: receivedDataPercent,
+                      receivedData: receivedData,
+                      totalData: totalData)
+                  : Container(),
             ],
           ),
         ),
@@ -247,6 +240,46 @@ class _DownloadPageState extends State<DownloadPage> {
   }
 }
 
+class ProgressBar extends StatelessWidget {
+  const ProgressBar({
+    super.key,
+    required this.receivedDataPercent,
+    required this.receivedData,
+    required this.totalData,
+  });
+
+  final double receivedDataPercent;
+  final int receivedData;
+  final int totalData;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        LinearPercentIndicator(
+          padding: EdgeInsets.all(0),
+          animateFromLastPercent: true,
+          barRadius: const Radius.circular(20),
+          lineHeight: 15,
+          percent: receivedDataPercent,
+          backgroundColor: Colors.white,
+          progressColor: Colors.yellowAccent,
+        ),
+        const SizedBox(height: 20),
+        Text("Porcentaje: ${receivedDataPercent * 100}%",
+            style: const TextStyle(
+                fontSize: 18,
+                color: Colors.white,
+                fontWeight: FontWeight.bold)),
+        const SizedBox(height: 10),
+        Text("Recibido: ${receivedData} / Total: ${totalData}",
+            style: const TextStyle(fontSize: 18, color: Colors.white)),
+      ],
+    );
+  }
+}
+
 class _OpenInWebView extends StatelessWidget {
   const _OpenInWebView({
     super.key,
@@ -268,7 +301,7 @@ class _OpenInWebView extends StatelessWidget {
                   context,
                   PageTransition(
                       type: PageTransitionType.rightToLeft,
-                      child: WebViewPage(),
+                      child: const WebViewPage(),
                       inheritTheme: true,
                       ctx: context),
                 );
@@ -357,7 +390,7 @@ class _SaveWithLimits extends StatelessWidget {
                     ) // produces a request object
                     .then((request) => request.close()) // sends the request
                     .then((response) => response
-                        .transform(Utf8Decoder())
+                        .transform(const Utf8Decoder())
                         .listen(print)); // transforms and prints the response
                 var response = await request.cancel();
                 //var response = request.close();

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:tmra/constants.dart';
@@ -11,22 +13,72 @@ class SensorCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height * info.kFactorContainer;
+    //double height = MediaQuery.of(context).size.height * info.kFactorContainer;
     double width = MediaQuery.of(context).size.width * 0.2;
-    double ratio = 0.35;
+    double widthScreen = MediaQuery.of(context).size.width;
+    double heightScreen = MediaQuery.of(context).size.height;
+    double ratio = 0.32;
+
+    double dg = sqrt((widthScreen * widthScreen) + (heightScreen * heightScreen));
+    double height = 0.10* dg * info.lines;
     return Row(
       children: [
-        Container(
-          height: 100,
+        SizedBox(
+          height: height,
           width: MediaQuery.of(context).size.width * ratio,
-          child: _ImageSensor(info: info, height: height, width: width),
+          child: _ImageSensor(info: info, height: 0.18 * dg, width: width),
         ),
         Container(
-          height: 100,
-          width: MediaQuery.of(context).size.width * (1-ratio)-2*kPadding,
-          color: Colors.blue,
+          margin: const EdgeInsets.only(top: 5, bottom: 15, left: 0, right: 0),
+          padding: EdgeInsets.only(top: heightScreen * 0.03, left: widthScreen * 0.04),
+          height: height,
+          width: MediaQuery.of(context).size.width * (1 - ratio) - kPadding,
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 5,
+                blurRadius: 7,
+                offset: const Offset(1, 3), // changes position of shadow
+              ),
+            ],
+            border: Border.all(
+              color: Colors.grey,
+              width: height * (0.4 - 0.38),
+            ),
+            borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(0),
+                bottomLeft: Radius.circular(35),
+                topRight: Radius.circular(35),
+                bottomRight: Radius.circular(0)),
+            color: Colors.white,
+          ),
+          child: ListView.builder(
+            padding: const EdgeInsets.only(top: 0),
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: info.variableName.length,
+            itemBuilder: (BuildContext context, int index) {
+              return AutoSizeText.rich(
+                TextSpan(
+                    text: '${info.variableName[index]} ',
+                    style:  TextStyle(
+                      fontSize: 0.019*dg,
+                      color: Colors.black,
+                      fontWeight: FontWeight.normal,
+                    ),
+                    children: [
+                      TextSpan(
+                          text: '\n${info.variableValue[index]}\n',
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                    ]),
+                maxFontSize: 24,
+                minFontSize: 17,
+
+                stepGranularity: 0.1,
+              );
+            },
+          ),
         ),
-        SizedBox(height: 50),
       ],
     ); //_WithStack(info: info, height: height, width: width);
   }
@@ -134,6 +186,42 @@ class _ImageSensor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Image.asset(info.imageSensor,
+            height: height * 0.5, width: width, fit: BoxFit.contain),
+        const SizedBox(height: 20),
+        AutoSizeText(
+          info.sensorName,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: info.fontSize),
+          minFontSize: 16,
+          maxFontSize: 24,
+          stepGranularity: 0.1,
+        ),
+      ],
+    );
+  }
+}
+/*
+class _ImageSensor extends StatelessWidget {
+  const _ImageSensor({
+    required this.info,
+    required this.height,
+    required this.width,
+  });
+
+  final SensorType info;
+  final double height;
+  final double width;
+
+  @override
+  Widget build(BuildContext context) {
     return Positioned(
         left: 0,
         bottom: 0,
@@ -161,3 +249,4 @@ class _ImageSensor extends StatelessWidget {
         ));
   }
 }
+*/

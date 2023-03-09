@@ -5,4 +5,5 @@ class SensorType {
   List<String> variableValue = [];
   double fontSize = 25;
   double kFactorContainer = 0.20;
+  double lines = 2.0;
 }

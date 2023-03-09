@@ -49,46 +49,49 @@ class _HomePageState extends State<HomePage> {
               //Future<void>.delayed(const Duration(seconds: 3));
             },
             child: sensors.isNotEmpty
-                ? Padding(
-                    padding: const EdgeInsets.fromLTRB(kPadding, 50, kPadding, kPadding),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        TopAppBar(info: info),
-                        const Divider(
-                          color: Colors.white,
+                ? Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(
+                            kPadding, 50, kPadding, kPadding),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            TopAppBar(info: info),
+                            const Divider(
+                              color: Colors.white,
+                            ),
+                            const SizedBox(height: 10),
+                            InfoConfig(
+                              title: 'Batería: ',
+                              value: '${info.tensionDeBateria}V',
+                              size: kFontSize,
+                              icon: batteryIcon,
+                            ),
+                            InfoConfig(
+                                title: 'Último valor grabado: ',
+                                value: info.logLastAddress!,
+                                size: kFontSize,
+                                icon: cpuIcon),
+                            InfoConfig(
+                                title: 'Time Stamp: ',
+                                value: info.timeStampUtc!,
+                                size: kFontSize,
+                                icon: clockIcon),
+                          ],
                         ),
-                        const SizedBox(height: 10),
-                        InfoConfig(
-                          title: 'Batería: ',
-                          value: '${info.tensionDeBateria}V',
-                          size: kFontSize,
-                          icon: batteryIcon,
-                        ),
-                        InfoConfig(
-                            title: 'Último valor grabado: ',
-                            value: info.logLastAddress!,
-                            size: kFontSize,
-                            icon: cpuIcon),
-                        InfoConfig(
-                            title: 'Time Stamp: ',
-                            value: info.timeStampUtc!,
-                            size: kFontSize,
-                            icon: clockIcon),
-                        Expanded(
-                          child: ListView.builder(
-                              padding:
-                                  const EdgeInsets.only(top: 10, bottom: 20),
-                              physics: const BouncingScrollPhysics(),
-                              itemCount:
-                                  sensors.length, //info.channels!.length,
-                              itemBuilder: (context, index) {
-                                return SensorCard(
-                                    info: sensors[index], index: index);
-                              }),
-                        )
-                      ],
-                    ),
+                      ),
+                      Expanded(
+                        child: ListView.builder(
+                            padding: const EdgeInsets.only(top: 0, bottom: 0, left: 5, right: 5),
+                            physics: const BouncingScrollPhysics(),
+                            itemCount: sensors.length, //info.channels!.length,
+                            itemBuilder: (context, index) {
+                              return SensorCard(
+                                  info: sensors[index], index: index);
+                            }),
+                      ),
+                    ],
                   )
                 : Center(
                     child: Column(
@@ -169,7 +172,8 @@ class _HomePageState extends State<HomePage> {
           sensorType.imageSensor = sensorsImagesList[5];
           sensorType.variableName.add('Nivel freático | Altura del arroyo');
           sensorType.variableValue.add('${info.channels![i].valor!} mbns|mts');
-          sensorType.kFactorContainer = 0.230;
+          sensorType.lines = 2.3;
+
           break;
         case '9':
           sensorType.variableName.add('Temperatura del agua');
@@ -190,7 +194,6 @@ class _HomePageState extends State<HomePage> {
           sensorType.imageSensor = sensorsImagesList[7];
           sensorType.variableName.add('Piranómetro Sup. SW');
           sensorType.variableValue.add('${info.channels![i].valor!} W/m2');
-          sensorType.kFactorContainer = 0.52;
           break;
         case '12':
           sensorType.variableName.add('Piranómetro Inf. SW');
@@ -207,6 +210,7 @@ class _HomePageState extends State<HomePage> {
         case '15':
           sensorType.variableName.add('Termistor');
           sensorType.variableValue.add('${info.channels![i].valor!}°C');
+          sensorType.lines = 4.5;
           sensors.add(sensorType);
           break;
         case '16':
@@ -223,7 +227,6 @@ class _HomePageState extends State<HomePage> {
           sensorType.imageSensor = sensorsImagesList[9];
           sensorType.variableName.add('Permitividad: ');
           sensorType.variableValue.add(info.channels![i].valor!);
-          sensorType.kFactorContainer = 0.41;
           break;
         case '18':
           sensorType.variableName.add('Cont. volumétrico: ');
@@ -236,6 +239,7 @@ class _HomePageState extends State<HomePage> {
         case '20':
           sensorType.variableName.add('Temp. suelo: ');
           sensorType.variableValue.add('${info.channels![i].valor!}°C');
+          sensorType.lines = 3.7;
           sensors.add(sensorType);
           break;
         case '21':
@@ -244,7 +248,6 @@ class _HomePageState extends State<HomePage> {
           sensorType.imageSensor = sensorsImagesList[10];
           sensorType.variableName.add('Incidente NI (NI): ');
           sensorType.variableValue.add('${info.channels![i].valor!} W/m2');
-          //sensorType.fontSize = 24;
           break;
         case '22':
           sensorType.variableName.add('Incidente RED (NI): ');
@@ -254,7 +257,6 @@ class _HomePageState extends State<HomePage> {
         case '23':
           sensorType = SensorType();
           sensorType.sensorName = 'SNR-NR';
-          //sensorType.fontSize = 24;
           sensorType.imageSensor = sensorsImagesList[10];
           sensorType.variableName.add('Incidente NIR (NR): ');
           sensorType.variableValue.add('${info.channels![i].valor!} W/m2');
@@ -290,7 +292,6 @@ class _HomePageState extends State<HomePage> {
           sensorType.imageSensor = sensorsImagesList[9];
           sensorType.variableName.add('Permitividad: ');
           sensorType.variableValue.add(info.channels![i].valor!);
-          sensorType.kFactorContainer = 0.39;
           break;
         case '29':
           sensorType.variableName.add('Cont. volumetrico: ');
@@ -303,6 +304,7 @@ class _HomePageState extends State<HomePage> {
         case '31':
           sensorType.variableName.add('Temp. suelo: ');
           sensorType.variableValue.add('${info.channels![i].valor!}°C');
+          sensorType.lines = 3.7;
           sensors.add(sensorType);
           break;
         case '32':
@@ -320,7 +322,6 @@ class _HomePageState extends State<HomePage> {
         case '34':
           sensorType = SensorType();
           sensorType.sensorName = 'CSIM11';
-          //sensorType.fontSize = 24;
           sensorType.imageSensor = sensorsImagesList[14];
           sensorType.variableName.add('ORP: ');
           sensorType.variableValue.add('${info.channels![i].valor!} mV');
@@ -335,8 +336,6 @@ class _HomePageState extends State<HomePage> {
     return sensors;
   }
 }
-
-
 
 class TopAppBar extends StatelessWidget {
   const TopAppBar({
@@ -413,22 +412,23 @@ class InfoConfig extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 7),
       alignment: Alignment.centerLeft,
+width: double.infinity,
       height: 40,
       child: Row(
         children: [
           if (icon != '') Image.asset(icon, color: color, height: 30),
           if (icon != '') const SizedBox(width: 15),
           AutoSizeText.rich(
-              TextSpan(children: [
-                TextSpan(text: title, style: TextStyle(color: color)),
-                TextSpan(
-                    text: value,
-                    style:
-                        TextStyle(color: color, fontWeight: FontWeight.bold)),
-              ]),
-              minFontSize: size - 2,
-              maxFontSize: size,
-          stepGranularity: 0.1,)
+            TextSpan(children: [
+              TextSpan(text: title, style: TextStyle(color: color)),
+              TextSpan(
+                  text: value,
+                  style: TextStyle(color: color, fontWeight: FontWeight.bold)),
+            ]),
+            minFontSize: size - 1,
+            maxFontSize: size,
+            stepGranularity: 0.1,
+          )
         ],
       ),
     );

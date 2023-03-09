@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
@@ -37,6 +39,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    double heightScreen = MediaQuery.of(context).size.height;
+    double widthtScreen = MediaQuery.of(context).size.width;
+    double dg = sqrt((widthtScreen * widthtScreen) + (heightScreen * heightScreen));
     return Scaffold(
         backgroundColor: Colors.black,
         extendBody: true,
@@ -76,7 +81,7 @@ class _HomePageState extends State<HomePage> {
                             InfoConfig(
                                 title: 'Time Stamp: ',
                                 value: info.timeStampUtc!,
-                                size: kFontSize,
+                                size: kFontSize-1,
                                 icon: clockIcon),
                           ],
                         ),
@@ -426,7 +431,7 @@ width: double.infinity,
                   style: TextStyle(color: color, fontWeight: FontWeight.bold)),
             ]),
             minFontSize: size - 1,
-            maxFontSize: size,
+           maxFontSize: size,
             stepGranularity: 0.1,
           )
         ],

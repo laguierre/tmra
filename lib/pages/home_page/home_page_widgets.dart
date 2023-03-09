@@ -19,18 +19,20 @@ class SensorCard extends StatelessWidget {
     double heightScreen = MediaQuery.of(context).size.height;
     double ratio = 0.32;
 
-    double dg = sqrt((widthScreen * widthScreen) + (heightScreen * heightScreen));
-    double height = 0.10* dg * info.lines;
+    double dg =
+        sqrt((widthScreen * widthScreen) + (heightScreen * heightScreen));
+    double height = 0.10 * dg * info.lines;
     return Row(
       children: [
         SizedBox(
           height: height,
           width: MediaQuery.of(context).size.width * ratio,
-          child: _ImageSensor(info: info, height: 0.18 * dg, width: width),
+          child: _ImageSensor(info: info, height: 0.17 * dg, width: width),
         ),
         Container(
           margin: const EdgeInsets.only(top: 5, bottom: 15, left: 0, right: 0),
-          padding: EdgeInsets.only(top: heightScreen * 0.03, left: widthScreen * 0.04),
+          padding: EdgeInsets.only(
+              top: heightScreen * 0.03, left: widthScreen * 0.04),
           height: height,
           width: MediaQuery.of(context).size.width * (1 - ratio) - kPadding,
           decoration: BoxDecoration(
@@ -46,11 +48,11 @@ class SensorCard extends StatelessWidget {
               color: Colors.grey,
               width: height * (0.4 - 0.38),
             ),
-            borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(0),
-                bottomLeft: Radius.circular(35),
-                topRight: Radius.circular(35),
-                bottomRight: Radius.circular(0)),
+            borderRadius: BorderRadius.only(
+                topLeft: const Radius.circular(0),
+                bottomLeft: Radius.circular(35 * dg * 0.001),
+                topRight: Radius.circular(35 * dg * 0.001),
+                bottomRight: const Radius.circular(0)),
             color: Colors.white,
           ),
           child: ListView.builder(
@@ -61,8 +63,8 @@ class SensorCard extends StatelessWidget {
               return AutoSizeText.rich(
                 TextSpan(
                     text: '${info.variableName[index]} ',
-                    style:  TextStyle(
-                      fontSize: 0.019*dg,
+                    style: TextStyle(
+                      fontSize: 0.019 * dg,
                       color: Colors.black,
                       fontWeight: FontWeight.normal,
                     ),
@@ -73,7 +75,6 @@ class SensorCard extends StatelessWidget {
                     ]),
                 maxFontSize: 24,
                 minFontSize: 17,
-
                 stepGranularity: 0.1,
               );
             },

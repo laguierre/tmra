@@ -21,14 +21,10 @@ class SensorCard extends StatelessWidget {
 
     double dg =
         sqrt((widthScreen * widthScreen) + (heightScreen * heightScreen));
-    double height = 0.10 * dg * info.lines;
+    double height = dg < 750 ? 0.10 * dg * info.lines : 0.079 * dg * info.lines;
+    print(dg);
     return Row(
       children: [
-        /*SizedBox(
-          height: height,
-          width: MediaQuery.of(context).size.width * ratio,
-          child: _ImageSensor(info: info, height: 0.17 * dg, width: width),
-        ),*/
         ConstrainedBox(
           constraints: BoxConstraints(
             minHeight: 100,
@@ -37,7 +33,7 @@ class SensorCard extends StatelessWidget {
           ),
           child: _ImageSensor(
             info: info,
-            //height: 0.17 * dg,
+            height: 0.17 * dg,
             //width: width,
           ),
         ),
@@ -45,33 +41,38 @@ class SensorCard extends StatelessWidget {
           constraints: BoxConstraints(
             minHeight: 100,
             maxHeight: height,
-            maxWidth: MediaQuery.of(context).size.width *  (1 - ratio) - kPadding,
-            minWidth: MediaQuery.of(context).size.width * (1 - ratio) - kPadding,
+            maxWidth:
+                MediaQuery.of(context).size.width * (1 - ratio) - kPadding,
+            minWidth:
+                MediaQuery.of(context).size.width * (1 - ratio) - kPadding,
           ),
           child: Container(
-            margin: const EdgeInsets.only(top: 5, bottom: 15, left: 0, right: 0),
+            alignment: Alignment.center,
             padding: EdgeInsets.only(
-                top: 20,),//heightScreen * 0.03, left: widthScreen * 0.04),
+              top: heightScreen * 0.03,
+              left: widthScreen * 0.04,
+              right: widthScreen * 0.04,
+            ),
             //height: height,
             //width: MediaQuery.of(context).size.width * (1 - ratio) - kPadding,
             decoration: BoxDecoration(
               boxShadow: [
                 BoxShadow(
                   color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 5,
-                  blurRadius: 7,
+                  spreadRadius: 7,
+                  blurRadius: 13,
                   offset: const Offset(1, 3), // changes position of shadow
                 ),
               ],
-              border: Border.all(
+              /*border: Border.all(
                 color: Colors.grey,
                 width: height * (0.4 - 0.38),
-              ),
+              ),*/
               borderRadius: BorderRadius.only(
-                  topLeft: const Radius.circular(0),
-                  bottomLeft: Radius.circular(35 * dg * 0.001),
-                  topRight: Radius.circular(35 * dg * 0.001),
-                  bottomRight: const Radius.circular(0)),
+                  topLeft: Radius.circular(25 * dg * 0.001),
+                  bottomLeft: Radius.circular(25 * dg * 0.001),
+                  topRight: Radius.circular(25 * dg * 0.001),
+                  bottomRight: Radius.circular(25 * dg * 0.001)),
               color: Colors.white,
             ),
             child: ListView.builder(
@@ -83,16 +84,17 @@ class SensorCard extends StatelessWidget {
                   TextSpan(
                       text: '${info.variableName[index]} ',
                       style: TextStyle(
-                        fontSize: 0.019 * dg,
+                        //fontSize: 0.019 * dg,
                         color: Colors.black,
                         fontWeight: FontWeight.normal,
                       ),
                       children: [
                         TextSpan(
                             text: '\n${info.variableValue[index]}\n',
-                            style: const TextStyle(fontWeight: FontWeight.bold)),
+                            style:
+                                const TextStyle(fontWeight: FontWeight.bold)),
                       ]),
-                  maxFontSize: 24,
+                  maxFontSize: 28,
                   minFontSize: 17,
                   stepGranularity: 0.1,
                 );
@@ -156,6 +158,7 @@ class SensorCard extends StatelessWidget {
   }
 }
 
+/*
 class _WithStack extends StatelessWidget {
   const _WithStack({
     super.key,
@@ -175,7 +178,7 @@ class _WithStack extends StatelessWidget {
       children: [
         _ImageSensor(
           info: info,
-          //height: height,
+          height: height,
           //width: width,
         ),
         _CardContainer(height: height * 1.01),
@@ -212,7 +215,7 @@ class _WithStack extends StatelessWidget {
     );
   }
 }
-
+*/
 class _CardContainer extends StatelessWidget {
   const _CardContainer({
     required this.height,
@@ -252,13 +255,13 @@ class _CardContainer extends StatelessWidget {
 class _ImageSensor extends StatelessWidget {
   const _ImageSensor({
     required this.info,
-    //required this.height,
-   // required this.width,
+    required this.height,
+    // required this.width,
   });
 
   final SensorType info;
+  final double height;
 
-  // final double height;
   //final double width;
 
   @override
@@ -267,16 +270,13 @@ class _ImageSensor extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: Image.asset(
-            info.imageSensor,
-            //height: height * 0.5,
-            //width: width,
-            fit: BoxFit.scaleDown,
-          ),
+        Image.asset(
+          info.imageSensor,
+          height: height * 0.68,
+          //width: width,
+          fit: BoxFit.fitHeight,
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 10),
         AutoSizeText(
           info.sensorName,
           textAlign: TextAlign.center,
@@ -285,7 +285,7 @@ class _ImageSensor extends StatelessWidget {
               fontWeight: FontWeight.bold,
               fontSize: info.fontSize),
           minFontSize: 16,
-          maxFontSize: 23.5,
+          maxFontSize: 20,
           stepGranularity: 0.1,
         ),
       ],

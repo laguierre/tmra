@@ -90,12 +90,15 @@ class _HomePageState extends State<HomePage> {
                       Expanded(
                         child: ListView.builder(
                             padding: const EdgeInsets.only(
-                                top: 0, bottom: 0, left: 5, right: 5),
+                                top:0 , bottom: 0, left: 5, right: 5),
                             physics: const BouncingScrollPhysics(),
                             itemCount: sensors.length, //info.channels!.length,
                             itemBuilder: (context, index) {
-                              return SensorCard(
-                                  info: sensors[index], index: index);
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 10),
+                                child: SensorCard(
+                                    info: sensors[index], index: index),
+                              );
                             }),
                       ),
                     ],
@@ -362,6 +365,16 @@ class TopAppBar extends StatelessWidget {
                 fontSize: kFontSize + 4,
                 fontWeight: FontWeight.bold)),
         const Spacer(),
+        IconButton(
+            onPressed: () {
+              debugPrint('Actualizar hora');
+
+            },
+            icon: Image.asset(
+              reloadClockIcon,
+              color: Colors.white,
+            )),
+        const SizedBox(width: 10),
         IconButton(
             onPressed: () {
               Navigator.push(

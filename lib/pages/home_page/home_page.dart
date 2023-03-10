@@ -41,7 +41,8 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     double heightScreen = MediaQuery.of(context).size.height;
     double widthtScreen = MediaQuery.of(context).size.width;
-    double dg = sqrt((widthtScreen * widthtScreen) + (heightScreen * heightScreen));
+    double dg =
+        sqrt((widthtScreen * widthtScreen) + (heightScreen * heightScreen));
     return Scaffold(
         backgroundColor: Colors.black,
         extendBody: true,
@@ -81,14 +82,15 @@ class _HomePageState extends State<HomePage> {
                             InfoConfig(
                                 title: 'Time Stamp: ',
                                 value: info.timeStampUtc!,
-                                size: kFontSize-1,
+                                size: kFontSize - 1,
                                 icon: clockIcon),
                           ],
                         ),
                       ),
                       Expanded(
                         child: ListView.builder(
-                            padding: const EdgeInsets.only(top: 0, bottom: 0, left: 5, right: 5),
+                            padding: const EdgeInsets.only(
+                                top: 0, bottom: 0, left: 5, right: 5),
                             physics: const BouncingScrollPhysics(),
                             itemCount: sensors.length, //info.channels!.length,
                             itemBuilder: (context, index) {
@@ -417,7 +419,7 @@ class InfoConfig extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 7),
       alignment: Alignment.centerLeft,
-width: double.infinity,
+      width: double.infinity,
       height: 40,
       child: Row(
         children: [
@@ -431,7 +433,7 @@ width: double.infinity,
                   style: TextStyle(color: color, fontWeight: FontWeight.bold)),
             ]),
             minFontSize: size - 1,
-           maxFontSize: size,
+            maxFontSize: size,
             stepGranularity: 0.1,
           )
         ],

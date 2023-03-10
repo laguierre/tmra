@@ -24,12 +24,83 @@ class SensorCard extends StatelessWidget {
     double height = 0.10 * dg * info.lines;
     return Row(
       children: [
-        SizedBox(
+        /*SizedBox(
           height: height,
           width: MediaQuery.of(context).size.width * ratio,
           child: _ImageSensor(info: info, height: 0.17 * dg, width: width),
+        ),*/
+        ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: 100,
+            maxWidth: MediaQuery.of(context).size.width * ratio,
+            minWidth: MediaQuery.of(context).size.width * ratio,
+          ),
+          child: _ImageSensor(
+            info: info,
+            //height: 0.17 * dg,
+            //width: width,
+          ),
         ),
-        Container(
+        ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: 100,
+            maxHeight: height,
+            maxWidth: MediaQuery.of(context).size.width *  (1 - ratio) - kPadding,
+            minWidth: MediaQuery.of(context).size.width * (1 - ratio) - kPadding,
+          ),
+          child: Container(
+            margin: const EdgeInsets.only(top: 5, bottom: 15, left: 0, right: 0),
+            padding: EdgeInsets.only(
+                top: 20,),//heightScreen * 0.03, left: widthScreen * 0.04),
+            //height: height,
+            //width: MediaQuery.of(context).size.width * (1 - ratio) - kPadding,
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: const Offset(1, 3), // changes position of shadow
+                ),
+              ],
+              border: Border.all(
+                color: Colors.grey,
+                width: height * (0.4 - 0.38),
+              ),
+              borderRadius: BorderRadius.only(
+                  topLeft: const Radius.circular(0),
+                  bottomLeft: Radius.circular(35 * dg * 0.001),
+                  topRight: Radius.circular(35 * dg * 0.001),
+                  bottomRight: const Radius.circular(0)),
+              color: Colors.white,
+            ),
+            child: ListView.builder(
+              padding: const EdgeInsets.only(top: 0),
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: info.variableName.length,
+              itemBuilder: (BuildContext context, int index) {
+                return AutoSizeText.rich(
+                  TextSpan(
+                      text: '${info.variableName[index]} ',
+                      style: TextStyle(
+                        fontSize: 0.019 * dg,
+                        color: Colors.black,
+                        fontWeight: FontWeight.normal,
+                      ),
+                      children: [
+                        TextSpan(
+                            text: '\n${info.variableValue[index]}\n',
+                            style: const TextStyle(fontWeight: FontWeight.bold)),
+                      ]),
+                  maxFontSize: 24,
+                  minFontSize: 17,
+                  stepGranularity: 0.1,
+                );
+              },
+            ),
+          ),
+        ),
+        /*Container(
           margin: const EdgeInsets.only(top: 5, bottom: 15, left: 0, right: 0),
           padding: EdgeInsets.only(
               top: heightScreen * 0.03, left: widthScreen * 0.04),
@@ -79,7 +150,7 @@ class SensorCard extends StatelessWidget {
               );
             },
           ),
-        ),
+        ),*/
       ],
     ); //_WithStack(info: info, height: height, width: width);
   }
@@ -102,7 +173,11 @@ class _WithStack extends StatelessWidget {
     return Stack(
       alignment: Alignment.centerLeft,
       children: [
-        _ImageSensor(info: info, height: height, width: width),
+        _ImageSensor(
+          info: info,
+          //height: height,
+          //width: width,
+        ),
         _CardContainer(height: height * 1.01),
         Positioned(
             left: 120,
@@ -177,13 +252,14 @@ class _CardContainer extends StatelessWidget {
 class _ImageSensor extends StatelessWidget {
   const _ImageSensor({
     required this.info,
-    required this.height,
-    required this.width,
+    //required this.height,
+   // required this.width,
   });
 
   final SensorType info;
-  final double height;
-  final double width;
+
+  // final double height;
+  //final double width;
 
   @override
   Widget build(BuildContext context) {
@@ -191,8 +267,15 @@ class _ImageSensor extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Image.asset(info.imageSensor,
-            height: height * 0.5, width: width, fit: BoxFit.contain),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          child: Image.asset(
+            info.imageSensor,
+            //height: height * 0.5,
+            //width: width,
+            fit: BoxFit.scaleDown,
+          ),
+        ),
         const SizedBox(height: 20),
         AutoSizeText(
           info.sensorName,
@@ -202,7 +285,7 @@ class _ImageSensor extends StatelessWidget {
               fontWeight: FontWeight.bold,
               fontSize: info.fontSize),
           minFontSize: 16,
-          maxFontSize: 24,
+          maxFontSize: 23.5,
           stepGranularity: 0.1,
         ),
       ],

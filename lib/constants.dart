@@ -31,3 +31,6 @@ const adcIcon = 'lib/assets/icons/radio-waves.png';
 const nextIcon = 'lib/assets/icons/next.png';
 const sharingIcon = 'lib/assets/icons/sharing.png';
 const reloadClockIcon = 'lib/assets/icons/reload_clock.png';
+const webIcon = 'lib/assets/icons/web.png';
+const openFolderIcon = 'lib/assets/icons/open_folder.png';
+const reloadingIcon = 'lib/assets/icons/reloading.png';

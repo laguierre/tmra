@@ -1,13 +1,14 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:filesystem_picker/filesystem_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:lecle_downloads_path_provider/lecle_downloads_path_provider.dart';
+import 'package:flutter/services.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:tmra/common.dart';
 import 'package:tmra/constants.dart';
 import 'package:tmra/pages/home_page/home_page.dart';
@@ -25,12 +26,46 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
   String? wifiName = '';
   bool isConnectedESP = false;
   bool isShowNextPage = false;
+  ConnectivityResult connectionStatus = ConnectivityResult.none;
+  final Connectivity connectivity = Connectivity();
+  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
+  String textWiFi = 'Buscar a una red Estacion xx';
 
   @override
   void initState() {
-    WidgetsBinding.instance.addObserver(this);
-    _listenForPermissionStatus();
     super.initState();
+    initConnectivity();
+    _listenForPermissionStatus();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  Future<void> initConnectivity() async {
+    late ConnectivityResult result;
+    try {
+      result = await connectivity.checkConnectivity();
+      print('Resultado: $result');
+      if (result == ConnectivityResult.none ||
+          result == ConnectivityResult.mobile) {
+        textWiFi = 'Habilitar WiFi';
+        setState(() {});
+      } else {
+        textWiFi = 'Buscar a una red Estacion xx';
+      }
+    } on PlatformException catch (e) {
+      debugPrint('Couldn\'t check connectivity status: $e');
+      return;
+    }
+    if (!mounted) {
+      return Future.value(null);
+    }
+
+    return _updateConnectionStatus(result);
+  }
+
+  Future<void> _updateConnectionStatus(ConnectivityResult result) async {
+    setState(() {
+      connectionStatus = result;
+    });
   }
 
   @override
@@ -58,14 +93,19 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
     if (permissionStatus == PermissionStatus.granted) {
       bool isLocationServiceOn =
           await locationPermission.serviceStatus.isEnabled;
+
       if (isLocationServiceOn) {
         wifiName = await info.getWifiName();
-        isConnectedESP = wifiName!.contains('EM') ||
-            wifiName!.contains('Est')
-            || wifiName!.contains('And')
-            ;setState(() {});
-      } else {
-        debugPrint('Location Service is not enabled');
+        if (wifiName != null) {
+          debugPrint('Nombre WiFi: $wifiName');
+          isConnectedESP = wifiName!.contains('EM') ||
+              wifiName!.contains('Est') ||
+              wifiName!.contains('And');
+          setState(() {});
+        } else {
+          wifiName = 'WiFi desconocida';
+          setState(() {});
+        }
       }
     }
   }
@@ -102,8 +142,8 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
                           decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(15)),
-                          child: const AutoSizeText(
-                            'Buscar a una red Estacion xx',
+                          child: AutoSizeText(
+                            textWiFi,
                             maxLines: 1,
                             maxFontSize: kFontSize + 1,
                             minFontSize: kFontSize - 3,

@@ -23,7 +23,7 @@ class IntroPage extends StatefulWidget {
 
 class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
   final info = NetworkInfo();
-  String? wifiName = '';
+  String wifiName = 'WiFi desconocida';
   bool isConnectedESP = false;
   bool isShowNextPage = false;
   ConnectivityResult connectionStatus = ConnectivityResult.none;
@@ -34,38 +34,8 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    initConnectivity();
     _listenForPermissionStatus();
     WidgetsBinding.instance.addObserver(this);
-  }
-
-  Future<void> initConnectivity() async {
-    late ConnectivityResult result;
-    try {
-      result = await connectivity.checkConnectivity();
-      print('Resultado: $result');
-      if (result == ConnectivityResult.none ||
-          result == ConnectivityResult.mobile) {
-        textWiFi = 'Habilitar WiFi';
-        setState(() {});
-      } else {
-        textWiFi = 'Buscar a una red Estacion xx';
-      }
-    } on PlatformException catch (e) {
-      debugPrint('Couldn\'t check connectivity status: $e');
-      return;
-    }
-    if (!mounted) {
-      return Future.value(null);
-    }
-
-    return _updateConnectionStatus(result);
-  }
-
-  Future<void> _updateConnectionStatus(ConnectivityResult result) async {
-    setState(() {
-      connectionStatus = result;
-    });
   }
 
   @override
@@ -95,12 +65,12 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
           await locationPermission.serviceStatus.isEnabled;
 
       if (isLocationServiceOn) {
-        wifiName = await info.getWifiName();
+        wifiName = (await info.getWifiName())!;
         if (wifiName != null) {
           debugPrint('Nombre WiFi: $wifiName');
-          isConnectedESP = wifiName!.contains('EM') ||
-              wifiName!.contains('Est') ||
-              wifiName!.contains('And');
+          isConnectedESP = wifiName.contains('EM') ||
+              wifiName.contains('Est') ||
+              wifiName.contains('And');
           setState(() {});
         } else {
           wifiName = 'WiFi desconocida';
@@ -127,7 +97,7 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
                 Icon(isConnectedESP ? Icons.wifi_outlined : Icons.wifi_off,
                     color: Colors.white, size: 100),
                 const SizedBox(height: 10),
-                Text(wifiName!,
+                Text(wifiName,
                     style: const TextStyle(
                         color: Colors.white,
                         fontSize: kFontSize + 4,
@@ -147,7 +117,7 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
                             maxLines: 1,
                             maxFontSize: kFontSize + 1,
                             minFontSize: kFontSize - 3,
-                            style: TextStyle(
+                            style: const TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold),
                           ),
@@ -191,7 +161,7 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
                             context,
                             PageTransition(
                                 type: PageTransitionType.rightToLeft,
-                                child: HomePage(wifiName: wifiName!),
+                                child: HomePage(wifiName: wifiName),
                                 inheritTheme: true,
                                 ctx: context),
                           );

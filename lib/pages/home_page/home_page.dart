@@ -387,6 +387,7 @@ class TopAppBar extends StatelessWidget {
         IconButton(
             onPressed: () async {
               ///Example: http://192.168.4.1/setDateTime.html?dia=9&mes=3&anio=23&hs=12&min=56&seg=40
+              ///         http://192.168.4.1/setDateTime.html?dia=13&mes=3&anio=23&hs=18&min=22&seg=44
               Response<dynamic> response = await sendUTCDate(context);
               print(response);
             },
@@ -435,11 +436,12 @@ class TopAppBar extends StatelessWidget {
     final url = Uri.http(urlBase, 'setDateTime.html', {
       'dia': actualTimeUTC.day.toString(),
       'mes': actualTimeUTC.month.toString(),
-      'anio': actualTimeUTC.year.toString(),
+      'anio': (actualTimeUTC.year.toInt() - 2000).toString(),
       'hs': actualTimeUTC.hour.toString(),
       'min': actualTimeUTC.minute.toString(),
       'seg': actualTimeUTC.second.toString(),
     });
+    print('------>>>>$actualTimeUTC\n, $url');
 
     final dio = Dio();
     final response = await dio.get(url.toString());

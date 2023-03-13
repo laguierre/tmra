@@ -1,9 +1,4 @@
-import 'dart:async';
-import 'dart:io';
-
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:filesystem_picker/filesystem_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:network_info_plus/network_info_plus.dart';
@@ -23,12 +18,9 @@ class IntroPage extends StatefulWidget {
 
 class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
   final info = NetworkInfo();
-  String wifiName = 'WiFi desconocida';
+  String wifiName = 'No hay WiFi Conectada';
   bool isConnectedESP = false;
   bool isShowNextPage = false;
-  ConnectivityResult connectionStatus = ConnectivityResult.none;
-  final Connectivity connectivity = Connectivity();
-  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
   String textWiFi = 'Buscar a una red Estacion xx';
 
   @override
@@ -52,6 +44,7 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
   }
 
   void _listenForPermissionStatus() async {
+    print("--------->>>");
     PermissionWithService locationPermission = Permission.locationWhenInUse;
     var permissionStatus = await locationPermission.status;
     if (permissionStatus == PermissionStatus.denied) {
@@ -66,18 +59,16 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
 
       if (isLocationServiceOn) {
         wifiName = (await info.getWifiName())!;
-        if (wifiName != null) {
+        if (wifiName.isNotEmpty) {
           debugPrint('Nombre WiFi: $wifiName');
           isConnectedESP = wifiName.contains('EM') ||
               wifiName.contains('Est') ||
               wifiName.contains('And');
-          setState(() {});
-        } else {
-          wifiName = 'WiFi desconocida';
-          setState(() {});
+
         }
       }
     }
+    setState(() {});
   }
 
   @override

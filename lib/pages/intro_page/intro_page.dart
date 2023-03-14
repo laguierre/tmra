@@ -44,19 +44,20 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
   }
 
   void _listenForPermissionStatus() async {
-    print("--------->>>");
     PermissionWithService locationPermission = Permission.locationWhenInUse;
     var permissionStatus = await locationPermission.status;
     if (permissionStatus == PermissionStatus.denied) {
       permissionStatus = await locationPermission.request();
-      if (permissionStatus == PermissionStatus.denied) {
+      /*if (permissionStatus == PermissionStatus.denied) {
         permissionStatus = await locationPermission.request();
-      }
+      }*/
     }
     if (permissionStatus == PermissionStatus.granted) {
       bool isLocationServiceOn =
           await locationPermission.serviceStatus.isEnabled;
 
+      print('Prueba: $locationPermission');
+      print(isLocationServiceOn);
       if (isLocationServiceOn) {
         wifiName = (await info.getWifiName())!;
         if (wifiName.isNotEmpty) {
@@ -64,7 +65,6 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
           isConnectedESP = wifiName.contains('EM') ||
               wifiName.contains('Est') ||
               wifiName.contains('And');
-
         }
       }
     }

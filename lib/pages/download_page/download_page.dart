@@ -3,14 +3,12 @@ import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dio/dio.dart';
-import 'package:filesystem_picker/filesystem_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:intl/intl.dart';
 import 'package:lecle_downloads_path_provider/lecle_downloads_path_provider.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -87,47 +85,24 @@ class _DownloadPageState extends State<DownloadPage> {
               const SizedBox(height: 15),
               CustomFieldText(textEditingController: supTextEditingController),
               const SizedBox(height: 45),
-              Row(
-                children: [
-                  CustomButton(
-                    icon: webIcon,
-                    text: 'En Browser',
-                    function: () {
-                      setState(() {
-                        isDownload = false;
-                      });
-                      InAppBrowser.openWithSystemBrowser(
-                          url: Uri.parse(
-                              'http://192.168.4.1/confDownload.html'));
-                    },
-                  ),
-                  const SizedBox(width: 30),
-                  CustomButton(
-                    icon: 'lib/assets/icons/save.png',
-                    text: 'Bajar archivo',
-                    function: () async {
-                      await downloadFile(context);
-                    },
-                  )
-                ],
-              ),
+              downloadButtons(context, widget.info.wifi![0]),
               const SizedBox(height: 40),
               Row(children: [
                 const Spacer(),
-                isSharing? CircleCustomButton(
-                  sizeButton: sizeButton,
-                  icon: sharingIcon,
-                  function: () async {
-                    final file =  '$downloadsDirectoryPath/$fileName';
-                    if (await File(file).exists()) {
-                      Share.shareXFiles([XFile(file)],
-                          text: 'Archivo descargado');
-                    }
-
-                  },
-                ): Container(),
+                isSharing
+                    ? CircleCustomButton(
+                        sizeButton: sizeButton,
+                        icon: sharingIcon,
+                        function: () async {
+                          final file = '$downloadsDirectoryPath/$fileName';
+                          if (await File(file).exists()) {
+                            Share.shareXFiles([XFile(file)],
+                                text: 'Archivo descargado');
+                          }
+                        },
+                      )
+                    : Container(),
                 const SizedBox(width: 20),
-
                 CircleCustomButton(
                   sizeButton: sizeButton,
                   icon: openFolderIcon,
@@ -135,7 +110,6 @@ class _DownloadPageState extends State<DownloadPage> {
                     openSharingFile(context);
                   },
                 ),
-
               ]),
               const SizedBox(height: 20),
               isDownload
@@ -148,6 +122,39 @@ class _DownloadPageState extends State<DownloadPage> {
           ),
         ),
       ),
+    );
+  }
+
+  Row downloadButtons(BuildContext context, String wifiSw) {
+    double version = double.parse(wifiSw.substring(0, 3));
+    debugPrint(version.toString());
+
+    return Row(
+      children: [
+        version < 2.4 ? const Spacer() : Container(),
+        CustomButton(
+          icon: webIcon,
+          text: 'En Browser',
+          kPadding: version < 2.4 ? 0 : 15,
+          function: () {
+            setState(() {
+              isDownload = false;
+            });
+            InAppBrowser.openWithSystemBrowser(
+                url: Uri.parse('http://192.168.4.1/confDownload.html'));
+          },
+        ),
+        version >= 2.4 ? const SizedBox(width: 30) : Container(),
+        version >= 2.4
+            ? CustomButton(
+                icon: 'lib/assets/icons/save.png',
+                text: 'Bajar archivo',
+                function: () async {
+                  await downloadFile(context);
+                },
+              )
+            : Container()
+      ],
     );
   }
 
@@ -190,9 +197,6 @@ class _DownloadPageState extends State<DownloadPage> {
         }
         if (received / total == 1) {
           Future.delayed(const Duration(seconds: 1), () async {
-            //isDownload = false;
-            /*showAlertDialog(
-                '$downloadsDirectoryPath/$fileName', '$downloadsDirectoryPath');*/
             print('Archivo guardado $downloadsDirectoryPath');
             snackBar(context, 'Archivo guardado $downloadsDirectoryPath');
             setState(() {
@@ -254,8 +258,6 @@ class _DownloadPageState extends State<DownloadPage> {
   }
 }
 
-
-
 class ProgressBar extends StatelessWidget {
   const ProgressBar({
     super.key,
@@ -289,7 +291,7 @@ class ProgressBar extends StatelessWidget {
                 color: Colors.white,
                 fontWeight: FontWeight.bold)),
         const SizedBox(height: 10),
-        Text("Recibido: ${receivedData} / Total: ${totalData}",
+        Text("Recibido: $receivedData / Total: $totalData",
             style: const TextStyle(fontSize: 18, color: Colors.white)),
       ],
     );
@@ -301,12 +303,14 @@ class CustomButton extends StatelessWidget {
       {Key? key,
       required this.function,
       required this.icon,
-      required this.text})
+      required this.text,
+      this.kPadding = 15})
       : super(key: key);
 
   final VoidCallback function;
   final String icon;
   final String text;
+  final double kPadding;
 
   @override
   Widget build(BuildContext context) {
@@ -317,7 +321,7 @@ class CustomButton extends StatelessWidget {
             decoration: BoxDecoration(
                 color: Colors.yellowAccent,
                 borderRadius: BorderRadius.circular(15)),
-            width: MediaQuery.of(context).size.width * 0.45 - 15,
+            width: MediaQuery.of(context).size.width * 0.45 - kPadding,
             child: IconButton(
                 onPressed: function,
                 icon: Row(

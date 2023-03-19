@@ -1,4 +1,9 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:network_info_plus/network_info_plus.dart';
@@ -18,21 +23,55 @@ class IntroPage extends StatefulWidget {
 
 class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
   final info = NetworkInfo();
-  String wifiName = 'No hay WiFi Conectada';
   bool isConnectedESP = false;
   bool isShowNextPage = false;
-  String textWiFi = 'Buscar a una red Estacion xx';
+  bool switchSimulation = false;
+  Color thumbColor = Colors.black;
+  String testMode = 'OFF';
+  Map _source = {ConnectivityResult.none: false};
+  final NetworkConnectivity _networkConnectivity = NetworkConnectivity.instance;
+  String string = '';
+
+  IconData iconWiFi = Icons.wifi_off;
+  String wifiName = 'No hay WiFi Conectada';
+  String textWiFi = 'Buscar a una red Estación xx';
 
   @override
   void initState() {
     super.initState();
     _listenForPermissionStatus();
     WidgetsBinding.instance.addObserver(this);
+    _networkConnectivity.initialise();
+    _networkConnectivity.myStream.listen((source) {
+      print('source $source');
+      // 1.
+      switch (source.keys.toList()[0]) {
+        case ConnectivityResult.mobile:
+          break;
+        case ConnectivityResult.wifi:
+          iconWiFi = Icons.signal_wifi_connected_no_internet_4;
+          wifiName = 'No hay WiFi Conectada';
+          textWiFi = 'Buscar a una red Estación xx';
+          _listenForPermissionStatus();
+          isConnectedESP = false;
+          break;
+        case ConnectivityResult.none:
+        default:
+          iconWiFi = Icons.wifi_off;
+          wifiName = 'No hay WiFi Conectada';
+          textWiFi = 'Habilitar WiFi';
+          isConnectedESP = false;
+
+      }
+      // 2.
+      setState(() {});
+    });
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _networkConnectivity.disposeStream();
     super.dispose();
   }
 
@@ -44,7 +83,6 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
   }
 
   void _listenForPermissionStatus() async {
-    print("--------->>>");
     PermissionWithService locationPermission = Permission.locationWhenInUse;
     var permissionStatus = await locationPermission.status;
     if (permissionStatus == PermissionStatus.denied) {
@@ -56,7 +94,6 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
     if (permissionStatus == PermissionStatus.granted) {
       bool isLocationServiceOn =
           await locationPermission.serviceStatus.isEnabled;
-
       if (isLocationServiceOn) {
         wifiName = (await info.getWifiName())!;
         if (wifiName.isNotEmpty) {
@@ -64,7 +101,6 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
           isConnectedESP = wifiName.contains('EM') ||
               wifiName.contains('Est') ||
               wifiName.contains('And');
-
         }
       }
     }
@@ -85,16 +121,20 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
             Column(
               children: [
                 const SizedBox(height: 50),
-                Icon(isConnectedESP ? Icons.wifi_outlined : Icons.wifi_off,
+                /*Icon(isConnectedESP ? Icons.wifi_outlined : Icons.wifi_off,
                     color: Colors.white, size: 100),
-                const SizedBox(height: 10),
+
+                 */
+
+                Icon(iconWiFi, color: Colors.white, size: 100),
+                const SizedBox(height: 15),
                 Text(wifiName,
                     style: const TextStyle(
                         color: Colors.white,
                         fontSize: kFontSize + 4,
                         fontWeight: FontWeight.bold)),
                 const SizedBox(height: 50),
-                !isConnectedESP
+                !false
                     ? GestureDetector(
                         child: Container(
                           alignment: Alignment.center,
@@ -125,6 +165,8 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
                     : Container()
               ],
             ),
+            const SizedBox(height: 50),
+            debugMode(),
             const Spacer(),
             Row(
               children: [
@@ -152,7 +194,10 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
                             context,
                             PageTransition(
                                 type: PageTransitionType.rightToLeft,
-                                child: HomePage(wifiName: wifiName),
+                                child: HomePage(
+                                  wifiName: wifiName,
+                                  testMode: switchSimulation,
+                                ),
                                 inheritTheme: true,
                                 ctx: context),
                           );
@@ -167,6 +212,37 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
         ),
       ),
     );
+  }
+
+  Row debugMode() {
+    return Row(
+            children: [
+              const SizedBox(width: 20),
+              CupertinoSwitch(
+                  trackColor: Colors.white,
+                  thumbColor: thumbColor,
+                  activeColor: Colors.amberAccent,
+                  value: switchSimulation,
+                  onChanged: (value) {
+                    setState(() {
+                      switchSimulation = value;
+                      if (value) {
+                        thumbColor = Colors.white;
+                        testMode = 'ON';
+                      } else {
+                        thumbColor = Colors.black;
+                        testMode = 'OFF';
+                      }
+                    });
+                  }),
+              const SizedBox(width: 10),
+              Text('Modo Test $testMode',
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: kFontSize,
+                      fontWeight: FontWeight.bold)),
+            ],
+          );
   }
 }
 
@@ -186,4 +262,38 @@ class _TopAppBar extends StatelessWidget {
           Divider(color: Colors.white)
         ]);
   }
+}
+
+class NetworkConnectivity {
+  NetworkConnectivity._();
+
+  static final _instance = NetworkConnectivity._();
+
+  static NetworkConnectivity get instance => _instance;
+  final _networkConnectivity = Connectivity();
+  final _controller = StreamController.broadcast();
+
+  Stream get myStream => _controller.stream;
+
+  void initialise() async {
+    ConnectivityResult result = await _networkConnectivity.checkConnectivity();
+    _checkStatus(result);
+    _networkConnectivity.onConnectivityChanged.listen((result) {
+      print(result);
+      _checkStatus(result);
+    });
+  }
+
+  void _checkStatus(ConnectivityResult result) async {
+    bool isOnline = false;
+    try {
+      final result = await InternetAddress.lookup('example.com');
+      isOnline = result.isNotEmpty && result[0].rawAddress.isNotEmpty;
+    } on SocketException catch (_) {
+      isOnline = false;
+    }
+    _controller.sink.add({result: isOnline});
+  }
+
+  void disposeStream() => _controller.close();
 }

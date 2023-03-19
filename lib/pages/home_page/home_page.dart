@@ -17,11 +17,12 @@ import 'home_page_widgets.dart';
 import 'package:dio/dio.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key, required this.wifiName}) : super(key: key);
+  const HomePage({Key? key, required this.wifiName, required this.testMode}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
   final String wifiName;
+  final bool testMode;
 }
 
 class _HomePageState extends State<HomePage> {
@@ -30,7 +31,7 @@ class _HomePageState extends State<HomePage> {
   var services = SensorsTMRAServices();
 
   void getSensorInfo() async {
-    info = await services.getSensorsValues();
+    info = await services.getSensorsValues(widget.testMode);
     sensors = fillSensor(info);
     setState(() {});
   }
@@ -44,9 +45,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     double heightScreen = MediaQuery.of(context).size.height;
-    double widthtScreen = MediaQuery.of(context).size.width;
+    double widthScreen = MediaQuery.of(context).size.width;
     double dg =
-        sqrt((widthtScreen * widthtScreen) + (heightScreen * heightScreen));
+        sqrt((widthScreen * widthScreen) + (heightScreen * heightScreen));
     return Scaffold(
         backgroundColor: Colors.black,
         extendBody: true,

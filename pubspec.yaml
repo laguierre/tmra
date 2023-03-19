@@ -55,6 +55,7 @@ dependencies:
   intl: ^0.18.0
   percent_indicator: ^4.2.3
   auto_size_text: ^3.0.0
+  connectivity_plus: ^3.0.3
 
 
 dev_dependencies:

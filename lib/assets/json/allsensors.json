@@ -1,5 +1,5 @@
 {
-  "EM": "0",
+  "EM": "'TEST'",
   "CPU": [
     "3.3",
     "1.3"
@@ -9,51 +9,51 @@
     "3.3"
   ],
   "WIFI": [
-    "2.1 [07-12-22]",
+    "2.3 [07-12-22]",
     "ESP-12"
   ],
   "channelUsed": [
     "0x0",
     "0xFFFFFFFF"
   ],
-  "LogLastAddress": "0",
+  "LogLastAddress": "1200",
   "TimeStamp (UTC)": "24/12/2022  04:40:38",
-  "Tension de bateria": "0.00",
+  "Tension de bateria": "12.00",
   "channels": [
     {
       "ch": "0",
       "nombre": "Precipitaci&oacute;n acumulada (PMB25)",
-      "valor": "0.00"
+      "valor": "100.0"
     },
     {
       "ch": "1",
       "nombre": "Intensidad precipitaci&oacute;n (PMB25)",
-      "valor": "0.00"
+      "valor": "5.0"
     },
     {
       "ch": "2",
       "nombre": "Precipitaci&oacute;n acumulada (TR525)",
-      "valor": "0.00"
+      "valor": "100.0"
     },
     {
       "ch": "3",
       "nombre": "Direcci&oacute;n del viento (WINDSONIC 2D)",
-      "valor": "0.00"
+      "valor": "315.0"
     },
     {
       "ch": "4",
       "nombre": "Velocidad del viento (WINDSONIC 2D)",
-      "valor": "0.00"
+      "valor": "1.00"
     },
     {
       "ch": "5",
       "nombre": "Temperatura del aire (CS215)",
-      "valor": "0.00"
+      "valor": "24.0"
     },
     {
       "ch": "6",
       "nombre": "Humedad del aire (CS215)",
-      "valor": "0.00"
+      "valor": "45.0"
     },
     {
       "ch": "7",
@@ -68,82 +68,82 @@
     {
       "ch": "9",
       "nombre": "Temperatura del agua (CS451)",
-      "valor": "0.00"
+      "valor": "16.0"
     },
     {
       "ch": "10",
       "nombre": "Nivel de agua (SR50)",
-      "valor": "0.00"
+      "valor": "10.0"
     },
     {
       "ch": "11",
       "nombre": "Piran&oacute;metro Sup SW (CNR4)",
-      "valor": "0.00"
+      "valor": "1.00"
     },
     {
       "ch": "12",
       "nombre": "Piran&oacute;metro Inf SW (CNR4)",
-      "valor": "0.00"
+      "valor": "1.00"
     },
     {
       "ch": "13",
       "nombre": "Piran&oacute;metro Sup LW (CNR4)",
-      "valor": "0.00"
+      "valor": "1.00"
     },
     {
       "ch": "14",
       "nombre": "Piran&oacute;metro Inf LW (CNR4)",
-      "valor": "0.00"
+      "valor": "1.00"
     },
     {
       "ch": "15",
       "nombre": "Termistor (CNR4)",
-      "valor": "0.00"
+      "valor": "1.00"
     },
     {
       "ch": "16",
       "nombre": "Piran&oacute;metro (CMP3)",
-      "valor": "0.00"
+      "valor": "1.00"
     },
     {
       "ch": "17",
       "nombre": "Permitividad (Superficie) (CS655)",
-      "valor": "0.00"
+      "valor": "1.00"
     },
     {
       "ch": "18",
       "nombre": "Cont. volumetrico (Superficie) (CS655)",
-      "valor": "0.00"
+      "valor": "1.00"
     },
     {
       "ch": "19",
       "nombre": "Conductividad (Superficie) (CS655)",
-      "valor": "0.00"
+      "valor": "1.00"
     },
     {
       "ch": "20",
       "nombre": "Temp. suelo (Superficie) (CS655)",
-      "valor": "0.00"
+      "valor": "1.00"
     },
     {
       "ch": "21",
       "nombre": "Incidente NIR (SNR)",
-      "valor": "0.00"
+      "valor": "1.00"
     },
     {
       "ch": "22",
       "nombre": "Incidente RED (SNR)",
-      "valor": "0.00"
+      "valor": "1.00"
     },
     {
       "ch": "23",
       "nombre": "Reflectado NIR (SNR)",
-      "valor": "0.00"
+      "valor": "1.00"
     },
     {
       "ch": "24",
       "nombre": "Reflectado RED (SNR)",
-      "valor": "0.00"
+      "valor": "1.00"
     },
     {
       "ch": "25",
@@ -153,47 +153,47 @@
     {
       "ch": "26",
       "nombre": "Temp. de superficie (SI-111)",
-      "valor": "0.00"
+      "valor": "1.00"
     },
     {
       "ch": "27",
       "nombre": "Temp. del cuerpo (SI-111)",
-      "valor": "0.00"
+      "valor": "1.00"
     },
     {
       "ch": "28",
       "nombre": "Permitividad (Inferior) (CS655)",
-      "valor": "0.00"
+      "valor": "1.00"
     },
     {
       "ch": "29",
       "nombre": "Cont. volumetrico (Inferior) (CS655)",
-      "valor": "0.00"
+      "valor": "1.00"
     },
     {
       "ch": "30",
       "nombre": "Conductividad  (Inferior) (CS655)",
-      "valor": "0.00"
+      "valor": "1.00"
     },
     {
       "ch": "31",
       "nombre": "Temp. suelo (Inferior) (CS655)",
-      "valor": "0.00"
+      "valor": "1.00"
     },
     {
       "ch": "32",
       "nombre": "Direcci&oacute;n del viento (034B)",
-      "valor": "0.00"
+      "valor": "1.00"
     },
     {
       "ch": "33",
       "nombre": "Velocidad del viento (034B)",
-      "valor": "0.00"
+      "valor": "1.00"
     },
     {
       "ch": "34",
       "nombre": "ORP (CSIM11)",
-      "valor": "0.00"
+      "valor": "1.00"
     },
     {
       "ch": "35",

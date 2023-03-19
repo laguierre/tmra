@@ -21,12 +21,13 @@ class SensorCard extends StatelessWidget {
 
     double dg =
         sqrt((widthScreen * widthScreen) + (heightScreen * heightScreen));
-    double height = dg < 750 ? 0.10 * dg * info.lines : 0.079 * dg * info.lines;
+    debugPrint('->>>>DG: $dg');
+    double height = dg < 780 ? 0.10 * dg * info.lines : 0.079 * dg * info.lines;
     return Row(
       children: [
         ConstrainedBox(
           constraints: BoxConstraints(
-            minHeight: 100,
+            minHeight: 150,
             maxWidth: MediaQuery.of(context).size.width * ratio,
             minWidth: MediaQuery.of(context).size.width * ratio,
           ),

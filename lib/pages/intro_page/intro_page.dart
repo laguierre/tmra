@@ -5,7 +5,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -28,7 +27,6 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
   bool switchSimulation = false;
   Color thumbColor = Colors.black;
   String testMode = 'OFF';
-  Map _source = {ConnectivityResult.none: false};
   final NetworkConnectivity _networkConnectivity = NetworkConnectivity.instance;
   String string = '';
 
@@ -43,8 +41,6 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     _networkConnectivity.initialise();
     _networkConnectivity.myStream.listen((source) {
-      print('source $source');
-      // 1.
       switch (source.keys.toList()[0]) {
         case ConnectivityResult.mobile:
           break;
@@ -225,9 +221,12 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
                       if (value) {
                         thumbColor = Colors.white;
                         testMode = 'ON';
+                        isConnectedESP = true;
                       } else {
                         thumbColor = Colors.black;
                         testMode = 'OFF';
+                        isConnectedESP = false;
+
                       }
                     });
                   }),
@@ -290,6 +289,5 @@ class NetworkConnectivity {
     }
     _controller.sink.add({result: isOnline});
   }
-
   void disposeStream() => _controller.close();
 }

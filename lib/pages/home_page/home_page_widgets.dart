@@ -13,15 +13,13 @@ class SensorCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //double height = MediaQuery.of(context).size.height * info.kFactorContainer;
-    double width = MediaQuery.of(context).size.width * 0.2;
     double widthScreen = MediaQuery.of(context).size.width;
     double heightScreen = MediaQuery.of(context).size.height;
     double ratio = 0.32;
 
     double dg =
         sqrt((widthScreen * widthScreen) + (heightScreen * heightScreen));
-    debugPrint('->>>>DG: $dg');
+    debugPrint('->>>>Screen Diagonal: $dg');
     double height = dg < 780 ? 0.10 * dg * info.lines : 0.079 * dg * info.lines;
     return Row(
       children: [
@@ -53,12 +51,10 @@ class SensorCard extends StatelessWidget {
               left: widthScreen * 0.04,
               right: widthScreen * 0.04,
             ),
-            //height: height,
-            //width: MediaQuery.of(context).size.width * (1 - ratio) - kPadding,
             decoration: BoxDecoration(
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.4),
+                  color: Colors.grey.withOpacity(0.8),
                   spreadRadius: 5,
                   blurRadius: 13,
                   offset: const Offset(1, 5), // changes position of shadow

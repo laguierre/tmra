@@ -121,12 +121,8 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
             Column(
               children: [
                 const SizedBox(height: 50),
-                /*Icon(isConnectedESP ? Icons.wifi_outlined : Icons.wifi_off,
+                Icon(isConnectedESP ? Icons.wifi_outlined : iconWiFi,
                     color: Colors.white, size: 100),
-
-                 */
-
-                Icon(iconWiFi, color: Colors.white, size: 100),
                 const SizedBox(height: 15),
                 Text(wifiName,
                     style: const TextStyle(
@@ -134,7 +130,7 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
                         fontSize: kFontSize + 4,
                         fontWeight: FontWeight.bold)),
                 const SizedBox(height: 50),
-                !false
+                !isConnectedESP
                     ? GestureDetector(
                         child: Container(
                           alignment: Alignment.center,

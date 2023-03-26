@@ -1,6 +1,7 @@
 const urlBase = '192.168.4.1';
 const kFontSize = 19.0;
 const kPadding = 20.0;
+int kDurationSplash = 1500;
 
 List<String> sensorsImagesList = [
   'lib/assets/images/sensors/pmb25.png',        //0 *
@@ -34,3 +35,8 @@ const reloadClockIcon = 'lib/assets/icons/reload_clock.png';
 const webIcon = 'lib/assets/icons/web.png';
 const openFolderIcon = 'lib/assets/icons/open_folder.png';
 const reloadingIcon = 'lib/assets/icons/reloading.png';
+const downloadIcon = 'lib/assets/icons/bar.png';
+const splashImage = 'lib/assets/images/screensplash/screensplash.png';
+const redimecLogo = 'lib/assets/images/screensplash/redimec.png';
+const researchLogo = 'lib/assets/images/screensplash/research.png';
+

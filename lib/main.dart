@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 import 'package:tmra/pages/intro_page/intro_page.dart';
-import 'package:tmra/provider/sensors_provider.dart';
+import 'package:tmra/pages/splash_page/splash_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,22 +17,16 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_)=> SensorsProvider()),
-      ],
-      child: MaterialApp(
-        title: 'TMRA',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        darkTheme: ThemeData(
-          brightness: Brightness.dark,
-          /* dark theme settings */
-        ),
-        home: const IntroPage(),
+    return MaterialApp(
+      title: 'TMRA',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
       ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+      ),
+      home: SplashPage(),//const IntroPage(),
     );
   }
 }

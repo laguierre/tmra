@@ -1,8 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:tmra/models/sensors_type.dart';
-import 'package:tmra/services/services_sensors.dart';
-
-import '../constants.dart';
 import '../models/model_sensors.dart';
 
 class SensorsProvider extends ChangeNotifier {

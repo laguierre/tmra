@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
@@ -12,12 +11,12 @@ import 'package:tmra/pages/download_page/fill_sensors.dart';
 import 'package:tmra/pages/info_page/info_page.dart';
 import 'package:tmra/pages/snackbar.dart';
 import 'package:tmra/services/services_sensors.dart';
-
 import 'home_page_widgets.dart';
 import 'package:dio/dio.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key, required this.wifiName, required this.testMode}) : super(key: key);
+  const HomePage({Key? key, required this.wifiName, required this.testMode})
+      : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -69,7 +68,7 @@ class _HomePageState extends State<HomePage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            TopAppBar(info: info),
+                            TopAppBar(info: info, testMode: widget.testMode),
                             const Divider(
                               color: Colors.white,
                             ),
@@ -80,6 +79,11 @@ class _HomePageState extends State<HomePage> {
                               size: kFontSize,
                               icon: batteryIcon,
                             ),
+                            InfoConfig(
+                                title: 'Último valor bajado: ',
+                                value: info.downloadLastAdress!,
+                                size: kFontSize,
+                                icon: downloadIcon),
                             InfoConfig(
                                 title: 'Último valor grabado: ',
                                 value: info.logLastAddress!,
@@ -101,7 +105,7 @@ class _HomePageState extends State<HomePage> {
                             itemCount: sensors.length, //info.channels!.length,
                             itemBuilder: (context, index) {
                               return Padding(
-                                padding: const EdgeInsets.only(bottom: 10),
+                                padding: const EdgeInsets.only(bottom: 20),
                                 child: SensorCard(
                                     info: sensors[index], index: index),
                               );
@@ -145,9 +149,11 @@ class TopAppBar extends StatelessWidget {
   const TopAppBar({
     Key? key,
     required this.info,
+    required this.testMode,
   }) : super(key: key);
 
   final Sensors info;
+  final bool testMode;
 
   @override
   Widget build(BuildContext context) {
@@ -163,8 +169,11 @@ class TopAppBar extends StatelessWidget {
             onPressed: () async {
               ///Example: http://192.168.4.1/setDateTime.html?dia=9&mes=3&anio=23&hs=12&min=56&seg=40
               ///         http://192.168.4.1/setDateTime.html?dia=13&mes=3&anio=23&hs=18&min=22&seg=44
-              Response<dynamic> response = await sendUTCDate(context);
-              print(response);
+              if (!testMode) {
+                Response<dynamic> response = await sendUTCDate(context);
+              } else {
+                snackBar(context, 'TEST - Envio de TimeStamp');
+              }
             },
             icon: Image.asset(
               reloadClockIcon,
@@ -193,7 +202,7 @@ class TopAppBar extends StatelessWidget {
                 context,
                 PageTransition(
                     type: PageTransitionType.rightToLeft,
-                    child: DownloadPage(info: info),
+                    child: DownloadPage(info: info, testMode: testMode),
                     inheritTheme: true,
                     ctx: context),
               );
@@ -216,7 +225,7 @@ class TopAppBar extends StatelessWidget {
       'min': actualTimeUTC.minute.toString(),
       'seg': actualTimeUTC.second.toString(),
     });
-    print('------>>>>$actualTimeUTC\n, $url');
+    debugPrint('------>>>>$actualTimeUTC\n, $url');
 
     final dio = Dio();
     final response = await dio.get(url.toString());

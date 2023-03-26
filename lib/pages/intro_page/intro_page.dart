@@ -57,7 +57,6 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
           wifiName = 'No hay WiFi Conectada';
           textWiFi = 'Habilitar WiFi';
           isConnectedESP = false;
-
       }
       // 2.
       setState(() {});
@@ -91,7 +90,7 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
       bool isLocationServiceOn =
           await locationPermission.serviceStatus.isEnabled;
       if (isLocationServiceOn) {
-        wifiName = (await info.getWifiName())!;
+        wifiName = (await info.getWifiName()) ?? '';
         if (wifiName.isNotEmpty) {
           debugPrint('Nombre WiFi: $wifiName');
           isConnectedESP = wifiName.contains('EM') ||
@@ -208,36 +207,35 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
 
   Row debugMode() {
     return Row(
-            children: [
-              const SizedBox(width: 20),
-              CupertinoSwitch(
-                  trackColor: Colors.white,
-                  thumbColor: thumbColor,
-                  activeColor: Colors.amberAccent,
-                  value: switchSimulation,
-                  onChanged: (value) {
-                    setState(() {
-                      switchSimulation = value;
-                      if (value) {
-                        thumbColor = Colors.white;
-                        testMode = 'ON';
-                        isConnectedESP = true;
-                      } else {
-                        thumbColor = Colors.black;
-                        testMode = 'OFF';
-                        isConnectedESP = false;
-
-                      }
-                    });
-                  }),
-              const SizedBox(width: 10),
-              Text('Modo Test $testMode',
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: kFontSize,
-                      fontWeight: FontWeight.bold)),
-            ],
-          );
+      children: [
+        const SizedBox(width: 20),
+        CupertinoSwitch(
+            trackColor: Colors.white,
+            thumbColor: thumbColor,
+            activeColor: Colors.amberAccent,
+            value: switchSimulation,
+            onChanged: (value) {
+              setState(() {
+                switchSimulation = value;
+                if (value) {
+                  thumbColor = Colors.white;
+                  testMode = 'ON';
+                  isConnectedESP = true;
+                } else {
+                  thumbColor = Colors.black;
+                  testMode = 'OFF';
+                  isConnectedESP = false;
+                }
+              });
+            }),
+        const SizedBox(width: 10),
+        Text('Modo Test $testMode',
+            style: const TextStyle(
+                color: Colors.white,
+                fontSize: kFontSize,
+                fontWeight: FontWeight.bold)),
+      ],
+    );
   }
 }
 
@@ -289,5 +287,6 @@ class NetworkConnectivity {
     }
     _controller.sink.add({result: isOnline});
   }
+
   void disposeStream() => _controller.close();
 }

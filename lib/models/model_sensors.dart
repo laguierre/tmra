@@ -1,5 +1,6 @@
 class Sensors {
   String? em;
+  String? downloadLastAdress;
   String? logLastAddress;
   String? timeStampUtc;
   String? tensionDeBateria;
@@ -15,6 +16,7 @@ class Sensors {
       this.daq,
       this.wifi,
       this.channelUsed,
+      this.downloadLastAdress,
       this.logLastAddress,
       this.timeStampUtc,
       this.tensionDeBateria,
@@ -26,10 +28,11 @@ class Sensors {
     daq = json['DAQ'].cast<String>();
     wifi = json['WIFI'].cast<String>();
     channelUsed = json['channelUsed'].cast<String>();
+    downloadLastAdress = json['DownloadLastAddress']?? '0';
     logLastAddress = json['LogLastAddress'];
     timeStampUtc = json['TimeStamp (UTC)'];
-    tensionDeBateria = json['Tension de bateria']?? "0.0V";
-   //if (json['channels'] != null)
+    tensionDeBateria = json['Tension de bateria'] ?? "0.0V";
+    //if (json['channels'] != null)
     {
       channels = <Channels>[];
       json['channels'].forEach((v) {
@@ -46,6 +49,7 @@ class Sensors {
     data['WIFI'] = wifi;
     data['channelUsed'] = channelUsed;
     data['LogLastAddress'] = logLastAddress;
+    data['DownloadLastAddress'] = downloadLastAdress;
     data['TimeStamp (UTC)'] = timeStampUtc;
     data['Tension de bateria'] = tensionDeBateria;
     if (channels != null) {

@@ -9,13 +9,14 @@
     "3.3"
   ],
   "WIFI": [
-    "2.3 [07-12-22]",
+    "2.4 [07-12-22]",
     "ESP-12"
   ],
   "channelUsed": [
     "0x0",
     "0xFFFFFFFF"
   ],
+  "DownloadLastAddress": "800",
   "LogLastAddress": "1200",
   "TimeStamp (UTC)": "24/12/2022  04:40:38",
   "Tension de bateria": "12.00",

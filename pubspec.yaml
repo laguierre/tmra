@@ -56,6 +56,9 @@ dependencies:
   percent_indicator: ^4.2.3
   auto_size_text: ^3.0.0
   connectivity_plus: ^3.0.3
+  animate_do: ^3.0.2
+#  flutter_native_splash: ^2.2.18
+
 
 
 dev_dependencies:
@@ -68,6 +71,11 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+
+#flutter_native_splash:
+#  color: "#42a5f5"
+#  image: "lib/assets/images/screensplash/screensplash.png"
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -84,6 +92,7 @@ flutter:
   assets:
      - lib/assets/icons/
      - lib/assets/images/sensors/
+     - lib/assets/images/screensplash/
      - lib/assets/json/
      - lib/assets/js/
   #   - images/a_dot_ham.jpeg

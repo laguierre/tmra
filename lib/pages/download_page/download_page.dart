@@ -20,9 +20,10 @@ import '../../models/model_sensors.dart';
 import '../widgets.dart';
 
 class DownloadPage extends StatefulWidget {
-  DownloadPage({Key? key, required this.info}) : super(key: key);
+  const DownloadPage({Key? key, required this.info, required this.testMode}) : super(key: key);
 
   final Sensors info;
+  final bool testMode;
 
   @override
   State<DownloadPage> createState() => _DownloadPageState();
@@ -40,7 +41,8 @@ class _DownloadPageState extends State<DownloadPage> {
 
   @override
   void initState() {
-    infTextEditingController = TextEditingController(text: '0');
+    infTextEditingController =
+        TextEditingController(text: widget.info.downloadLastAdress);
     supTextEditingController =
         TextEditingController(text: widget.info.logLastAddress);
     super.initState();
@@ -150,7 +152,12 @@ class _DownloadPageState extends State<DownloadPage> {
                 icon: 'lib/assets/icons/save.png',
                 text: 'Bajar archivo',
                 function: () async {
-                  await downloadFile(context);
+                  if(!widget.testMode) {
+                    await downloadFile(context);
+                  }
+                  else{
+                    snackBar(context, 'No es posible en modo TEST');
+                  }
                 },
               )
             : Container()

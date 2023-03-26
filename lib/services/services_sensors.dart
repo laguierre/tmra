@@ -7,13 +7,16 @@ import '../constants.dart';
 class SensorsTMRAServices {
   Future<Sensors> getSensorsValues(bool testMode) async {
     Sensors info = Sensors();
+
     ///Datos en Duro
     if (testMode) {
       final String response =
           await rootBundle.loadString('lib/assets/json/allsensors.json');
       final decodedData = await json.decode(response);
       info = Sensors.fromJson(decodedData);
-    } else {
+    }
+    ///Datos desde request
+    else {
       final url = Uri.http(urlBase, 'resumenJSON.html');
       try {
         var response = await Dio().get(url.toString(),
@@ -24,7 +27,6 @@ class SensorsTMRAServices {
         if (response.statusCode == 200) {
           response.headers.value("application/json");
           var decodedData = await json.decode(response.data);
-
           info = Sensors.fromJson(decodedData);
           print(info.timeStampUtc);
           //print(response);

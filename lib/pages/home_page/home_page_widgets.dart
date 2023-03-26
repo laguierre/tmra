@@ -60,10 +60,6 @@ class SensorCard extends StatelessWidget {
                   offset: const Offset(1, 5), // changes position of shadow
                 ),
               ],
-              /*border: Border.all(
-                color: Colors.grey,
-                width: height * (0.4 - 0.38),
-              ),*/
               borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(25 * dg * 0.001),
                   bottomLeft: Radius.circular(25 * dg * 0.001),
@@ -80,8 +76,7 @@ class SensorCard extends StatelessWidget {
                   textScaleFactor: 1.0,
                   TextSpan(
                       text: '${info.variableName[index]} ',
-                      style: TextStyle(
-                        //fontSize: 0.019 * dg,
+                      style: const TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.normal,
                       ),
@@ -103,42 +98,6 @@ class SensorCard extends StatelessWidget {
   }
 }
 
-class _CardContainer extends StatelessWidget {
-  const _CardContainer({
-    required this.height,
-  });
-
-  final double height;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(top: 10, bottom: 20, left: 97, right: 5),
-      height: height,
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 5,
-            blurRadius: 7,
-            offset: const Offset(1, 3), // changes position of shadow
-          ),
-        ],
-        border: Border.all(
-          color: Colors.grey,
-          width: height * (0.4 - 0.38),
-        ),
-        borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(0),
-            bottomLeft: Radius.circular(35),
-            topRight: Radius.circular(35),
-            bottomRight: Radius.circular(0)),
-        color: Colors.white,
-      ),
-    );
-  }
-}
-
 class _ImageSensor extends StatelessWidget {
   const _ImageSensor({
     required this.info,
@@ -149,8 +108,6 @@ class _ImageSensor extends StatelessWidget {
   final SensorType info;
   final double height;
 
-  //final double width;
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -160,7 +117,6 @@ class _ImageSensor extends StatelessWidget {
         Image.asset(
           info.imageSensor,
           height: height * 0.68,
-          //width: width,
           fit: BoxFit.fitHeight,
         ),
         const SizedBox(height: 10),

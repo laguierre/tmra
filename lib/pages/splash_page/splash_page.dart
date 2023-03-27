@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
@@ -15,7 +17,7 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(milliseconds: kDurationSplash), () {
+    /*Future.delayed(Duration(milliseconds: kDurationSplash), () {
       Navigator.push(
         context,
         PageTransition(
@@ -24,11 +26,15 @@ class _SplashPageState extends State<SplashPage> {
             inheritTheme: true,
             ctx: context),
       );
-    });
+    });*/
   }
 
   @override
   Widget build(BuildContext context) {
+    double heightScreen = MediaQuery.of(context).size.height;
+    double widthScreen = MediaQuery.of(context).size.width;
+    double dg =
+        sqrt((widthScreen * widthScreen) + (heightScreen * heightScreen));
     return Scaffold(
       backgroundColor: Colors.black,
       body: Stack(
@@ -38,14 +44,18 @@ class _SplashPageState extends State<SplashPage> {
             fit: BoxFit.fitHeight,
             height: double.infinity,
           ),
-          FadeInLeft(
+          FadeInUpBig(
             duration: Duration(milliseconds: kDurationSplash * 2 ~/ 3),
             child: Align(
-              alignment: const Alignment(-0.9, -0.9),
-              child: Image.asset(
-                researchLogo,
-                fit: BoxFit.contain,
-                height: MediaQuery.of(context).size.height * 0.1,
+              alignment: const Alignment(0, -0.3),
+              child: Container(
+                width: double.infinity,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 30, vertical: 80),
+                child: Image.asset(
+                  ihredaLogo,
+                  fit: BoxFit.contain,
+                ),
               ),
             ),
           ),
@@ -53,9 +63,13 @@ class _SplashPageState extends State<SplashPage> {
             duration: Duration(milliseconds: kDurationSplash * 2 ~/ 3),
             child: Align(
               alignment: const Alignment(1, 1),
-              child: Image.asset(
-                redimecLogo,
-                fit: BoxFit.none,
+              child: SizedBox(
+                height: dg * 0.12,
+                width: double.infinity,
+                child: Image.asset(
+                  redimecLogo,
+                  fit: BoxFit.contain,
+                ),
               ),
             ),
           ),

@@ -39,4 +39,6 @@ const downloadIcon = 'lib/assets/icons/bar.png';
 const splashImage = 'lib/assets/images/screensplash/screensplash.png';
 const redimecLogo = 'lib/assets/images/screensplash/redimec.png';
 const researchLogo = 'lib/assets/images/screensplash/research.png';
+const ihredaLogo = 'lib/assets/icons/logo.png';
+
 

@@ -17,7 +17,7 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    /*Future.delayed(Duration(milliseconds: kDurationSplash), () {
+    Future.delayed(Duration(milliseconds: kDurationSplash), () {
       Navigator.push(
         context,
         PageTransition(
@@ -26,7 +26,7 @@ class _SplashPageState extends State<SplashPage> {
             inheritTheme: true,
             ctx: context),
       );
-    });*/
+    });
   }
 
   @override

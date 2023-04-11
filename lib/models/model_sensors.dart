@@ -3,11 +3,13 @@ class Sensors {
   String? downloadLastAdress;
   String? logLastAddress;
   String? timeStampUtc;
+  String? timeDownloadUtc;
   String? tensionDeBateria;
   List<String>? cpu;
   List<String>? daq;
   List<String>? wifi;
   List<String>? channelUsed;
+  List<String>? controlledChannel;
   List<Channels>? channels;
 
   Sensors(
@@ -16,10 +18,12 @@ class Sensors {
       this.daq,
       this.wifi,
       this.channelUsed,
+      this.controlledChannel,
       this.downloadLastAdress,
       this.logLastAddress,
       this.timeStampUtc,
       this.tensionDeBateria,
+      this.timeDownloadUtc,
       this.channels});
 
   Sensors.fromJson(Map<String, dynamic> json) {
@@ -28,7 +32,9 @@ class Sensors {
     daq = json['DAQ'].cast<String>();
     wifi = json['WIFI'].cast<String>();
     channelUsed = json['channelUsed'].cast<String>();
-    downloadLastAdress = json['DownloadLastAddress']?? '0';
+    controlledChannel = json['controlledChannel'].cast<String>() ?? [];
+    downloadLastAdress = json['DownloadLastAddress'] ?? '0';
+    timeDownloadUtc = json['Download TimeStamp (UTC)'] ?? 'N/A';
     logLastAddress = json['LogLastAddress'];
     timeStampUtc = json['TimeStamp (UTC)'];
     tensionDeBateria = json['Tension de bateria'] ?? "0.0V";
@@ -39,23 +45,6 @@ class Sensors {
         channels!.add(Channels.fromJson(v));
       });
     }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['EM'] = em;
-    data['CPU'] = cpu;
-    data['DAQ'] = daq;
-    data['WIFI'] = wifi;
-    data['channelUsed'] = channelUsed;
-    data['LogLastAddress'] = logLastAddress;
-    data['DownloadLastAddress'] = downloadLastAdress;
-    data['TimeStamp (UTC)'] = timeStampUtc;
-    data['Tension de bateria'] = tensionDeBateria;
-    if (channels != null) {
-      data['channels'] = channels!.map((v) => v.toJson()).toList();
-    }
-    return data;
   }
 }
 
@@ -70,13 +59,5 @@ class Channels {
     ch = json['ch'];
     nombre = json['nombre'];
     valor = json['valor'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['ch'] = ch;
-    data['nombre'] = nombre;
-    data['valor'] = valor;
-    return data;
   }
 }

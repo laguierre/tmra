@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:tmra/common.dart';
 import 'package:tmra/constants.dart';
@@ -81,8 +82,9 @@ class _HomePageState extends State<HomePage> {
                             ),
                             InfoConfig(
                                 title: 'Último valor bajado: ',
-                                value: info.downloadLastAdress!,
-                                size: kFontSize,
+                                value:
+                                    '${info.downloadLastAdress!} \n[${info.timeDownloadUtc!}]',
+                                size: kFontSize-1,
                                 icon: downloadIcon),
                             InfoConfig(
                                 title: 'Último valor grabado: ',
@@ -91,7 +93,7 @@ class _HomePageState extends State<HomePage> {
                                 icon: cpuIcon),
                             InfoConfig(
                                 title: 'Time Stamp: ',
-                                value: info.timeStampUtc!,
+                                value: widget.testMode? DateFormat('yyyy/MM/dd  HH:mm:ss').format(DateTime.now()) : info.timeStampUtc!,
                                 size: kFontSize - 1,
                                 icon: clockIcon),
                           ],
@@ -262,17 +264,21 @@ class InfoConfig extends StatelessWidget {
       child: Row(
         children: [
           if (icon != '') Image.asset(icon, color: color, height: 30),
-          if (icon != '') const SizedBox(width: 15),
-          AutoSizeText.rich(
-            TextSpan(children: [
-              TextSpan(text: title, style: TextStyle(color: color)),
-              TextSpan(
-                  text: value,
-                  style: TextStyle(color: color, fontWeight: FontWeight.bold)),
-            ]),
-            minFontSize: size - 1,
-            maxFontSize: size,
-            stepGranularity: 0.1,
+          if (icon != '') const SizedBox(width: 12),
+          Expanded(
+            child: AutoSizeText.rich(
+              TextSpan(children: [
+                TextSpan(text: title, style: TextStyle(color: color)),
+                TextSpan(
+                    text: value,
+                    style:
+                        TextStyle(color: color, fontWeight: FontWeight.bold)),
+              ]),
+              //maxLines: 2,
+              minFontSize: size,
+              maxFontSize: size+1,
+              stepGranularity: 0.1,
+            ),
           )
         ],
       ),

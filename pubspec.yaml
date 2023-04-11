@@ -94,7 +94,6 @@ flutter:
      - lib/assets/images/sensors/
      - lib/assets/images/screensplash/
      - lib/assets/json/
-     - lib/assets/js/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

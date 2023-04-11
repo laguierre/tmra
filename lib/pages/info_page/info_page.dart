@@ -90,6 +90,18 @@ class InfoBoards extends StatelessWidget {
                       size: kFontSize - 4,
                       icon: "",
                     ),
+                    InfoConfig(
+                      title: 'Controlled Channel Used [0]: ',
+                      value: info.controlledChannel![0],
+                      size: kFontSize - 4,
+                      icon: "",
+                    ),
+                    InfoConfig(
+                      title: 'Controlled Channel Used [1]: ',
+                      value: info.controlledChannel![1],
+                      size: kFontSize - 4,
+                      icon: "",
+                    ),
                   ],
                 ),
               ),

@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -20,7 +19,8 @@ import '../../models/model_sensors.dart';
 import '../widgets.dart';
 
 class DownloadPage extends StatefulWidget {
-  const DownloadPage({Key? key, required this.info, required this.testMode}) : super(key: key);
+  const DownloadPage({Key? key, required this.info, required this.testMode})
+      : super(key: key);
 
   final Sensors info;
   final bool testMode;
@@ -61,6 +61,7 @@ class _DownloadPageState extends State<DownloadPage> {
   @override
   Widget build(BuildContext context) {
     double sizeButton = 65;
+
     return Scaffold(
       extendBody: false,
       backgroundColor: Colors.black,
@@ -74,18 +75,47 @@ class _DownloadPageState extends State<DownloadPage> {
               TopAppBarBack(info: widget.info),
               const SizedBox(height: 30),
               const Text(
-                'Límite inferior',
+                'Índice límite INFERIOR',
                 style: TextStyle(color: Colors.white, fontSize: kFontSize),
               ),
               const SizedBox(height: 15),
               CustomFieldText(textEditingController: infTextEditingController),
               const SizedBox(height: 15),
               const Text(
-                'Límite superior',
+                'Índice límite SUPERIOR',
                 style: TextStyle(color: Colors.white, fontSize: kFontSize),
               ),
               const SizedBox(height: 15),
               CustomFieldText(textEditingController: supTextEditingController),
+              const SizedBox(height: 15),
+              Row(
+                children: [
+                  const Spacer(),
+                  const Text('Última fecha: ',
+                      style: TextStyle(
+                          color: Colors.white, fontSize: kFontSize - 2)),
+                  Text(widget.info.timeDownloadUtc!,
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: kFontSize - 2,
+                          fontWeight: FontWeight.bold)),
+                ],
+              ),
+              const SizedBox(height: 5),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Spacer(),
+                  const Text('Última índice bajado: ',
+                      style: TextStyle(
+                          color: Colors.white, fontSize: kFontSize - 2)),
+                  Text(widget.info.downloadLastAdress!,
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: kFontSize - 2,
+                          fontWeight: FontWeight.bold)),
+                ],
+              ),
               const SizedBox(height: 45),
               downloadButtons(context, widget.info.wifi![0]),
               const SizedBox(height: 40),
@@ -152,10 +182,9 @@ class _DownloadPageState extends State<DownloadPage> {
                 icon: 'lib/assets/icons/save.png',
                 text: 'Bajar archivo',
                 function: () async {
-                  if(!widget.testMode) {
+                  if (!widget.testMode) {
                     await downloadFile(context);
-                  }
-                  else{
+                  } else {
                     snackBar(context, 'No es posible en modo TEST');
                   }
                 },

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:tmra/pages/intro_page/intro_page.dart';
 import 'package:tmra/pages/splash_page/splash_page.dart';
 
 void main() {
@@ -26,7 +25,7 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData(
         brightness: Brightness.dark,
       ),
-      home: SplashPage(),//const IntroPage(),
+      home: const SplashPage(),//const IntroPage(),
     );
   }
 }

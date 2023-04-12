@@ -16,6 +16,7 @@ import 'package:tmra/constants.dart';
 import 'package:tmra/pages/snackbar.dart';
 import '../../models/model_sensors.dart';
 import '../widgets.dart';
+import '../home_page/fill_sensors.dart';
 
 class DownloadPage extends StatefulWidget {
   const DownloadPage({Key? key, required this.info, required this.testMode})
@@ -37,6 +38,7 @@ class _DownloadPageState extends State<DownloadPage> {
   String? downloadsDirectoryPath;
   String fileName = '';
   bool isSharing = false;
+  late String timeStamp, timeDownload;
 
   @override
   void initState() {
@@ -44,17 +46,16 @@ class _DownloadPageState extends State<DownloadPage> {
         TextEditingController(text: widget.info.downloadLastAdress);
     supTextEditingController =
         TextEditingController(text: widget.info.logLastAddress);
+    timeStamp = subtractUTC(widget.info.timeStampUtc!, 3);
+    timeDownload = subtractUTC(widget.info.timeDownloadUtc!, 3);
     super.initState();
   }
 
   @override
   void dispose() {
     super.dispose();
-    // TODO: implement dispose
-    if (infTextEditingController != null) {
-      infTextEditingController.dispose();
-      supTextEditingController.dispose();
-    }
+    infTextEditingController.dispose();
+    supTextEditingController.dispose();
   }
 
   @override
@@ -87,34 +88,15 @@ class _DownloadPageState extends State<DownloadPage> {
               const SizedBox(height: 15),
               CustomFieldText(textEditingController: supTextEditingController),
               const SizedBox(height: 15),
-              Row(
-                children: [
-                  const Spacer(),
-                  const Text('Última fecha: ',
-                      style: TextStyle(
-                          color: Colors.white, fontSize: kFontSize - 2)),
-                  Text(widget.info.timeDownloadUtc!,
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: kFontSize - 2,
-                          fontWeight: FontWeight.bold)),
-                ],
-              ),
-              const SizedBox(height: 5),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Spacer(),
-                  const Text('Última índice bajado: ',
-                      style: TextStyle(
-                          color: Colors.white, fontSize: kFontSize - 2)),
-                  Text(widget.info.downloadLastAdress!,
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: kFontSize - 2,
-                          fontWeight: FontWeight.bold)),
-                ],
-              ),
+              InfoLine(text: 'Última fecha: ', boldText: timeDownload),
+              const SizedBox(height: 7),
+              InfoLine(
+                  text: 'Último índice bajado: ',
+                  boldText: widget.info.downloadLastAdress!),
+              const SizedBox(height: 7),
+              InfoLine(
+                  text: 'Último índice grabado: ',
+                  boldText: widget.info.logLastAddress!),
               const SizedBox(height: 45),
               downloadButtons(context, widget.info.wifi![0]),
               const SizedBox(height: 40),
@@ -181,13 +163,21 @@ class _DownloadPageState extends State<DownloadPage> {
                 icon: 'lib/assets/icons/save.png',
                 text: 'Bajar archivo',
                 function: () async {
-                  if (!widget.testMode) {
-                    await downloadFile(context);
-                  } else {
-                    snackBar(context, 'No es posible en modo TEST');
+                  FocusScopeNode currentFocus = FocusScope.of(context);
+                  if (!currentFocus.hasPrimaryFocus) {
+                    currentFocus.unfocus();
                   }
-                },
-              )
+                  if (int.parse(supTextEditingController.text) >
+                      int.parse(infTextEditingController.text)) {
+                    if (!widget.testMode) {
+                      await downloadFile(context);
+                    } else {
+                      snackBar(context, 'No es posible en modo TEST');
+                    }
+                  } else {
+                    snackBar(context, 'Límite INFERIOR es mayor a SUPERIOR');
+                  }
+                })
             : Container()
       ],
     );
@@ -200,12 +190,12 @@ class _DownloadPageState extends State<DownloadPage> {
     var hasStoragePermission = await Permission.manageExternalStorage.isGranted;
     if (!hasStoragePermission) {
       final status = await Permission.manageExternalStorage.request().isGranted;
-      print('Has Permission');
+      debugPrint('Has Permission');
     } else {
-      print('Has not Permission!!!');
+      debugPrint('Has not Permission!!!');
     }
     var dir = await DownloadsPath.downloadsDirectory();
-    print('Dir: $dir');
+    debugPrint('Dir: $dir');
 
     //var dir = await getApplicationDocumentsDirectory();
     downloadsDirectoryPath = (await DownloadsPath.downloadsDirectory())?.path;
@@ -221,7 +211,7 @@ class _DownloadPageState extends State<DownloadPage> {
       address,
       '$downloadsDirectoryPath/$fileName',
       onReceiveProgress: (received, total) async {
-        print('Recibido: ${received}, Total: ${total}');
+        debugPrint('Recibido: $received, Total: $total');
         setState(() {
           receivedDataPercent = received / total;
           receivedData = received;
@@ -232,7 +222,7 @@ class _DownloadPageState extends State<DownloadPage> {
         }
         if (received / total == 1) {
           Future.delayed(const Duration(seconds: 1), () async {
-            print('Archivo guardado $downloadsDirectoryPath');
+            debugPrint('Archivo guardado $downloadsDirectoryPath');
             snackBar(context, 'Archivo guardado $downloadsDirectoryPath');
             setState(() {
               isSharing = true;
@@ -290,6 +280,29 @@ class _DownloadPageState extends State<DownloadPage> {
             ],
           );
         });
+  }
+}
+
+class InfoLine extends StatelessWidget {
+  const InfoLine({Key? key, required this.text, required this.boldText})
+      : super(key: key);
+  final String text, boldText;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        const Spacer(),
+        Text(text,
+            style:
+                const TextStyle(color: Colors.white, fontSize: kFontSize - 2)),
+        Text(boldText,
+            style: const TextStyle(
+                color: Colors.white,
+                fontSize: kFontSize - 2,
+                fontWeight: FontWeight.bold)),
+      ],
+    );
   }
 }
 

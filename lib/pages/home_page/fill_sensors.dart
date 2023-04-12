@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:tmra/models/model_sensors.dart';
 import 'package:tmra/models/sensors_type.dart';
-
 import '../../constants.dart';
 
 List<SensorType> fillSensor(Sensors info) {
@@ -229,4 +228,10 @@ List<SensorType> fillSensor(Sensors info) {
     }
   }
   return sensors;
+}
+
+String subtractUTC(String time, int hours){
+  DateTime timeStamp = DateFormat("dd/MM/yyyy HH:mm:ss")
+      .parse(time).subtract(Duration(hours: hours));
+  return DateFormat('dd/MM/yyyy HH:mm:ss').format(timeStamp);
 }

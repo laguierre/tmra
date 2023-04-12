@@ -8,7 +8,7 @@ import 'package:tmra/constants.dart';
 import 'package:tmra/models/model_sensors.dart';
 import 'package:tmra/models/sensors_type.dart';
 import 'package:tmra/pages/download_page/download_page.dart';
-import 'package:tmra/pages/download_page/fill_sensors.dart';
+import 'package:tmra/pages/home_page/fill_sensors.dart';
 import 'package:tmra/pages/info_page/info_page.dart';
 import 'package:tmra/pages/snackbar.dart';
 import 'package:tmra/services/services_sensors.dart';
@@ -29,10 +29,16 @@ class _HomePageState extends State<HomePage> {
   List<SensorType> sensors = [];
   Sensors info = Sensors();
   var services = SensorsTMRAServices();
+  String timeStampUtc = '';
+  String timeDownload = '';
 
   void getSensorInfo() async {
     info = await services.getSensorsValues(widget.testMode);
     sensors = fillSensor(info);
+
+    ///Quitar UTC (+3 horas)
+    timeStampUtc = subtractUTC(info.timeStampUtc!, 3);
+    timeDownload = subtractUTC(info.timeDownloadUtc!, 3);
     setState(() {});
   }
 
@@ -48,6 +54,7 @@ class _HomePageState extends State<HomePage> {
     double widthScreen = MediaQuery.of(context).size.width;
     double dg =
         sqrt((widthScreen * widthScreen) + (heightScreen * heightScreen));
+
     return Scaffold(
         backgroundColor: Colors.black,
         extendBody: true,
@@ -58,7 +65,6 @@ class _HomePageState extends State<HomePage> {
             backgroundColor: Colors.white,
             onRefresh: () async {
               getSensorInfo();
-              //Future<void>.delayed(const Duration(seconds: 3));
             },
             child: sensors.isNotEmpty
                 ? Column(
@@ -83,8 +89,8 @@ class _HomePageState extends State<HomePage> {
                             InfoConfig(
                                 title: 'Último valor bajado: ',
                                 value:
-                                    '${info.downloadLastAdress!} \n[${info.timeDownloadUtc!}]',
-                                size: kFontSize-1,
+                                    '${info.downloadLastAdress!} \n[$timeDownload]',
+                                size: kFontSize - 1.5,
                                 icon: downloadIcon),
                             InfoConfig(
                                 title: 'Último valor grabado: ',
@@ -93,7 +99,10 @@ class _HomePageState extends State<HomePage> {
                                 icon: cpuIcon),
                             InfoConfig(
                                 title: 'Time Stamp: ',
-                                value: widget.testMode? DateFormat('yyyy/MM/dd  HH:mm:ss').format(DateTime.now()) : info.timeStampUtc!,
+                                value: widget.testMode
+                                    ? DateFormat('yyyy/MM/dd  HH:mm:ss')
+                                        .format(DateTime.now())
+                                    : timeStampUtc, //info.timeStampUtc!,
                                 size: kFontSize - 1,
                                 icon: clockIcon),
                           ],
@@ -144,144 +153,5 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ],
                   )));
-  }
-}
-
-class TopAppBar extends StatelessWidget {
-  const TopAppBar({
-    Key? key,
-    required this.info,
-    required this.testMode,
-  }) : super(key: key);
-
-  final Sensors info;
-  final bool testMode;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text('Estación ${info.em}',
-            style: const TextStyle(
-                color: Colors.white,
-                fontSize: kFontSize + 4,
-                fontWeight: FontWeight.bold)),
-        const Spacer(),
-        IconButton(
-            onPressed: () async {
-              ///Example: http://192.168.4.1/setDateTime.html?dia=9&mes=3&anio=23&hs=12&min=56&seg=40
-              ///         http://192.168.4.1/setDateTime.html?dia=13&mes=3&anio=23&hs=18&min=22&seg=44
-              if (!testMode) {
-                Response<dynamic> response = await sendUTCDate(context);
-              } else {
-                snackBar(context, 'TEST - Envio de TimeStamp');
-              }
-            },
-            icon: Image.asset(
-              reloadClockIcon,
-              color: Colors.white,
-            )),
-        const SizedBox(width: 10),
-        IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                PageTransition(
-                    type: PageTransitionType.rightToLeft,
-                    child: InfoBoards(info: info),
-                    inheritTheme: true,
-                    ctx: context),
-              );
-            },
-            icon: Image.asset(
-              infoIcon,
-              color: Colors.white,
-            )),
-        const SizedBox(width: 10),
-        IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                PageTransition(
-                    type: PageTransitionType.rightToLeft,
-                    child: DownloadPage(info: info, testMode: testMode),
-                    inheritTheme: true,
-                    ctx: context),
-              );
-            },
-            icon: Image.asset(
-              saveIcon,
-              color: Colors.white,
-            )),
-      ],
-    );
-  }
-
-  Future<Response<dynamic>> sendUTCDate(BuildContext context) async {
-    DateTime actualTimeUTC = DateTime.now().add(const Duration(hours: 3));
-    final url = Uri.http(urlBase, 'setDateTime.html', {
-      'dia': actualTimeUTC.day.toString(),
-      'mes': actualTimeUTC.month.toString(),
-      'anio': (actualTimeUTC.year.toInt() - 2000).toString(),
-      'hs': actualTimeUTC.hour.toString(),
-      'min': actualTimeUTC.minute.toString(),
-      'seg': actualTimeUTC.second.toString(),
-    });
-    debugPrint('------>>>>$actualTimeUTC\n, $url');
-
-    final dio = Dio();
-    final response = await dio.get(url.toString());
-    if (response.statusCode == 200) {
-      snackBar(context, 'Envio de TimeStamp');
-    }
-    return response;
-  }
-}
-
-class InfoConfig extends StatelessWidget {
-  const InfoConfig({
-    Key? key,
-    required this.title,
-    required this.value,
-    this.size = kFontSize,
-    required this.icon,
-    this.color = Colors.white,
-  }) : super(key: key);
-
-  final String title;
-  final String value;
-  final double size;
-  final String icon;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 7),
-      alignment: Alignment.centerLeft,
-      width: double.infinity,
-      height: 40,
-      child: Row(
-        children: [
-          if (icon != '') Image.asset(icon, color: color, height: 30),
-          if (icon != '') const SizedBox(width: 12),
-          Expanded(
-            child: AutoSizeText.rich(
-              TextSpan(children: [
-                TextSpan(text: title, style: TextStyle(color: color)),
-                TextSpan(
-                    text: value,
-                    style:
-                        TextStyle(color: color, fontWeight: FontWeight.bold)),
-              ]),
-              //maxLines: 2,
-              minFontSize: size,
-              maxFontSize: size+1,
-              stepGranularity: 0.1,
-            ),
-          )
-        ],
-      ),
-    );
   }
 }

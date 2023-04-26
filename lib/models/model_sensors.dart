@@ -34,10 +34,10 @@ class Sensors {
     channelUsed = json['channelUsed'].cast<String>();
     controlledChannel = json['controlledChannel'].cast<String>() ?? [];
     downloadLastAdress = json['DownloadLastAddress'] ?? '0';
-    timeDownloadUtc = json['Download TimeStamp (UTC)'] ?? 'N/A';
-    logLastAddress = json['LogLastAddress'];
-    timeStampUtc = json['TimeStamp (UTC)'];
-    tensionDeBateria = json['Tension de bateria'] ?? "0.0V";
+    timeDownloadUtc = json['Download TimeStamp (UTC)'] ?? '24/12/2022  04:40:38';
+    logLastAddress = json['LogLastAddress'] ?? '0';
+    timeStampUtc = json['TimeStamp (UTC)'] ?? "24/12/2022  04:40:38";
+    tensionDeBateria = json['Tension de batería'] ?? "0.0V";
     //if (json['channels'] != null)
     {
       channels = <Channels>[];

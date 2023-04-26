@@ -65,7 +65,9 @@ List<SensorType> fillSensor(Sensors info) {
         sensorType.sensorName = 'CS451';
         sensorType.imageSensor = sensorsImagesList[5];
         sensorType.variableName.add('Nivel freático | Altura del arroyo');
-        sensorType.variableValue.add('${info.channels![i].valor!} mbns|mts');
+        double? value = double.tryParse(info.channels![i].valor!);
+        sensorType.variableValue.add(
+            '${info.channels![i].valor!} mbns| ${value! * 0.704} mts + C'); //* 0.704
         sensorType.lines = 2.3;
 
         break;
@@ -230,8 +232,9 @@ List<SensorType> fillSensor(Sensors info) {
   return sensors;
 }
 
-String subtractUTC(String time, int hours){
-  DateTime timeStamp = DateFormat("dd/MM/yyyy HH:mm:ss")
-      .parse(time).subtract(Duration(hours: hours));
-  return DateFormat('dd/MM/yyyy HH:mm:ss').format(timeStamp);
+String subtractUTC(String time, int hours) {
+    DateTime timeStamp = DateFormat("dd/MM/yyyy HH:mm:ss")
+        .parse(time)
+        .subtract(Duration(hours: hours));
+    return DateFormat('dd/MM/yyyy HH:mm:ss').format(timeStamp);
 }

@@ -1,19 +1,13 @@
 import 'dart:math';
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:tmra/common.dart';
 import 'package:tmra/constants.dart';
 import 'package:tmra/models/model_sensors.dart';
 import 'package:tmra/models/sensors_type.dart';
-import 'package:tmra/pages/download_page/download_page.dart';
 import 'package:tmra/pages/home_page/fill_sensors.dart';
-import 'package:tmra/pages/info_page/info_page.dart';
-import 'package:tmra/pages/snackbar.dart';
 import 'package:tmra/services/services_sensors.dart';
 import 'home_page_widgets.dart';
-import 'package:dio/dio.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key, required this.wifiName, required this.testMode})
@@ -100,8 +94,7 @@ class _HomePageState extends State<HomePage> {
                             InfoConfig(
                                 title: 'Time Stamp: ',
                                 value: widget.testMode
-                                    ? DateFormat('yyyy/MM/dd  HH:mm:ss')
-                                        .format(DateTime.now())
+                                    ? DateFormat('yyyy/MM/dd  HH:mm:ss').format(DateTime.now())
                                     : timeStampUtc, //info.timeStampUtc!,
                                 size: kFontSize - 1,
                                 icon: clockIcon),

@@ -37,7 +37,7 @@ class Sensors {
     timeDownloadUtc = json['Download TimeStamp (UTC)'] ?? '24/12/2022  04:40:38';
     logLastAddress = json['LogLastAddress'] ?? '0';
     timeStampUtc = json['TimeStamp (UTC)'] ?? "24/12/2022  04:40:38";
-    tensionDeBateria = json['Tension de batería'] ?? "0.0V";
+    tensionDeBateria = json['Tension de bateria'] ?? "0.0";
     //if (json['channels'] != null)
     {
       channels = <Channels>[];

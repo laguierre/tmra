@@ -8,13 +8,13 @@ import 'package:lecle_downloads_path_provider/lecle_downloads_path_provider.dart
 import 'package:path_provider/path_provider.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:tmra/common.dart';
 import 'package:tmra/constants.dart';
 import 'package:tmra/pages/snackbar.dart';
 import '../../models/model_sensors.dart';
 import '../widgets.dart';
 import '../home_page/fill_sensors.dart';
+import 'download_page_widgets.dart';
 
 class DownloadPage extends StatefulWidget {
   const DownloadPage({Key? key, required this.info, required this.testMode})
@@ -64,7 +64,7 @@ class _DownloadPageState extends State<DownloadPage> {
       extendBody: false,
       backgroundColor: Colors.black,
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15),
+        padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           child: Column(
@@ -107,8 +107,7 @@ class _DownloadPageState extends State<DownloadPage> {
                         function: () async {
                           final file = '$downloadsDirectoryPath/$fileName';
                           if (await File(file).exists()) {
-                            Share.shareXFiles([XFile(file)],
-                                text: 'Archivo descargado');
+                            shareSelectedFile(file);
                           }
                         },
                       )
@@ -170,10 +169,22 @@ class _DownloadPageState extends State<DownloadPage> {
                     if (!widget.testMode) {
                       await downloadFile(context);
                     } else {
-                      snackBar(context, 'No es posible en modo TEST');
+                      fileName =
+                          'EM${widget.info.em!.toUpperCase()}_${DateFormat('yyyyMMdd').format(DateTime.now())}_${infTextEditingController.text}_${supTextEditingController.text}.raw';
+                      snackBar(
+                          context,
+                          'Archivo simulado!!! ($fileName)',
+                          const Duration(
+                              milliseconds: kDurationSnackBar + 1000));
+                      infTextEditingController.text =
+                          supTextEditingController.text;
+                      timeDownload =
+                          DateFormat('dd/MM/yyyy HH:MM:ss').format(DateTime.now());
+                      setState(() {});
                     }
                   } else {
-                    snackBar(context, 'Límite INFERIOR es mayor a SUPERIOR');
+                    snackBar(context, 'Límite INFERIOR es mayor a SUPERIOR',
+                        const Duration(milliseconds: kDurationSnackBar));
                   }
                 })
             : Container()
@@ -197,7 +208,7 @@ class _DownloadPageState extends State<DownloadPage> {
 
     //var dir = await getApplicationDocumentsDirectory();
     downloadsDirectoryPath = (await DownloadsPath.downloadsDirectory())?.path;
-    print('DownloadsPath: $downloadsDirectoryPath');
+    //print('DownloadsPath: $downloadsDirectoryPath');
     String address =
         'http://192.168.4.1/downloadFile.html?inf=${infTextEditingController.text}&sup=${supTextEditingController.text}';
 
@@ -221,7 +232,8 @@ class _DownloadPageState extends State<DownloadPage> {
         if (received / total == 1) {
           Future.delayed(const Duration(seconds: 1), () async {
             debugPrint('Archivo guardado $downloadsDirectoryPath');
-            snackBar(context, 'Archivo guardado $downloadsDirectoryPath');
+            snackBar(context, 'Archivo guardado $downloadsDirectoryPath',
+                const Duration(milliseconds: kDurationSnackBar));
             setState(() {
               isSharing = true;
             });
@@ -263,8 +275,7 @@ class _DownloadPageState extends State<DownloadPage> {
                       ElevatedButton.styleFrom(backgroundColor: Colors.green),
                   onPressed: () async {
                     if (await File(file).exists()) {
-                      Share.shareXFiles([XFile(file)],
-                          text: 'Archivo descargado');
+                      shareSelectedFile(file);
                     }
                   },
                   child: const Text('Compartir')),
@@ -278,160 +289,5 @@ class _DownloadPageState extends State<DownloadPage> {
             ],
           );
         });
-  }
-}
-
-class InfoLine extends StatelessWidget {
-  const InfoLine({Key? key, required this.text, required this.boldText})
-      : super(key: key);
-  final String text, boldText;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        const Spacer(),
-        Text(text,
-            style:
-                const TextStyle(color: Colors.white, fontSize: kFontSize - 2)),
-        Text(boldText,
-            style: const TextStyle(
-                color: Colors.white,
-                fontSize: kFontSize - 2,
-                fontWeight: FontWeight.bold)),
-      ],
-    );
-  }
-}
-
-class ProgressBar extends StatelessWidget {
-  const ProgressBar({
-    super.key,
-    required this.receivedDataPercent,
-    required this.receivedData,
-    required this.totalData,
-  });
-
-  final double receivedDataPercent;
-  final int receivedData;
-  final int totalData;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        LinearPercentIndicator(
-          padding: const EdgeInsets.all(0),
-          animateFromLastPercent: true,
-          barRadius: const Radius.circular(20),
-          lineHeight: 15,
-          percent: receivedDataPercent,
-          backgroundColor: Colors.white,
-          progressColor: Colors.yellowAccent,
-        ),
-        const SizedBox(height: 20),
-        Text("Porcentaje: ${(receivedDataPercent * 100).toStringAsFixed(1)}%",
-            style: const TextStyle(
-                fontSize: 18,
-                color: Colors.white,
-                fontWeight: FontWeight.bold)),
-        const SizedBox(height: 10),
-        Text("Recibido: $receivedData / Total: $totalData",
-            style: const TextStyle(fontSize: 18, color: Colors.white)),
-      ],
-    );
-  }
-}
-
-class CustomButton extends StatelessWidget {
-  const CustomButton(
-      {Key? key,
-      required this.function,
-      required this.icon,
-      required this.text,
-      this.kPadding = 15})
-      : super(key: key);
-
-  final VoidCallback function;
-  final String icon;
-  final String text;
-  final double kPadding;
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Row(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-                color: Colors.yellowAccent,
-                borderRadius: BorderRadius.circular(15)),
-            width: MediaQuery.of(context).size.width * 0.45 - kPadding,
-            child: IconButton(
-                onPressed: function,
-                icon: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Image.asset(icon, color: Colors.black),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: AutoSizeText(text,
-                          stepGranularity: 0.1,
-                          maxLines: 1,
-                          maxFontSize: 24,
-                          minFontSize: 16,
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                          )),
-                    ),
-                  ],
-                )),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class CustomFieldText extends StatelessWidget {
-  const CustomFieldText({
-    Key? key,
-    required this.textEditingController,
-  }) : super(key: key);
-
-  final TextEditingController textEditingController;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      alignment: Alignment.center,
-      height: 50,
-      decoration: BoxDecoration(
-          color: Colors.white, borderRadius: BorderRadius.circular(20)),
-      child: TextField(
-        textAlign: TextAlign.right,
-        onChanged: (text) {},
-        controller: textEditingController,
-        keyboardType: TextInputType.number,
-        decoration: const InputDecoration(
-          focusedBorder: InputBorder.none,
-          enabledBorder: InputBorder.none,
-          border: InputBorder.none,
-          hintStyle:
-              TextStyle(color: Colors.grey, decoration: TextDecoration.none),
-          contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-          isDense: true,
-        ),
-        style: const TextStyle(
-          fontSize: 26.0,
-          decoration: TextDecoration.none,
-          color: Colors.black,
-        ),
-      ),
-    );
   }
 }

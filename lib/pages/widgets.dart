@@ -1,8 +1,25 @@
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import '../constants.dart';
 import '../models/model_sensors.dart';
+
+class StationName extends StatelessWidget {
+  const StationName({
+    super.key,
+    required this.info,
+  });
+
+  final Sensors info;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text('Estación ${info.em}',
+        style: const TextStyle(
+            color: Colors.white,
+            fontSize: kFontSize + 4,
+            fontWeight: FontWeight.bold));
+  }
+}
 
 class TopAppBarBack extends StatelessWidget {
   const TopAppBarBack({
@@ -15,24 +32,10 @@ class TopAppBarBack extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 50),
-      child: Row(
-        children: [
-          IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: Image.asset(
-                'lib/assets/icons/back.png',
-                color: Colors.white,
-              )),
-          const SizedBox(width: 10),
-          Text('Estación ${info.em}',
-              style: const TextStyle(
-                  color: Colors.white, fontSize: kFontSize + 3)),
-        ],
-      ),
-    );
+        margin: const EdgeInsets.only(top: 50),
+        child: Row(
+          children: [StationName(info: info)],
+        ));
   }
 }
 
@@ -56,30 +59,28 @@ class InfoConfig extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 7),
-      alignment: Alignment.centerLeft,
-      width: double.infinity,
-      height: 40,
-      child: Row(
-        children: [
-          if (icon != '') Image.asset(icon, color: color, height: 30),
-          if (icon != '') const SizedBox(width: 12),
-          Expanded(
-            child: AutoSizeText.rich(
+        margin: const EdgeInsets.only(bottom: 7),
+        alignment: Alignment.centerLeft,
+        width: double.infinity,
+        height: 40,
+        child: Row(
+          children: [
+            if (icon != '') Image.asset(icon, color: color, height: 30),
+            if (icon != '') const SizedBox(width: 12),
+            Expanded(
+                child: AutoSizeText.rich(
               TextSpan(children: [
                 TextSpan(text: title, style: TextStyle(color: color)),
                 TextSpan(
                     text: value,
                     style:
-                    TextStyle(color: color, fontWeight: FontWeight.bold)),
+                        TextStyle(color: color, fontWeight: FontWeight.bold)),
               ]),
               minFontSize: size,
               maxFontSize: size + 1,
               stepGranularity: 0.1,
-            ),
-          )
-        ],
-      ),
-    );
+            ))
+          ],
+        ));
   }
 }

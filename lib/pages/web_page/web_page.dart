@@ -321,7 +321,6 @@ class SampleMenu extends StatelessWidget {
   }
 
   Future<void> _onDoPostRequest() {
-    print('Pedir');
     return webViewController.loadRequest(
       Uri.parse('https://httpbin.org/post'),
       method: LoadRequestMethod.post,

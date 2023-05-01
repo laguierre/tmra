@@ -2,6 +2,10 @@ const urlBase = '192.168.4.1';
 const kFontSize = 19.0;
 const kPadding = 20.0;
 int kDurationSplash = 1500;
+const kPageCount = 3;
+const kPaddingBottomScrollViews = 100.0;
+const kDotHeight = 16.0;
+const kDurationSnackBar = 1000;
 
 List<String> sensorsImagesList = [
   'lib/assets/images/sensors/pmb25.png',        //0 *
@@ -40,5 +44,6 @@ const splashImage = 'lib/assets/images/screensplash/screensplash.png';
 const redimecLogo = 'lib/assets/images/screensplash/redimec.png';
 const researchLogo = 'lib/assets/images/screensplash/research.png';
 const ihredaLogo = 'lib/assets/icons/logo.png';
+const screenShotLogo = 'lib/assets/icons/screenshot.png';
 
 

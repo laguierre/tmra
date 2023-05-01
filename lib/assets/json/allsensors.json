@@ -24,7 +24,7 @@
     "0x80",
     "0x360"
   ],
-  "Tension de bateria": "12.00",
+  "Tension de bateria":"12.00",
   "channels": [
     {
       "ch": "0",

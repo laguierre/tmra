@@ -1,25 +1,41 @@
 import 'package:filesystem_picker/filesystem_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:lecle_downloads_path_provider/lecle_downloads_path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
 
 Future<void> openSharingFile(BuildContext context) async {
   var rootPath = await DownloadsPath.downloadsDirectory();
-  print('Folder: $rootPath');
-  String? path = await FilesystemPicker.openDialog(
+  //print('Folder: $rootPath');
+  String? fileToShare = await FilesystemPicker.openDialog(
     fileTileSelectMode: FileTileSelectMode.wholeTile,
-    title: 'Archivos descargados',
+    theme: FilesystemPickerTheme(
+      topBar: FilesystemPickerTopBarThemeData(
+        backgroundColor: Colors.white30,
+      ),
+    ),
+    title: 'Archivos descargados [raw]',
     context: context,
     rootDirectory: rootPath!,
     fsType: FilesystemType.file,
     pickText: 'Save file to this folder',
-    folderIconColor: Colors.black,
+    folderIconColor: Colors.white,
     allowedExtensions: ['.raw'],
+    requestPermission: requestPermissionToRead,
   );
-  print('Picker: $path');
-  if (path!.isNotEmpty) {
-    Share.shareXFiles([XFile(path)], text: 'Archivo descargado');
+  if (fileToShare!.isNotEmpty) {
+    shareSelectedFile(fileToShare);
   }
+}
+
+void shareSelectedFile(String file){
+  // TODO: Cuando se cambió de versión el ShareXFile, comenzaron los errores en build. En la actualización el soporte del ShareXFile, dejo de funcionar
+  Share.shareFiles([file]);
+  //Share.shareXFiles(XFile(fileToShare), text: 'Archivo descargado');
+}
+
+Future<bool> requestPermissionToRead() async {
+  return await Permission.manageExternalStorage.request().isGranted;
 }
 
 class CircleCustomButton extends StatelessWidget {

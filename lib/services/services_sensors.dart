@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:tmra/models/model_sensors.dart';
 import '../constants.dart';
@@ -23,16 +24,16 @@ class SensorsTMRAServices {
             options: Options(
                 sendTimeout: const Duration(seconds: 20),
                 responseType: ResponseType.plain));
-        print(response.statusCode);
+        //print(response.statusCode);
         if (response.statusCode == 200) {
           response.headers.value("application/json");
           var decodedData = await json.decode(response.data);
           info = Sensors.fromJson(decodedData);
-          print(info.timeStampUtc);
+          //print(info.timeStampUtc);
           //print(response);
         }
       } catch (e) {
-        print('Error ->: $e');
+        debugPrint('Error ->: $e');
       }
     }
     return info;

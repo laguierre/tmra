@@ -1,14 +1,14 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
+import 'package:screenshot/screenshot.dart';
 import 'package:tmra/constants.dart';
+import 'package:tmra/pages/widgets.dart';
 import '../../models/model_sensors.dart';
 import '../../models/sensors_type.dart';
-import '../download_page/download_page.dart';
-import '../info_page/info_page.dart';
 import '../snackbar.dart';
 
 class SensorCard extends StatelessWidget {
@@ -145,20 +145,18 @@ class TopAppBar extends StatelessWidget {
     Key? key,
     required this.info,
     required this.testMode,
+    required this.screenshotController,
   }) : super(key: key);
 
   final Sensors info;
   final bool testMode;
+  final ScreenshotController screenshotController;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text('Estación ${info.em}',
-            style: const TextStyle(
-                color: Colors.white,
-                fontSize: kFontSize + 4,
-                fontWeight: FontWeight.bold)),
+        StationName(info: info),
         const Spacer(),
         IconButton(
             onPressed: () async {
@@ -167,43 +165,22 @@ class TopAppBar extends StatelessWidget {
               if (!testMode) {
                 Response<dynamic> response = await sendUTCDate(context);
               } else {
-                snackBar(context, 'TEST - Envio de TimeStamp');
+                snackBar(context, 'TEST - Envio de TimeStamp',
+                    const Duration(milliseconds: kDurationSnackBar));
               }
             },
             icon: Image.asset(
               reloadClockIcon,
               color: Colors.white,
             )),
-        const SizedBox(width: 10),
+        const SizedBox(width: 5),
         IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                PageTransition(
-                    type: PageTransitionType.rightToLeft,
-                    child: InfoBoards(info: info),
-                    inheritTheme: true,
-                    ctx: context),
-              );
+            onPressed: () async {
+              final image = await screenshotController.capture();
             },
             icon: Image.asset(
-              infoIcon,
-              color: Colors.white,
-            )),
-        const SizedBox(width: 10),
-        IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                PageTransition(
-                    type: PageTransitionType.rightToLeft,
-                    child: DownloadPage(info: info, testMode: testMode),
-                    inheritTheme: true,
-                    ctx: context),
-              );
-            },
-            icon: Image.asset(
-              saveIcon,
+              screenShotLogo,
+              fit: BoxFit.fitHeight,
               color: Colors.white,
             )),
       ],
@@ -274,7 +251,56 @@ Future<Response<dynamic>> sendUTCDate(BuildContext context) async {
   final dio = Dio();
   final response = await dio.get(url.toString());
   if (response.statusCode == 200) {
-    snackBar(context, 'Envio de TimeStamp');
+    snackBar(context, 'Envio de TimeStamp',
+        const Duration(milliseconds: kDurationSnackBar));
   }
   return response;
+}
+
+class GlassmorphismContainer extends StatelessWidget {
+  const GlassmorphismContainer({
+    super.key,
+    this.width = double.infinity,
+    this.height = double.infinity,
+    required this.widget,
+  });
+
+  final double width;
+  final double height;
+  final Widget widget;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(40),
+        color: Colors.white.withOpacity(0.1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.white.withOpacity(0.1),
+            spreadRadius: 1,
+            blurRadius: 10,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(40),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.05),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Center(
+              child: widget,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

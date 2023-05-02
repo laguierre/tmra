@@ -4,8 +4,11 @@ import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:tmra/constants.dart';
+import 'package:tmra/pages/home_page/home_page.dart';
 import 'package:tmra/pages/widgets.dart';
 import '../../models/model_sensors.dart';
 import '../../models/sensors_type.dart';
@@ -146,11 +149,16 @@ class TopAppBar extends StatelessWidget {
     required this.info,
     required this.testMode,
     required this.screenshotController,
+    required this.timeDownload,
+    required this.timeStampUtc,
+    required this.sensors,
   }) : super(key: key);
 
   final Sensors info;
   final bool testMode;
   final ScreenshotController screenshotController;
+  final String timeDownload, timeStampUtc;
+  final List<SensorType> sensors;
 
   @override
   Widget build(BuildContext context) {
@@ -176,7 +184,29 @@ class TopAppBar extends StatelessWidget {
         const SizedBox(width: 5),
         IconButton(
             onPressed: () async {
-              final image = await screenshotController.capture();
+              double pixelRatio = MediaQuery.of(context).devicePixelRatio;
+              final image = await screenshotController.captureFromWidget(
+                  EMInfo(
+                      info: info,
+                      testMode: testMode,
+                      screenshotController: screenshotController,
+                      timeDownload: timeDownload,
+                      timeStampUtc: timeStampUtc,
+                      sensors: sensors),
+                context: context,
+                pixelRatio: pixelRatio,
+              );
+              if (image == null) return;
+
+              ///Save screenshot.
+              await [Permission.storage].request();
+              final time = DateTime.now()
+                  .toIso8601String()
+                  .replaceAll('.', '-')
+                  .replaceAll(':', '-');
+              final name = 'screenshot_$time';
+              final result =
+                  await ImageGallerySaver.saveImage(image, name: name);
             },
             icon: Image.asset(
               screenShotLogo,

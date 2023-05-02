@@ -1,7 +1,9 @@
 import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tmra/common.dart';
@@ -73,6 +75,7 @@ class _HomePageState extends State<HomePage> {
                 physics: const BouncingScrollPhysics(),
                 controller: _pageController,
                 children: [
+                  ///Page 1
                   RefreshIndicator(
                       strokeWidth: 3,
                       displacement:
@@ -84,78 +87,15 @@ class _HomePageState extends State<HomePage> {
                       },
                       child: sensors.isNotEmpty
                           ? Screenshot(
-                              controller: screenshotController,
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        kPadding, 50, kPadding, kPadding),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        TopAppBar(
-                                          info: info,
-                                          testMode: widget.testMode,
-                                          screenshotController:
-                                              screenshotController,
-                                        ),
-                                        const Divider(
-                                          color: Colors.white,
-                                        ),
-                                        const SizedBox(height: 10),
-                                        InfoConfig(
-                                          title: 'Batería: ',
-                                          value: '${info.tensionDeBateria}V',
-                                          size: kFontSize,
-                                          icon: batteryIcon,
-                                        ),
-                                        InfoConfig(
-                                            title: 'Último valor bajado: ',
-                                            value:
-                                                '${info.downloadLastAdress!} \n[$timeDownload]',
-                                            size: kFontSize - 1.5,
-                                            icon: downloadIcon),
-                                        InfoConfig(
-                                            title: 'Último valor grabado: ',
-                                            value: info.logLastAddress!,
-                                            size: kFontSize,
-                                            icon: cpuIcon),
-                                        InfoConfig(
-                                            title: 'Time Stamp: ',
-                                            value: widget.testMode
-                                                ? DateFormat(
-                                                        'yyyy/MM/dd  HH:mm:ss')
-                                                    .format(DateTime.now())
-                                                : timeStampUtc, //info.timeStampUtc!,
-                                            size: kFontSize - 1,
-                                            icon: clockIcon),
-                                      ],
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: ListView.builder(
-                                        padding: const EdgeInsets.only(
-                                            top: 0,
-                                            bottom: kPaddingBottomScrollViews,
-                                            left: 5,
-                                            right: 5),
-                                        physics: const BouncingScrollPhysics(),
-                                        itemCount: sensors.length,
-                                        //info.channels!.length,
-                                        itemBuilder: (context, index) {
-                                          return Padding(
-                                            padding: const EdgeInsets.only(
-                                                bottom: 20),
-                                            child: SensorCard(
-                                                info: sensors[index],
-                                                index: index),
-                                          );
-                                        }),
-                                  ),
-                                ],
-                              ),
-                            )
+                        controller: screenshotController,
+                            child: EMInfo(
+                                info: info,
+                                testMode: widget.testMode,
+                                screenshotController: screenshotController,
+                                timeDownload: timeDownload,
+                                timeStampUtc: timeStampUtc,
+                                sensors: sensors),
+                          )
                           : Stack(
                               children: [
                                 Center(
@@ -186,7 +126,10 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ],
                             )),
+
+                  ///Page 2
                   InfoBoards(info: info),
+                  ///Page 3
                   DownloadPage(info: info, testMode: widget.testMode)
                 ]),
             Positioned(
@@ -208,5 +151,90 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ));
+  }
+}
+
+class EMInfo extends StatelessWidget {
+  const EMInfo({
+    super.key,
+    required this.info,
+    required this.testMode,
+    required this.screenshotController,
+    required this.timeDownload,
+    required this.timeStampUtc,
+    required this.sensors,
+  });
+
+  final Sensors info;
+  final bool testMode;
+  final ScreenshotController screenshotController;
+  final String timeDownload;
+  final String timeStampUtc;
+  final List<SensorType> sensors;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(kPadding, 50, kPadding, kPadding),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TopAppBar(
+                info: info,
+                testMode: testMode,
+                screenshotController: screenshotController,
+                timeDownload: timeDownload,
+                timeStampUtc: timeStampUtc,
+                sensors: sensors,
+              ),
+              const Divider(
+                color: Colors.white,
+              ),
+              const SizedBox(height: 10),
+              InfoConfig(
+                title: 'Batería: ',
+                value: '${info.tensionDeBateria}V',
+                size: kFontSize,
+                icon: batteryIcon,
+              ),
+              InfoConfig(
+                  title: 'Último valor bajado: ',
+                  value: '${info.downloadLastAdress!} \n[${timeDownload}]',
+                  size: kFontSize - 1.5,
+                  icon: downloadIcon),
+              InfoConfig(
+                  title: 'Último valor grabado: ',
+                  value: info.logLastAddress!,
+                  size: kFontSize,
+                  icon: cpuIcon),
+              InfoConfig(
+                  title: 'Time Stamp: ',
+                  value: testMode
+                      ? DateFormat('yyyy/MM/dd  HH:mm:ss')
+                          .format(DateTime.now())
+                      : timeStampUtc, //info.timeStampUtc!,
+                  size: kFontSize - 1,
+                  icon: clockIcon),
+            ],
+          ),
+        ),
+        Expanded(
+          child: ListView.builder(
+              padding: const EdgeInsets.only(
+                  top: 0, bottom: kPaddingBottomScrollViews, left: 5, right: 5),
+              physics: const BouncingScrollPhysics(),
+              itemCount: sensors.length,
+              //info.channels!.length,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: SensorCard(info: sensors[index], index: index),
+                );
+              }),
+        ),
+      ],
+    );
   }
 }

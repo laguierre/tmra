@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:intl/intl.dart';
 import 'package:lecle_downloads_path_provider/lecle_downloads_path_provider.dart';
 import 'package:path_provider/path_provider.dart';
@@ -16,11 +17,10 @@ import '../home_page/fill_sensors.dart';
 import 'download_page_widgets.dart';
 
 class DownloadPage extends StatefulWidget {
-  const DownloadPage(
-      {Key? key,
-      required this.info,
-      required this.testMode,
-      })
+  const DownloadPage({Key? key,
+    required this.info,
+    required this.testMode,
+  })
       : super(key: key);
 
   final Sensors info;
@@ -34,7 +34,8 @@ class _DownloadPageState extends State<DownloadPage> {
   late TextEditingController infTextEditingController;
   late TextEditingController supTextEditingController;
   double receivedDataPercent = 0.0;
-  int receivedData = 0, totalData = 0;
+  int receivedData = 0,
+      totalData = 0;
   bool isDownload = false;
   String? downloadsDirectoryPath;
   String fileName = '';
@@ -76,17 +77,45 @@ class _DownloadPageState extends State<DownloadPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TMRATopAppBar(
-                  info: widget.info,
-                  screenshotController: screenshotController,
-                  fileName: 'download',
-                  widget: null,
-                ),
+                Container(
+                    margin: const EdgeInsets.only(top: 50),
+                    child: Row(
+                      children: [
+                        StationName(info: widget.info),
+                        const Spacer(),
+                        IconButton(
+                            onPressed: () async {
+                              double pixelRatio = MediaQuery
+                                  .of(context)
+                                  .devicePixelRatio;
+                              final image = await screenshotController.capture(
+                                  pixelRatio: pixelRatio);
+                              //Save screenshot.
+                              await [Permission.storage].request();
+                              final time = DateTime.now()
+                                  .toIso8601String()
+                                  .replaceAll('.', '-')
+                                  .replaceAll(':', '-');
+                              final name = 'EM${widget.info.em}_download_$time';
+                              final result =
+                              await ImageGallerySaver.saveImage(
+                                  image!, name: name);
+                              snackBar(context, 'Captura guardada',
+                                  const Duration(
+                                      milliseconds: kDurationSnackBar + 1000));
+                            },
+                            icon: Image.asset(
+                              screenShotLogo,
+                              fit: BoxFit.fitHeight,
+                              color: Colors.white,
+                            ))
+                      ],
+                    )),
                 const SizedBox(height: 30),
                 const Text(
                   'Índice límite INFERIOR',
                   style:
-                      TextStyle(color: Colors.white, fontSize: kFontSize),
+                  TextStyle(color: Colors.white, fontSize: kFontSize),
                 ),
                 const SizedBox(height: 15),
                 CustomFieldText(
@@ -95,7 +124,7 @@ class _DownloadPageState extends State<DownloadPage> {
                 const Text(
                   'Índice límite SUPERIOR',
                   style:
-                      TextStyle(color: Colors.white, fontSize: kFontSize),
+                  TextStyle(color: Colors.white, fontSize: kFontSize),
                 ),
                 const SizedBox(height: 15),
                 CustomFieldText(
@@ -111,23 +140,21 @@ class _DownloadPageState extends State<DownloadPage> {
                     text: 'Último índice grabado: ',
                     boldText: widget.info.logLastAddress!),
                 const SizedBox(height: 45),
-                downloadButtons(context, widget.info.wifi![0]),
+                //downloadButtons(context, widget.info.wifi![0]),
                 const SizedBox(height: 40),
                 Row(children: [
                   const Spacer(),
-                  isSharing
-                      ? CircleCustomButton(
-                          sizeButton: sizeButton,
-                          icon: sharingIcon,
-                          function: () async {
-                            final file =
-                                '$downloadsDirectoryPath/$fileName';
-                            if (await File(file).exists()) {
-                              shareSelectedFile(file);
-                            }
-                          },
-                        )
-                      : Container(),
+                  Visibility(visible: isSharing, child: CircleCustomButton(
+                    sizeButton: sizeButton,
+                    icon: sharingIcon,
+                    function: () async {
+                      final file =
+                          '$downloadsDirectoryPath/$fileName';
+                      if (await File(file).exists()) {
+                        shareSelectedFile(file);
+                      }
+                    },
+                  )),
                   const SizedBox(width: 20),
                   CircleCustomButton(
                     sizeButton: sizeButton,
@@ -140,9 +167,9 @@ class _DownloadPageState extends State<DownloadPage> {
                 const SizedBox(height: 20),
                 isDownload
                     ? ProgressBar(
-                        receivedDataPercent: receivedDataPercent,
-                        receivedData: receivedData,
-                        totalData: totalData)
+                    receivedDataPercent: receivedDataPercent,
+                    receivedData: receivedData,
+                    totalData: totalData)
                     : Container(),
               ],
             ),
@@ -174,36 +201,38 @@ class _DownloadPageState extends State<DownloadPage> {
         version >= 2.4 ? const SizedBox(width: 30) : Container(),
         version >= 2.4
             ? CustomButton(
-                icon: 'lib/assets/icons/save.png',
-                text: 'Bajar archivo',
-                function: () async {
-                  FocusScopeNode currentFocus = FocusScope.of(context);
-                  if (!currentFocus.hasPrimaryFocus) {
-                    currentFocus.unfocus();
-                  }
-                  if (int.parse(supTextEditingController.text) >
-                      int.parse(infTextEditingController.text)) {
-                    if (!widget.testMode) {
-                      await downloadFile(context);
-                    } else {
-                      fileName =
-                          'EM${widget.info.em!.toUpperCase()}_${DateFormat('yyyyMMdd').format(DateTime.now())}_${infTextEditingController.text}_${supTextEditingController.text}.raw';
-                      snackBar(
-                          context,
-                          'Archivo simulado!!! ($fileName)',
-                          const Duration(
-                              milliseconds: kDurationSnackBar + 1000));
-                      infTextEditingController.text =
-                          supTextEditingController.text;
-                      timeDownload = DateFormat('dd/MM/yyyy HH:MM:ss')
-                          .format(DateTime.now());
-                      setState(() {});
-                    }
-                  } else {
-                    snackBar(context, 'Límite INFERIOR es mayor a SUPERIOR',
-                        const Duration(milliseconds: kDurationSnackBar));
-                  }
-                })
+            icon: 'lib/assets/icons/save.png',
+            text: 'Bajar archivo',
+            function: () async {
+              FocusScopeNode currentFocus = FocusScope.of(context);
+              if (!currentFocus.hasPrimaryFocus) {
+                currentFocus.unfocus();
+              }
+              if (int.parse(supTextEditingController.text) >
+                  int.parse(infTextEditingController.text)) {
+                if (!widget.testMode) {
+                  await downloadFile(context);
+                } else {
+                  fileName =
+                  'EM${widget.info.em!.toUpperCase()}_${DateFormat('yyyyMMdd')
+                      .format(DateTime.now())}_${infTextEditingController
+                      .text}_${supTextEditingController.text}.raw';
+                  snackBar(
+                      context,
+                      'Archivo simulado!!! ($fileName)',
+                      const Duration(
+                          milliseconds: kDurationSnackBar + 1000));
+                  infTextEditingController.text =
+                      supTextEditingController.text;
+                  timeDownload = DateFormat('dd/MM/yyyy HH:MM:ss')
+                      .format(DateTime.now());
+                  setState(() {});
+                }
+              } else {
+                snackBar(context, 'Límite INFERIOR es mayor a SUPERIOR',
+                    const Duration(milliseconds: kDurationSnackBar));
+              }
+            })
             : Container()
       ],
     );
@@ -215,7 +244,9 @@ class _DownloadPageState extends State<DownloadPage> {
     ///Ver aca
     var hasStoragePermission = await Permission.manageExternalStorage.isGranted;
     if (!hasStoragePermission) {
-      final status = await Permission.manageExternalStorage.request().isGranted;
+      final status = await Permission.manageExternalStorage
+          .request()
+          .isGranted;
       debugPrint('Has Permission');
     } else {
       debugPrint('Has not Permission!!!');
@@ -227,10 +258,13 @@ class _DownloadPageState extends State<DownloadPage> {
     downloadsDirectoryPath = (await DownloadsPath.downloadsDirectory())?.path;
     //print('DownloadsPath: $downloadsDirectoryPath');
     String address =
-        'http://192.168.4.1/downloadFile.html?inf=${infTextEditingController.text}&sup=${supTextEditingController.text}';
+        'http://192.168.4.1/downloadFile.html?inf=${infTextEditingController
+        .text}&sup=${supTextEditingController.text}';
 
     fileName =
-        'EM${widget.info.em!.toUpperCase()}_${DateFormat('yyyyMMdd').format(DateTime.now())}_${infTextEditingController.text}_${supTextEditingController.text}.raw';
+    'EM${widget.info.em!.toUpperCase()}_${DateFormat('yyyyMMdd').format(
+        DateTime.now())}_${infTextEditingController
+        .text}_${supTextEditingController.text}.raw';
 
     final Dio dio = Dio();
     final response = await dio.download(
@@ -282,14 +316,14 @@ class _DownloadPageState extends State<DownloadPage> {
             actions: [
               ElevatedButton(
                   style:
-                      ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                  ElevatedButton.styleFrom(backgroundColor: Colors.green),
                   onPressed: () async {
                     openSharingFile(context);
                   },
                   child: const Text('Abrir en explorador')),
               ElevatedButton(
                   style:
-                      ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                  ElevatedButton.styleFrom(backgroundColor: Colors.green),
                   onPressed: () async {
                     if (await File(file).exists()) {
                       shareSelectedFile(file);
@@ -298,7 +332,7 @@ class _DownloadPageState extends State<DownloadPage> {
                   child: const Text('Compartir')),
               ElevatedButton(
                   style:
-                      ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                  ElevatedButton.styleFrom(backgroundColor: Colors.green),
                   onPressed: () {
                     Navigator.pop(context);
                   },

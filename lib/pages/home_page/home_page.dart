@@ -60,31 +60,9 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  void _captureScreenshot() async {
-    RenderRepaintBoundary boundary =
-        _key.currentContext!.findRenderObject() as RenderRepaintBoundary;
-    if (boundary.debugNeedsPaint) {
-      Timer(const Duration(seconds: 1), () => _captureScreenshot());
-      return null;
-    }
-    ui.Image image = await boundary.toImage();
-    ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-    if (ByteData != null) {
-      Uint8List pngInt8 = byteData!.buffer.asUint8List();
-      final saveImage = await ImageGallerySaver.saveImage(
-          Uint8List.fromList(pngInt8),
-          quality: 90,
-          name: 'prueba - ${DateTime.now()}.png');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    double heightScreen = MediaQuery.of(context).size.height;
     double widthScreen = MediaQuery.of(context).size.width;
-    double dg =
-        sqrt((widthScreen * widthScreen) + (heightScreen * heightScreen));
-
     return Scaffold(
         backgroundColor: Colors.black,
         extendBody: true,
@@ -108,7 +86,7 @@ class _HomePageState extends State<HomePage> {
                       child: sensors.isNotEmpty
                           ? Screenshot(
                               controller: screenshotController,
-                              child: EMInfo(
+                              child: EMInfoSensorInfo(
                                   info: info,
                                   testMode: widget.testMode,
                                   screenshotController: screenshotController,
@@ -120,8 +98,7 @@ class _HomePageState extends State<HomePage> {
                               children: [
                                 Center(
                                   child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: const [
                                       Text('Espere...',
                                           style: TextStyle(
@@ -165,8 +142,8 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class EMInfo extends StatelessWidget {
-  const EMInfo({
+class EMInfoSensorInfo extends StatelessWidget {
+  const EMInfoSensorInfo({
     super.key,
     required this.info,
     required this.testMode,
@@ -188,50 +165,49 @@ class EMInfo extends StatelessWidget {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(kPadding, 50, kPadding, kPadding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              HomePageTopAppBar(
-                info: info,
-                testMode: testMode,
-                screenshotController: screenshotController,
-                timeDownload: timeDownload,
-                timeStampUtc: timeStampUtc,
-                sensors: sensors,
-              ),
-              const Divider(
-                color: Colors.white,
-              ),
-              const SizedBox(height: 10),
-              InfoConfig(
-                title: 'Batería: ',
-                value: '${info.tensionDeBateria}V',
-                size: kFontSize,
-                icon: batteryIcon,
-              ),
-              InfoConfig(
-                  title: 'Último valor bajado: ',
-                  value: '${info.downloadLastAdress!} \n[${timeDownload}]',
-                  size: kFontSize - 1.5,
-                  icon: downloadIcon),
-              InfoConfig(
-                  title: 'Último valor grabado: ',
-                  value: info.logLastAddress!,
-                  size: kFontSize,
-                  icon: cpuIcon),
-              InfoConfig(
-                  title: 'Time Stamp: ',
-                  value: testMode
-                      ? DateFormat(
-                      'yyyy/MM/dd  HH:mm:ss') //TODO chequear el doble espacio acá//
-                      .format(DateTime.now())
-                      : timeStampUtc, //info.timeStampUtc!,
-                  size: kFontSize - 1,
-                  icon: clockIcon),
-            ],
-          ),
-        ),
+            padding:
+                const EdgeInsets.fromLTRB(kPadding, 50, kPadding, kPadding),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                HomePageTopAppBar(
+                  info: info,
+                  testMode: testMode,
+                  screenshotController: screenshotController,
+                  timeDownload: timeDownload,
+                  timeStampUtc: timeStampUtc,
+                  sensors: sensors,
+                ),
+                const Divider(
+                  color: Colors.white,
+                ),
+                const SizedBox(height: 10),
+                InfoConfig(
+                    title: 'Batería: ',
+                    value: '${info.tensionDeBateria}V',
+                    size: kFontSize,
+                    icon: batteryIcon),
+                InfoConfig(
+                    title: 'Último valor bajado: ',
+                    value: '${info.downloadLastAdress!} \n[${timeDownload}]',
+                    size: kFontSize - 1.5,
+                    icon: downloadIcon),
+                InfoConfig(
+                    title: 'Último valor grabado: ',
+                    value: info.logLastAddress!,
+                    size: kFontSize,
+                    icon: cpuIcon),
+                InfoConfig(
+                    title: 'Time Stamp: ',
+                    value: testMode
+                        ? DateFormat(
+                                'yyyy/MM/dd HH:mm:ss') //TODO chequear el doble espacio acá//
+                            .format(DateTime.now())
+                        : timeStampUtc, //info.timeStampUtc!,
+                    size: kFontSize - 1,
+                    icon: clockIcon),
+              ],
+            )),
         Expanded(
           child: EMSensors(sensors: sensors),
         ),

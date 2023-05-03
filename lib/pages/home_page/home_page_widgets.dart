@@ -163,6 +163,7 @@ class HomePageTopAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     return Row(
       children: [
         StationName(info: info),
@@ -185,23 +186,24 @@ class HomePageTopAppBar extends StatelessWidget {
         const SizedBox(width: 5),
         IconButton(
             onPressed: () async {
+              snackBar(
+                  context,
+                  'Comenzando captura...',
+                  const Duration(
+                      milliseconds: kDurationSnackBar + 1000));
               double pixelRatio = MediaQuery.of(context).devicePixelRatio;
               final image = await screenshotController.captureFromWidget(
-                 EMInfo(
+                 EMInfoSensorInfo(
                       info: info,
                       testMode: testMode,
                       screenshotController: screenshotController,
                       timeDownload: timeDownload,
                       timeStampUtc: timeStampUtc,
                       sensors: sensors),
-
                 context: context,
                 pixelRatio: pixelRatio,
+              targetSize: size * 5, ///Tamaño de la pantalla
               );
-              if (image == null) {
-                return;
-              }
-
               ///Save screenshot.
               await [Permission.storage].request();
               final time = DateTime.now()
@@ -211,6 +213,11 @@ class HomePageTopAppBar extends StatelessWidget {
               final name = 'screenshot_$time';
               final result =
                   await ImageGallerySaver.saveImage(image, name: name);
+              snackBar(
+                  context,
+                  'Captura guardada',
+                  const Duration(
+                      milliseconds: kDurationSnackBar + 1000));
             },
             icon: Image.asset(
               screenShotLogo,

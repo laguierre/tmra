@@ -26,69 +26,6 @@ class StationName extends StatelessWidget {
   }
 }
 
-///Muestra el Nombre de la Estación y el botón de captura de pantalla
-///
-class TMRATopAppBar extends StatelessWidget {
-  const TMRATopAppBar({
-    Key? key,
-    required this.info,
-    required this.screenshotController,
-    this.fileName = 'screenshot',
-    required this.widget,
-  }) : super(key: key);
-
-  final Sensors info;
-  final ScreenshotController screenshotController;
-  final String fileName;
-  final Widget? widget;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        margin: const EdgeInsets.only(top: 50),
-        child: Row(
-          children: [
-            StationName(info: info),
-            const Spacer(),
-            IconButton(
-                onPressed: () async {
-                  Uint8List? image;
-                  double pixelRatio = MediaQuery.of(context).devicePixelRatio;
-                  if (widget != null) {
-                    /*final image = await screenshotController.capture(
-                      pixelRatio: pixelRatio);*/
-                    image = await screenshotController.captureFromWidget(
-                      widget!,
-                      context: context,
-                      pixelRatio: pixelRatio,
-                    );
-                  } else {
-                    image = await screenshotController.capture(
-                        pixelRatio: pixelRatio);
-                  }
-
-                  ///Save screenshot.
-                  await [Permission.storage].request();
-                  final time = DateTime.now()
-                      .toIso8601String()
-                      .replaceAll('.', '-')
-                      .replaceAll(':', '-');
-                  final name = 'EM${info.em}_${fileName}_$time';
-                  final result =
-                      await ImageGallerySaver.saveImage(image!, name: name);
-                  snackBar(context, 'Captura guardada',
-                      const Duration(milliseconds: kDurationSnackBar + 1000));
-                },
-                icon: Image.asset(
-                  screenShotLogo,
-                  fit: BoxFit.fitHeight,
-                  color: Colors.white,
-                ))
-          ],
-        ));
-  }
-}
-
 /// Crea una linea con un ícono si está presente, un texto en normal y el siguiente el BOLD
 class InfoConfig extends StatelessWidget {
   const InfoConfig({
@@ -134,3 +71,22 @@ class InfoConfig extends StatelessWidget {
         ));
   }
 }
+///Código muerto - Captura de Pantalla via RenderRepaintBoundary
+/*
+void _captureScreenshot() async {
+  RenderRepaintBoundary boundary =
+  _key.currentContext!.findRenderObject() as RenderRepaintBoundary;
+  if (boundary.debugNeedsPaint) {
+    Timer(const Duration(seconds: 1), () => _captureScreenshot());
+    return null;
+  }
+  ui.Image image = await boundary.toImage();
+  ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+  if (ByteData != null) {
+    Uint8List pngInt8 = byteData!.buffer.asUint8List();
+    final saveImage = await ImageGallerySaver.saveImage(
+        Uint8List.fromList(pngInt8),
+        quality: 90,
+        name: 'prueba - ${DateTime.now()}.png');
+  }
+}*/

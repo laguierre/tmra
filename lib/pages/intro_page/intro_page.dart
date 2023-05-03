@@ -58,7 +58,6 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
           textWiFi = 'Habilitar WiFi';
           isConnectedESP = false;
       }
-      // 2.
       setState(() {});
     });
   }
@@ -110,7 +109,7 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
       body: Padding(
         padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const _TopAppBar(),
             Column(
@@ -125,40 +124,41 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
                         fontSize: kFontSize + 4,
                         fontWeight: FontWeight.bold)),
                 const SizedBox(height: 50),
-                !isConnectedESP
-                    ? GestureDetector(
-                        child: Container(
-                          alignment: Alignment.center,
-                          margin: const EdgeInsets.symmetric(horizontal: 45),
-                          height: 50,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(15)),
-                          child: AutoSizeText(
-                            textWiFi,
-                            maxLines: 1,
-                            maxFontSize: kFontSize + 1,
-                            minFontSize: kFontSize - 3,
-                            style: const TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        onTap: () async {
-                          _listenForPermissionStatus();
-                          if (!isConnectedESP) {
-                            WiFiForIoTPlugin.setEnabled(false,
-                                shouldOpenSettings: true);
-                          }
-                          setState(() {});
-                        },
-                      )
-                    : Container()
               ],
             ),
+            Visibility(
+              visible: !isConnectedESP,
+              child: GestureDetector(
+                child: Container(
+                  alignment: Alignment.center,
+                  margin: const EdgeInsets.symmetric(horizontal: 45),
+                  height: 50,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(15)),
+                  child: AutoSizeText(
+                    textWiFi,
+                    maxLines: 1,
+                    maxFontSize: kFontSize + 1,
+                    minFontSize: kFontSize - 3,
+                    style: const TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                onTap: () async {
+                  _listenForPermissionStatus();
+                  if (!isConnectedESP) {
+                    WiFiForIoTPlugin.setEnabled(false,
+                        shouldOpenSettings: true);
+                  }
+                  setState(() {});
+                },
+              ),
+            ),
             const SizedBox(height: 50),
-            debugMode(),
             const Spacer(),
+            debugMode(),
+            const SizedBox(height: 100),
             Row(
               children: [
                 const SizedBox(width: 20),
@@ -173,28 +173,28 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
                   },
                 ),
                 const Spacer(),
-                isConnectedESP
-                    ? GestureDetector(
-                        child: Image.asset(
-                          nextIcon,
-                          color: Colors.white,
-                          height: 50,
-                        ),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            PageTransition(
-                                type: PageTransitionType.rightToLeft,
-                                child: HomePage(
-                                  wifiName: wifiName,
-                                  testMode: switchSimulation,
-                                ),
-                                inheritTheme: true,
-                                ctx: context),
-                          );
-                        },
-                      )
-                    : Container(),
+                Visibility(
+                    visible: isConnectedESP,
+                    child: GestureDetector(
+                      child: Image.asset(
+                        nextIcon,
+                        color: Colors.white,
+                        height: 50,
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          PageTransition(
+                              type: PageTransitionType.rightToLeft,
+                              child: HomePage(
+                                wifiName: wifiName,
+                                testMode: switchSimulation,
+                              ),
+                              inheritTheme: true,
+                              ctx: context),
+                        );
+                      },
+                    )),
                 const SizedBox(width: 20)
               ],
             ),
@@ -287,5 +287,6 @@ class NetworkConnectivity {
     }
     _controller.sink.add({result: isOnline});
   }
+
   void disposeStream() => _controller.close();
 }

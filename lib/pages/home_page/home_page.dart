@@ -1,11 +1,7 @@
 import 'dart:math';
-import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:intl/intl.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:screenshot/screenshot.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tmra/common.dart';
 import 'package:tmra/constants.dart';
 import 'package:tmra/models/model_sensors.dart';
@@ -87,15 +83,15 @@ class _HomePageState extends State<HomePage> {
                       },
                       child: sensors.isNotEmpty
                           ? Screenshot(
-                        controller: screenshotController,
-                            child: EMInfo(
-                                info: info,
-                                testMode: widget.testMode,
-                                screenshotController: screenshotController,
-                                timeDownload: timeDownload,
-                                timeStampUtc: timeStampUtc,
-                                sensors: sensors),
-                          )
+                              controller: screenshotController,
+                              child: EMInfo(
+                                  info: info,
+                                  testMode: widget.testMode,
+                                  screenshotController: screenshotController,
+                                  timeDownload: timeDownload,
+                                  timeStampUtc: timeStampUtc,
+                                  sensors: sensors),
+                            )
                           : Stack(
                               children: [
                                 Center(
@@ -129,26 +125,16 @@ class _HomePageState extends State<HomePage> {
 
                   ///Page 2
                   InfoBoards(info: info),
+
                   ///Page 3
-                  DownloadPage(info: info, testMode: widget.testMode)
+                  DownloadPage(
+                    info: info,
+                    testMode: widget.testMode,
+                  )
                 ]),
-            Positioned(
-              height: 50,
-              width: widthScreen * 0.4 - 2 * kDotHeight,
-              bottom: 20,
-              child: GlassmorphismContainer(
-                  widget: SmoothPageIndicator(
-                controller: _pageController,
-                count: kPageCount,
-                effect: const ScaleEffect(
-                  spacing: 18,
-                  scale: 1.5,
-                  dotHeight: kDotHeight,
-                  dotWidth: kDotHeight,
-                  activeDotColor: Colors.yellowAccent,
-                ),
-              )),
-            ),
+            if (sensors.isNotEmpty)
+              Waiting4JSON(
+                  widthScreen: widthScreen, pageController: _pageController),
           ],
         ));
   }
@@ -181,7 +167,7 @@ class EMInfo extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TopAppBar(
+              HomePageTopAppBar(
                 info: info,
                 testMode: testMode,
                 screenshotController: screenshotController,
@@ -212,7 +198,8 @@ class EMInfo extends StatelessWidget {
               InfoConfig(
                   title: 'Time Stamp: ',
                   value: testMode
-                      ? DateFormat('yyyy/MM/dd  HH:mm:ss')
+                      ? DateFormat(
+                              'yyyy/MM/dd  HH:mm:ss') //TODO chequear el doble espacio acá//
                           .format(DateTime.now())
                       : timeStampUtc, //info.timeStampUtc!,
                   size: kFontSize - 1,
@@ -221,20 +208,34 @@ class EMInfo extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: ListView.builder(
-              padding: const EdgeInsets.only(
-                  top: 0, bottom: kPaddingBottomScrollViews, left: 5, right: 5),
-              physics: const BouncingScrollPhysics(),
-              itemCount: sensors.length,
-              //info.channels!.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  child: SensorCard(info: sensors[index], index: index),
-                );
-              }),
+          child: EMSensors(sensors: sensors),
         ),
       ],
     );
+  }
+}
+
+///Lista de sensores de la EM
+class EMSensors extends StatelessWidget {
+  const EMSensors({
+    super.key,
+    required this.sensors,
+  });
+
+  final List<SensorType> sensors;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+        padding: const EdgeInsets.only(
+            top: 0, bottom: kPaddingBottomScrollViews, left: 5, right: 5),
+        physics: const BouncingScrollPhysics(),
+        itemCount: sensors.length,
+        itemBuilder: (_, index) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 20),
+            child: SensorCard(info: sensors[index], index: index),
+          );
+        });
   }
 }

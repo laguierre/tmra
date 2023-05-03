@@ -1,13 +1,12 @@
 import 'dart:io';
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:intl/intl.dart';
 import 'package:lecle_downloads_path_provider/lecle_downloads_path_provider.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:screenshot/screenshot.dart';
 import 'package:tmra/common.dart';
 import 'package:tmra/constants.dart';
 import 'package:tmra/pages/snackbar.dart';
@@ -17,7 +16,11 @@ import '../home_page/fill_sensors.dart';
 import 'download_page_widgets.dart';
 
 class DownloadPage extends StatefulWidget {
-  const DownloadPage({Key? key, required this.info, required this.testMode})
+  const DownloadPage(
+      {Key? key,
+      required this.info,
+      required this.testMode,
+      })
       : super(key: key);
 
   final Sensors info;
@@ -37,6 +40,7 @@ class _DownloadPageState extends State<DownloadPage> {
   String fileName = '';
   bool isSharing = false;
   late String timeStamp, timeDownload;
+  ScreenshotController screenshotController = ScreenshotController();
 
   @override
   void initState() {
@@ -63,72 +67,85 @@ class _DownloadPageState extends State<DownloadPage> {
     return Scaffold(
       extendBody: false,
       backgroundColor: Colors.black,
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TopAppBarBack(info: widget.info),
-              const SizedBox(height: 30),
-              const Text(
-                'Índice límite INFERIOR',
-                style: TextStyle(color: Colors.white, fontSize: kFontSize),
-              ),
-              const SizedBox(height: 15),
-              CustomFieldText(textEditingController: infTextEditingController),
-              const SizedBox(height: 15),
-              const Text(
-                'Índice límite SUPERIOR',
-                style: TextStyle(color: Colors.white, fontSize: kFontSize),
-              ),
-              const SizedBox(height: 15),
-              CustomFieldText(textEditingController: supTextEditingController),
-              const SizedBox(height: 15),
-              InfoLine(text: 'Última fecha: ', boldText: timeDownload),
-              const SizedBox(height: 7),
-              InfoLine(
-                  text: 'Último índice bajado: ',
-                  boldText: widget.info.downloadLastAdress!),
-              const SizedBox(height: 7),
-              InfoLine(
-                  text: 'Último índice grabado: ',
-                  boldText: widget.info.logLastAddress!),
-              const SizedBox(height: 45),
-              downloadButtons(context, widget.info.wifi![0]),
-              const SizedBox(height: 40),
-              Row(children: [
-                const Spacer(),
-                isSharing
-                    ? CircleCustomButton(
-                        sizeButton: sizeButton,
-                        icon: sharingIcon,
-                        function: () async {
-                          final file = '$downloadsDirectoryPath/$fileName';
-                          if (await File(file).exists()) {
-                            shareSelectedFile(file);
-                          }
-                        },
-                      )
-                    : Container(),
-                const SizedBox(width: 20),
-                CircleCustomButton(
-                  sizeButton: sizeButton,
-                  icon: openFolderIcon,
-                  function: () {
-                    openSharingFile(context);
-                  },
+      body: Screenshot(
+        controller: screenshotController,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TMRATopAppBar(
+                  info: widget.info,
+                  screenshotController: screenshotController,
+                  fileName: 'download',
+                  widget: null,
                 ),
-              ]),
-              const SizedBox(height: 20),
-              isDownload
-                  ? ProgressBar(
-                      receivedDataPercent: receivedDataPercent,
-                      receivedData: receivedData,
-                      totalData: totalData)
-                  : Container(),
-            ],
+                const SizedBox(height: 30),
+                const Text(
+                  'Índice límite INFERIOR',
+                  style:
+                      TextStyle(color: Colors.white, fontSize: kFontSize),
+                ),
+                const SizedBox(height: 15),
+                CustomFieldText(
+                    textEditingController: infTextEditingController),
+                const SizedBox(height: 15),
+                const Text(
+                  'Índice límite SUPERIOR',
+                  style:
+                      TextStyle(color: Colors.white, fontSize: kFontSize),
+                ),
+                const SizedBox(height: 15),
+                CustomFieldText(
+                    textEditingController: supTextEditingController),
+                const SizedBox(height: 15),
+                InfoLine(text: 'Última fecha: ', boldText: timeDownload),
+                const SizedBox(height: 7),
+                InfoLine(
+                    text: 'Último índice bajado: ',
+                    boldText: widget.info.downloadLastAdress!),
+                const SizedBox(height: 7),
+                InfoLine(
+                    text: 'Último índice grabado: ',
+                    boldText: widget.info.logLastAddress!),
+                const SizedBox(height: 45),
+                downloadButtons(context, widget.info.wifi![0]),
+                const SizedBox(height: 40),
+                Row(children: [
+                  const Spacer(),
+                  isSharing
+                      ? CircleCustomButton(
+                          sizeButton: sizeButton,
+                          icon: sharingIcon,
+                          function: () async {
+                            final file =
+                                '$downloadsDirectoryPath/$fileName';
+                            if (await File(file).exists()) {
+                              shareSelectedFile(file);
+                            }
+                          },
+                        )
+                      : Container(),
+                  const SizedBox(width: 20),
+                  CircleCustomButton(
+                    sizeButton: sizeButton,
+                    icon: openFolderIcon,
+                    function: () {
+                      openSharingFile(context);
+                    },
+                  ),
+                ]),
+                const SizedBox(height: 20),
+                isDownload
+                    ? ProgressBar(
+                        receivedDataPercent: receivedDataPercent,
+                        receivedData: receivedData,
+                        totalData: totalData)
+                    : Container(),
+              ],
+            ),
           ),
         ),
       ),
@@ -178,8 +195,8 @@ class _DownloadPageState extends State<DownloadPage> {
                               milliseconds: kDurationSnackBar + 1000));
                       infTextEditingController.text =
                           supTextEditingController.text;
-                      timeDownload =
-                          DateFormat('dd/MM/yyyy HH:MM:ss').format(DateTime.now());
+                      timeDownload = DateFormat('dd/MM/yyyy HH:MM:ss')
+                          .format(DateTime.now());
                       setState(() {});
                     }
                   } else {

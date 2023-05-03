@@ -115,7 +115,7 @@ class CustomButton extends StatelessWidget {
                 )),
           ),
         ],
-      ),
+      )
     );
   }
 }
@@ -154,8 +154,8 @@ class CustomFieldText extends StatelessWidget {
           fontSize: 26.0,
           decoration: TextDecoration.none,
           color: Colors.black,
-        ),
-      ),
+        )
+      )
     );
   }
 }

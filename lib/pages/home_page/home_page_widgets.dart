@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:screenshot/screenshot.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tmra/constants.dart';
 import 'package:tmra/pages/home_page/home_page.dart';
 import 'package:tmra/pages/widgets.dart';
@@ -143,8 +144,8 @@ class _ImageSensor extends StatelessWidget {
   }
 }
 
-class TopAppBar extends StatelessWidget {
-  const TopAppBar({
+class HomePageTopAppBar extends StatelessWidget {
+  const HomePageTopAppBar({
     Key? key,
     required this.info,
     required this.testMode,
@@ -186,17 +187,20 @@ class TopAppBar extends StatelessWidget {
             onPressed: () async {
               double pixelRatio = MediaQuery.of(context).devicePixelRatio;
               final image = await screenshotController.captureFromWidget(
-                  EMInfo(
+                 EMInfo(
                       info: info,
                       testMode: testMode,
                       screenshotController: screenshotController,
                       timeDownload: timeDownload,
                       timeStampUtc: timeStampUtc,
                       sensors: sensors),
+
                 context: context,
                 pixelRatio: pixelRatio,
               );
-              if (image == null) return;
+              if (image == null) {
+                return;
+              }
 
               ///Save screenshot.
               await [Permission.storage].request();
@@ -331,6 +335,38 @@ class GlassmorphismContainer extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class Waiting4JSON extends StatelessWidget {
+  const Waiting4JSON({
+    super.key,
+    required this.widthScreen,
+    required PageController pageController,
+  }) : _pageController = pageController;
+
+  final double widthScreen;
+  final PageController _pageController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      height: 50,
+      width: widthScreen * 0.4 - 2 * kDotHeight,
+      bottom: 20,
+      child: GlassmorphismContainer(
+          widget: SmoothPageIndicator(
+            controller: _pageController,
+            count: kPageCount,
+            effect: const ScaleEffect(
+              spacing: 18,
+              scale: 1.5,
+              dotHeight: kDotHeight,
+              dotWidth: kDotHeight,
+              activeDotColor: Colors.yellowAccent,
+            ),
+          )),
     );
   }
 }

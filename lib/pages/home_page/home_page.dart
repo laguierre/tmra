@@ -1,5 +1,9 @@
+import 'dart:async';
 import 'dart:math';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:intl/intl.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:tmra/common.dart';
@@ -11,6 +15,7 @@ import 'package:tmra/pages/home_page/fill_sensors.dart';
 import 'package:tmra/services/services_sensors.dart';
 import '../info_page/info_page.dart';
 import 'home_page_widgets.dart';
+import 'dart:ui' as ui;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key, required this.wifiName, required this.testMode})
@@ -30,6 +35,7 @@ class _HomePageState extends State<HomePage> {
   String timeDownload = '';
   late PageController _pageController;
   ScreenshotController screenshotController = ScreenshotController();
+  final GlobalKey _key = GlobalKey();
 
   void getSensorInfo() async {
     info = await services.getSensorsValues(widget.testMode);
@@ -52,6 +58,24 @@ class _HomePageState extends State<HomePage> {
   void dispose() {
     _pageController.dispose();
     super.dispose();
+  }
+
+  void _captureScreenshot() async {
+    RenderRepaintBoundary boundary =
+        _key.currentContext!.findRenderObject() as RenderRepaintBoundary;
+    if (boundary.debugNeedsPaint) {
+      Timer(const Duration(seconds: 1), () => _captureScreenshot());
+      return null;
+    }
+    ui.Image image = await boundary.toImage();
+    ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+    if (ByteData != null) {
+      Uint8List pngInt8 = byteData!.buffer.asUint8List();
+      final saveImage = await ImageGallerySaver.saveImage(
+          Uint8List.fromList(pngInt8),
+          quality: 90,
+          name: 'prueba - ${DateTime.now()}.png');
+    }
   }
 
   @override
@@ -96,7 +120,8 @@ class _HomePageState extends State<HomePage> {
                               children: [
                                 Center(
                                   child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.center,
                                     children: const [
                                       Text('Espere...',
                                           style: TextStyle(
@@ -133,7 +158,7 @@ class _HomePageState extends State<HomePage> {
                   )
                 ]),
             if (sensors.isNotEmpty)
-              Waiting4JSON(
+              CustomPageView(
                   widthScreen: widthScreen, pageController: _pageController),
           ],
         ));
@@ -199,8 +224,8 @@ class EMInfo extends StatelessWidget {
                   title: 'Time Stamp: ',
                   value: testMode
                       ? DateFormat(
-                              'yyyy/MM/dd  HH:mm:ss') //TODO chequear el doble espacio acá//
-                          .format(DateTime.now())
+                      'yyyy/MM/dd  HH:mm:ss') //TODO chequear el doble espacio acá//
+                      .format(DateTime.now())
                       : timeStampUtc, //info.timeStampUtc!,
                   size: kFontSize - 1,
                   icon: clockIcon),

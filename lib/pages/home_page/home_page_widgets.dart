@@ -339,8 +339,8 @@ class GlassmorphismContainer extends StatelessWidget {
   }
 }
 
-class Waiting4JSON extends StatelessWidget {
-  const Waiting4JSON({
+class CustomPageView extends StatelessWidget {
+  const CustomPageView({
     super.key,
     required this.widthScreen,
     required PageController pageController,

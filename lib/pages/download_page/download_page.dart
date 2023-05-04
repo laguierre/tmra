@@ -84,6 +84,7 @@ class _DownloadPageState extends State<DownloadPage> {
                         StationName(info: widget.info),
                         const Spacer(),
                         IconButton(
+                            splashColor: kSplashColor,
                             onPressed: () async {
                               double pixelRatio = MediaQuery
                                   .of(context)
@@ -91,15 +92,17 @@ class _DownloadPageState extends State<DownloadPage> {
                               final image = await screenshotController.capture(
                                   pixelRatio: pixelRatio);
                               //Save screenshot.
-                              await [Permission.storage].request();
+                              /*await [Permission.storage].request();
                               final time = DateTime.now()
                                   .toIso8601String()
                                   .replaceAll('.', '-')
                                   .replaceAll(':', '-');
-                              final name = 'EM${widget.info.em}_download_$time';
+
                               final result =
                               await ImageGallerySaver.saveImage(
-                                  image!, name: name);
+                                  image!, name: name);*/
+                              downloadScreenshotFile('EM${widget.info.em}_download', image!);
+
                               snackBar(context, 'Captura guardada',
                                   const Duration(
                                       milliseconds: kDurationSnackBar + 1000));
@@ -251,8 +254,6 @@ class _DownloadPageState extends State<DownloadPage> {
     } else {
       debugPrint('Has not Permission!!!');
     }
-    var dir = await DownloadsPath.downloadsDirectory();
-    debugPrint('Dir: $dir');
 
     //var dir = await getApplicationDocumentsDirectory();
     downloadsDirectoryPath = (await DownloadsPath.downloadsDirectory())?.path;

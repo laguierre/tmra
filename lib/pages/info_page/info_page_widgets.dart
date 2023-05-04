@@ -31,6 +31,7 @@ class EMInfo extends StatelessWidget {
                 StationName(info: info),
                 const Spacer(),
                 IconButton(
+                  splashColor: kSplashColor,
                     onPressed: () async {
                       double pixelRatio =
                           MediaQuery.of(context).devicePixelRatio;
@@ -42,17 +43,18 @@ class EMInfo extends StatelessWidget {
                             size: size),
                         context: context,
                         pixelRatio: pixelRatio,
-                        targetSize: size * 1.5,
+                        targetSize: size * 2,
                       );
                       //Save screenshot.
-                      await [Permission.storage].request();
+                      /*await [Permission.storage].request();
                       final time = DateTime.now()
                           .toIso8601String()
                           .replaceAll('.', '-')
                           .replaceAll(':', '-');
                       final name = 'EM${info.em}_info_$time';
                       final result =
-                          await ImageGallerySaver.saveImage(image, name: name);
+                          await ImageGallerySaver.saveImage(image, name: name);*/
+                      downloadScreenshotFile('EM${info.em}_info', image);
                       snackBar(
                           context,
                           'Captura guardada',

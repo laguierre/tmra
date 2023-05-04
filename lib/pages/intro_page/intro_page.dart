@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -103,103 +104,108 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
+    double dg = sqrt(size.height * size.height + size.width * size.width);
     return Scaffold(
       extendBody: true,
       backgroundColor: Colors.black,
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const _TopAppBar(),
-            Column(
-              children: [
-                const SizedBox(height: 50),
-                Icon(isConnectedESP ? Icons.wifi_outlined : iconWiFi,
-                    color: Colors.white, size: 100),
-                const SizedBox(height: 15),
-                Text(wifiName,
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: kFontSize + 4,
-                        fontWeight: FontWeight.bold)),
-                const SizedBox(height: 50),
-              ],
-            ),
-            Visibility(
-              visible: !isConnectedESP,
-              child: GestureDetector(
-                child: Container(
-                  alignment: Alignment.center,
-                  margin: const EdgeInsets.symmetric(horizontal: 45),
-                  height: 50,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(15)),
-                  child: AutoSizeText(
-                    textWiFi,
-                    maxLines: 1,
-                    maxFontSize: kFontSize + 1,
-                    minFontSize: kFontSize - 3,
-                    style: const TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                onTap: () async {
-                  _listenForPermissionStatus();
-                  if (!isConnectedESP) {
-                    WiFiForIoTPlugin.setEnabled(false,
-                        shouldOpenSettings: true);
-                  }
-                  setState(() {});
-                },
+      body: SingleChildScrollView(
+        child: Container(
+          height: size.height,
+          width: size.width,
+          padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const _TopAppBar(),
+              Column(
+                children: [
+                  const SizedBox(height: 50),
+                  Icon(isConnectedESP ? Icons.wifi_outlined : iconWiFi,
+                      color: Colors.white, size: 100),
+                  const SizedBox(height: 15),
+                  Text(wifiName,
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: kFontSize + 4,
+                          fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 50),
+                ],
               ),
-            ),
-            const SizedBox(height: 50),
-            const Spacer(),
-            debugMode(),
-            const SizedBox(height: 100),
-            Row(
-              children: [
-                const SizedBox(width: 20),
-                GestureDetector(
-                  child: Image.asset(
-                    sharingIcon,
-                    color: Colors.white,
+              Visibility(
+                visible: !isConnectedESP,
+                child: GestureDetector(
+                  child: Container(
+                    alignment: Alignment.center,
+                    margin: const EdgeInsets.symmetric(horizontal: 45),
                     height: 50,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15)),
+                    child: AutoSizeText(
+                      textWiFi,
+                      maxLines: 1,
+                      maxFontSize: kFontSize + 1,
+                      minFontSize: kFontSize - 3,
+                      style: const TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.bold),
+                    ),
                   ),
                   onTap: () async {
-                    openSharingFile(context);
+                    _listenForPermissionStatus();
+                    if (!isConnectedESP) {
+                      WiFiForIoTPlugin.setEnabled(false,
+                          shouldOpenSettings: true);
+                    }
+                    setState(() {});
                   },
                 ),
-                const Spacer(),
-                Visibility(
-                    visible: isConnectedESP,
-                    child: GestureDetector(
-                      child: Image.asset(
-                        nextIcon,
-                        color: Colors.white,
-                        height: 50,
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          PageTransition(
-                              type: PageTransitionType.rightToLeft,
-                              child: HomePage(
-                                wifiName: wifiName,
-                                testMode: switchSimulation,
-                              ),
-                              inheritTheme: true,
-                              ctx: context),
-                        );
-                      },
-                    )),
-                const SizedBox(width: 20)
-              ],
-            ),
-            const SizedBox(height: 10),
-          ],
+              ),
+              const Spacer(),
+              debugMode(),
+              SizedBox(height: dg * 0.08),
+              Row(
+                children: [
+                  const SizedBox(width: 20),
+                  GestureDetector(
+                    child: Image.asset(
+                      sharingIcon,
+                      color: Colors.white,
+                      height: 50,
+                    ),
+                    onTap: () async {
+                      openSharingFile(context);
+                    },
+                  ),
+                  const Spacer(),
+                  Visibility(
+                      visible: isConnectedESP,
+                      child: GestureDetector(
+                        child: Image.asset(
+                          nextIcon,
+                          color: Colors.white,
+                          height: 50,
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            PageTransition(
+                                type: PageTransitionType.rightToLeft,
+                                child: HomePage(
+                                  wifiName: wifiName,
+                                  testMode: switchSimulation,
+                                ),
+                                inheritTheme: true,
+                                ctx: context),
+                          );
+                        },
+                      )),
+                  const SizedBox(width: 20)
+                ],
+              ),
+              const SizedBox(height: 10),
+            ],
+          ),
         ),
       ),
     );

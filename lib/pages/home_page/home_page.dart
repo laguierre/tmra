@@ -1,9 +1,5 @@
-import 'dart:async';
-import 'dart:math';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:intl/intl.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:tmra/common.dart';
@@ -15,7 +11,6 @@ import 'package:tmra/pages/home_page/fill_sensors.dart';
 import 'package:tmra/services/services_sensors.dart';
 import '../info_page/info_page.dart';
 import 'home_page_widgets.dart';
-import 'dart:ui' as ui;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key, required this.wifiName, required this.testMode})
@@ -35,7 +30,6 @@ class _HomePageState extends State<HomePage> {
   String timeDownload = '';
   late PageController _pageController;
   ScreenshotController screenshotController = ScreenshotController();
-  final GlobalKey _key = GlobalKey();
 
   void getSensorInfo() async {
     info = await services.getSensorsValues(widget.testMode);
@@ -189,7 +183,7 @@ class EMInfoSensorInfo extends StatelessWidget {
                     icon: batteryIcon),
                 InfoConfig(
                     title: 'Último valor bajado: ',
-                    value: '${info.downloadLastAdress!} \n[${timeDownload}]',
+                    value: '${info.downloadLastAdress!} \n[$timeDownload]',
                     size: kFontSize - 1.5,
                     icon: downloadIcon),
                 InfoConfig(

@@ -20,7 +20,7 @@ Future<void> openSharingFile(BuildContext context) async {
     fsType: FilesystemType.file,
     pickText: 'Save file to this folder',
     folderIconColor: Colors.white,
-    allowedExtensions: ['.raw'],
+    allowedExtensions: ['.raw', '.jpg'],
     requestPermission: requestPermissionToRead,
   );
   if (fileToShare!.isNotEmpty) {

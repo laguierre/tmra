@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 const urlBase = '192.168.4.1';
 const kFontSize = 19.0;
 const kPadding = 20.0;
@@ -6,6 +8,8 @@ const kPageCount = 3;
 const kPaddingBottomScrollViews = 100.0;
 const kDotHeight = 16.0;
 const kDurationSnackBar = 1000;
+
+const kSplashColor = Colors.amberAccent;
 
 List<String> sensorsImagesList = [
   'lib/assets/images/sensors/pmb25.png',        //0 *

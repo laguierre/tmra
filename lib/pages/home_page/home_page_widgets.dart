@@ -5,7 +5,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tmra/constants.dart';
@@ -164,11 +163,14 @@ class HomePageTopAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
+    double dg = sqrt((size.width * size.width) + (size.height * size.height));
+    double kCaptureScreenshot = dg < 780 ? 5 : 8;
     return Row(
       children: [
         StationName(info: info),
         const Spacer(),
         IconButton(
+            splashColor: kSplashColor,
             onPressed: () async {
               ///Example: http://192.168.4.1/setDateTime.html?dia=9&mes=3&anio=23&hs=12&min=56&seg=40
               ///         http://192.168.4.1/setDateTime.html?dia=13&mes=3&anio=23&hs=18&min=22&seg=44
@@ -185,39 +187,29 @@ class HomePageTopAppBar extends StatelessWidget {
             )),
         const SizedBox(width: 5),
         IconButton(
+          splashColor: kSplashColor,
             onPressed: () async {
-              snackBar(
-                  context,
-                  'Comenzando captura...',
-                  const Duration(
-                      milliseconds: kDurationSnackBar + 1000));
+              snackBar(context, 'Comenzando captura...',
+                  const Duration(milliseconds: kDurationSnackBar + 1000));
               double pixelRatio = MediaQuery.of(context).devicePixelRatio;
               final image = await screenshotController.captureFromWidget(
-                 EMInfoSensorInfo(
-                      info: info,
-                      testMode: testMode,
-                      screenshotController: screenshotController,
-                      timeDownload: timeDownload,
-                      timeStampUtc: timeStampUtc,
-                      sensors: sensors),
+                EMInfoSensorInfo(
+                    info: info,
+                    testMode: testMode,
+                    screenshotController: screenshotController,
+                    timeDownload: timeDownload,
+                    timeStampUtc: timeStampUtc,
+                    sensors: sensors),
                 context: context,
                 pixelRatio: pixelRatio,
-              targetSize: size * 5, ///Tamaño de la pantalla
+                targetSize: size *
+                    (info.channels!.length / kCaptureScreenshot).toDouble(),
+                ///Tamaño de la pantalla a capturar
               );
-              ///Save screenshot.
-              await [Permission.storage].request();
-              final time = DateTime.now()
-                  .toIso8601String()
-                  .replaceAll('.', '-')
-                  .replaceAll(':', '-');
-              final name = 'screenshot_$time';
-              final result =
-                  await ImageGallerySaver.saveImage(image, name: name);
-              snackBar(
-                  context,
-                  'Captura guardada',
-                  const Duration(
-                      milliseconds: kDurationSnackBar + 1000));
+
+              downloadScreenshotFile('EM${info.em}', image);
+              snackBar(context, 'Captura guardada',
+                  const Duration(milliseconds: kDurationSnackBar + 1000));
             },
             icon: Image.asset(
               screenShotLogo,
@@ -364,16 +356,16 @@ class CustomPageView extends StatelessWidget {
       bottom: 20,
       child: GlassmorphismContainer(
           widget: SmoothPageIndicator(
-            controller: _pageController,
-            count: kPageCount,
-            effect: const ScaleEffect(
-              spacing: 18,
-              scale: 1.5,
-              dotHeight: kDotHeight,
-              dotWidth: kDotHeight,
-              activeDotColor: Colors.yellowAccent,
-            ),
-          )),
+        controller: _pageController,
+        count: kPageCount,
+        effect: const ScaleEffect(
+          spacing: 18,
+          scale: 1.5,
+          dotHeight: kDotHeight,
+          dotWidth: kDotHeight,
+          activeDotColor: Colors.yellowAccent,
+        ),
+      )),
     );
   }
 }

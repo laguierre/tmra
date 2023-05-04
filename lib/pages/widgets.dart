@@ -1,12 +1,14 @@
+import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:lecle_downloads_path_provider/lecle_downloads_path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:screenshot/screenshot.dart';
-import 'package:tmra/pages/snackbar.dart';
 import '../constants.dart';
 import '../models/model_sensors.dart';
+
 
 class StationName extends StatelessWidget {
   const StationName({
@@ -70,6 +72,31 @@ class InfoConfig extends StatelessWidget {
           ],
         ));
   }
+}
+Future<void> downloadScreenshotFile(String fileName, Uint8List file2Write) async {
+  await Permission.storage.request();
+  final time = DateTime.now()
+      .toIso8601String()
+      .replaceAll('.', '-')
+      .replaceAll(':', '-');
+
+  var hasStoragePermission =
+  await Permission.manageExternalStorage.isGranted;
+  if (!hasStoragePermission) {
+    final status =
+    await Permission.manageExternalStorage.request().isGranted;
+    debugPrint('Has Permission');
+  } else {
+    debugPrint('Has not Permission!!!');
+  }
+  var downloadsDirectoryPath =
+      (await DownloadsPath.downloadsDirectory())?.path;
+  String path2Download = '$downloadsDirectoryPath/${fileName}_$time.jpg';
+  File(path2Download).writeAsBytes(file2Write);
+
+  //Guardar la imagen en la galería de imágenes del dispositivo
+  /*print(await ImageGallerySaver.saveImage(
+     file2Write, name: '${fileName}_$time'));*/
 }
 ///Código muerto - Captura de Pantalla via RenderRepaintBoundary
 /*

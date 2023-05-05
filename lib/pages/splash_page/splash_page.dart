@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
@@ -18,14 +17,8 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     super.initState();
     Future.delayed(Duration(milliseconds: kDurationSplash), () {
-      Navigator.push(
-        context,
-        PageTransition(
-            type: PageTransitionType.rightToLeft,
-            child: const IntroPage(),
-            inheritTheme: true,
-            ctx: context),
-      );
+      Navigator.pushAndRemoveUntil(context,
+          MaterialPageRoute(builder: (_) => const IntroPage()), (route) => false);
     });
   }
 

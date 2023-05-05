@@ -49,5 +49,6 @@ const redimecLogo = 'lib/assets/images/screensplash/redimec.png';
 const researchLogo = 'lib/assets/images/screensplash/research.png';
 const ihredaLogo = 'lib/assets/icons/logo.png';
 const screenShotLogo = 'lib/assets/icons/screenshot.png';
+const sharingScreenShotIcon = 'lib/assets/icons/images.png';
 
 

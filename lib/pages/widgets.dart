@@ -98,6 +98,31 @@ Future<void> downloadScreenshotFile(String fileName, Uint8List file2Write) async
   /*print(await ImageGallerySaver.saveImage(
      file2Write, name: '${fileName}_$time'));*/
 }
+
+class CustomIconButton extends StatelessWidget {
+  const CustomIconButton({
+    super.key,
+    required this.icon,
+    required this.onPressed,
+  });
+
+  final String icon;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+        padding: EdgeInsets.zero,
+        iconSize: 45,
+        splashColor: kSplashColor,
+        onPressed: onPressed,
+        icon: Image.asset(
+          icon,
+          fit: BoxFit.fitHeight,
+          color: Colors.white,
+        ));
+  }
+}
 ///Código muerto - Captura de Pantalla via RenderRepaintBoundary
 /*
 void _captureScreenshot() async {

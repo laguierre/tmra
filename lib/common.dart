@@ -4,7 +4,7 @@ import 'package:lecle_downloads_path_provider/lecle_downloads_path_provider.dart
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
 
-Future<void> openSharingFile(BuildContext context) async {
+Future<void> openDialogSharingFile(BuildContext context, String extension) async {
   var rootPath = await DownloadsPath.downloadsDirectory();
   //print('Folder: $rootPath');
   String? fileToShare = await FilesystemPicker.openDialog(
@@ -20,7 +20,7 @@ Future<void> openSharingFile(BuildContext context) async {
     fsType: FilesystemType.file,
     pickText: 'Save file to this folder',
     folderIconColor: Colors.white,
-    allowedExtensions: ['.raw', '.jpg'],
+    allowedExtensions: [extension],
     requestPermission: requestPermissionToRead,
   );
   if (fileToShare!.isNotEmpty) {

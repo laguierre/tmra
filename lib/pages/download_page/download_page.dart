@@ -17,11 +17,11 @@ import '../home_page/fill_sensors.dart';
 import 'download_page_widgets.dart';
 
 class DownloadPage extends StatefulWidget {
-  const DownloadPage({Key? key,
+  const DownloadPage({
+    Key? key,
     required this.info,
     required this.testMode,
-  })
-      : super(key: key);
+  }) : super(key: key);
 
   final Sensors info;
   final bool testMode;
@@ -34,8 +34,7 @@ class _DownloadPageState extends State<DownloadPage> {
   late TextEditingController infTextEditingController;
   late TextEditingController supTextEditingController;
   double receivedDataPercent = 0.0;
-  int receivedData = 0,
-      totalData = 0;
+  int receivedData = 0, totalData = 0;
   bool isDownload = false;
   String? downloadsDirectoryPath;
   String fileName = '';
@@ -86,9 +85,8 @@ class _DownloadPageState extends State<DownloadPage> {
                         IconButton(
                             splashColor: kSplashColor,
                             onPressed: () async {
-                              double pixelRatio = MediaQuery
-                                  .of(context)
-                                  .devicePixelRatio;
+                              double pixelRatio =
+                                  MediaQuery.of(context).devicePixelRatio;
                               final image = await screenshotController.capture(
                                   pixelRatio: pixelRatio);
                               //Save screenshot.
@@ -101,9 +99,12 @@ class _DownloadPageState extends State<DownloadPage> {
                               final result =
                               await ImageGallerySaver.saveImage(
                                   image!, name: name);*/
-                              downloadScreenshotFile('EM${widget.info.em}_download', image!);
+                              downloadScreenshotFile(
+                                  'EM${widget.info.em}_download', image!);
 
-                              snackBar(context, 'Captura guardada',
+                              snackBar(
+                                  context,
+                                  'Captura guardada',
                                   const Duration(
                                       milliseconds: kDurationSnackBar + 1000));
                             },
@@ -117,8 +118,7 @@ class _DownloadPageState extends State<DownloadPage> {
                 const SizedBox(height: 30),
                 const Text(
                   'Índice límite INFERIOR',
-                  style:
-                  TextStyle(color: Colors.white, fontSize: kFontSize),
+                  style: TextStyle(color: Colors.white, fontSize: kFontSize),
                 ),
                 const SizedBox(height: 15),
                 CustomFieldText(
@@ -126,8 +126,7 @@ class _DownloadPageState extends State<DownloadPage> {
                 const SizedBox(height: 15),
                 const Text(
                   'Índice límite SUPERIOR',
-                  style:
-                  TextStyle(color: Colors.white, fontSize: kFontSize),
+                  style: TextStyle(color: Colors.white, fontSize: kFontSize),
                 ),
                 const SizedBox(height: 15),
                 CustomFieldText(
@@ -143,36 +142,34 @@ class _DownloadPageState extends State<DownloadPage> {
                     text: 'Último índice grabado: ',
                     boldText: widget.info.logLastAddress!),
                 const SizedBox(height: 45),
-                //downloadButtons(context, widget.info.wifi![0]),
+                downloadButtons(context, widget.info.wifi![0]),
                 const SizedBox(height: 40),
                 Row(children: [
                   const Spacer(),
-                  Visibility(visible: isSharing, child: CircleCustomButton(
-                    sizeButton: sizeButton,
-                    icon: sharingIcon,
-                    function: () async {
-                      final file =
-                          '$downloadsDirectoryPath/$fileName';
-                      if (await File(file).exists()) {
-                        shareSelectedFile(file);
-                      }
-                    },
-                  )),
+                  Visibility(
+                      visible: isSharing,
+                      child: CustomIconButton(
+                        icon: sharingIcon,
+                        onPressed: () async {
+                          final file = '$downloadsDirectoryPath/$fileName';
+                          if (await File(file).exists()) {
+                            shareSelectedFile(file);
+                          }
+                        },
+                      )),
                   const SizedBox(width: 20),
-                  CircleCustomButton(
-                    sizeButton: sizeButton,
-                    icon: openFolderIcon,
-                    function: () {
-                      openSharingFile(context);
-                    },
-                  ),
+                  CustomIconButton(
+                      icon: openFolderIcon,
+                      onPressed: () {
+                        openDialogSharingFile(context, '.raw');
+                      }),
                 ]),
                 const SizedBox(height: 20),
                 isDownload
                     ? ProgressBar(
-                    receivedDataPercent: receivedDataPercent,
-                    receivedData: receivedData,
-                    totalData: totalData)
+                        receivedDataPercent: receivedDataPercent,
+                        receivedData: receivedData,
+                        totalData: totalData)
                     : Container(),
               ],
             ),
@@ -204,38 +201,36 @@ class _DownloadPageState extends State<DownloadPage> {
         version >= 2.4 ? const SizedBox(width: 30) : Container(),
         version >= 2.4
             ? CustomButton(
-            icon: 'lib/assets/icons/save.png',
-            text: 'Bajar archivo',
-            function: () async {
-              FocusScopeNode currentFocus = FocusScope.of(context);
-              if (!currentFocus.hasPrimaryFocus) {
-                currentFocus.unfocus();
-              }
-              if (int.parse(supTextEditingController.text) >
-                  int.parse(infTextEditingController.text)) {
-                if (!widget.testMode) {
-                  await downloadFile(context);
-                } else {
-                  fileName =
-                  'EM${widget.info.em!.toUpperCase()}_${DateFormat('yyyyMMdd')
-                      .format(DateTime.now())}_${infTextEditingController
-                      .text}_${supTextEditingController.text}.raw';
-                  snackBar(
-                      context,
-                      'Archivo simulado!!! ($fileName)',
-                      const Duration(
-                          milliseconds: kDurationSnackBar + 1000));
-                  infTextEditingController.text =
-                      supTextEditingController.text;
-                  timeDownload = DateFormat('dd/MM/yyyy HH:MM:ss')
-                      .format(DateTime.now());
-                  setState(() {});
-                }
-              } else {
-                snackBar(context, 'Límite INFERIOR es mayor a SUPERIOR',
-                    const Duration(milliseconds: kDurationSnackBar));
-              }
-            })
+                icon: 'lib/assets/icons/save.png',
+                text: 'Bajar archivo',
+                function: () async {
+                  FocusScopeNode currentFocus = FocusScope.of(context);
+                  if (!currentFocus.hasPrimaryFocus) {
+                    currentFocus.unfocus();
+                  }
+                  if (int.parse(supTextEditingController.text) >
+                      int.parse(infTextEditingController.text)) {
+                    if (!widget.testMode) {
+                      await downloadFile(context);
+                    } else {
+                      fileName =
+                          'EM${widget.info.em!.toUpperCase()}_${DateFormat('yyyyMMdd').format(DateTime.now())}_${infTextEditingController.text}_${supTextEditingController.text}.raw';
+                      snackBar(
+                          context,
+                          'Archivo simulado!!! ($fileName)',
+                          const Duration(
+                              milliseconds: kDurationSnackBar + 1000));
+                      infTextEditingController.text =
+                          supTextEditingController.text;
+                      timeDownload = DateFormat('dd/MM/yyyy HH:MM:ss')
+                          .format(DateTime.now());
+                      setState(() {});
+                    }
+                  } else {
+                    snackBar(context, 'Límite INFERIOR es mayor a SUPERIOR',
+                        const Duration(milliseconds: kDurationSnackBar));
+                  }
+                })
             : Container()
       ],
     );
@@ -247,9 +242,7 @@ class _DownloadPageState extends State<DownloadPage> {
     ///Ver aca
     var hasStoragePermission = await Permission.manageExternalStorage.isGranted;
     if (!hasStoragePermission) {
-      final status = await Permission.manageExternalStorage
-          .request()
-          .isGranted;
+      final status = await Permission.manageExternalStorage.request().isGranted;
       debugPrint('Has Permission');
     } else {
       debugPrint('Has not Permission!!!');
@@ -259,13 +252,10 @@ class _DownloadPageState extends State<DownloadPage> {
     downloadsDirectoryPath = (await DownloadsPath.downloadsDirectory())?.path;
     //print('DownloadsPath: $downloadsDirectoryPath');
     String address =
-        'http://192.168.4.1/downloadFile.html?inf=${infTextEditingController
-        .text}&sup=${supTextEditingController.text}';
+        'http://192.168.4.1/downloadFile.html?inf=${infTextEditingController.text}&sup=${supTextEditingController.text}';
 
     fileName =
-    'EM${widget.info.em!.toUpperCase()}_${DateFormat('yyyyMMdd').format(
-        DateTime.now())}_${infTextEditingController
-        .text}_${supTextEditingController.text}.raw';
+        'EM${widget.info.em!.toUpperCase()}_${DateFormat('yyyyMMdd').format(DateTime.now())}_${infTextEditingController.text}_${supTextEditingController.text}.raw';
 
     final Dio dio = Dio();
     final response = await dio.download(
@@ -317,14 +307,14 @@ class _DownloadPageState extends State<DownloadPage> {
             actions: [
               ElevatedButton(
                   style:
-                  ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                      ElevatedButton.styleFrom(backgroundColor: Colors.green),
                   onPressed: () async {
-                    openSharingFile(context);
+                    openDialogSharingFile(context, '.raw');
                   },
                   child: const Text('Abrir en explorador')),
               ElevatedButton(
                   style:
-                  ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                      ElevatedButton.styleFrom(backgroundColor: Colors.green),
                   onPressed: () async {
                     if (await File(file).exists()) {
                       shareSelectedFile(file);
@@ -333,7 +323,7 @@ class _DownloadPageState extends State<DownloadPage> {
                   child: const Text('Compartir')),
               ElevatedButton(
                   style:
-                  ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                      ElevatedButton.styleFrom(backgroundColor: Colors.green),
                   onPressed: () {
                     Navigator.pop(context);
                   },

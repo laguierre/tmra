@@ -14,6 +14,8 @@ import 'package:tmra/constants.dart';
 import 'package:tmra/pages/home_page/home_page.dart';
 import 'package:wifi_iot/wifi_iot.dart';
 
+import '../widgets.dart';
+
 class IntroPage extends StatefulWidget {
   const IntroPage({Key? key}) : super(key: key);
 
@@ -167,26 +169,23 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
               Row(
                 children: [
                   const SizedBox(width: 20),
-                  GestureDetector(
-                    child: Image.asset(
-                      sharingIcon,
-                      color: Colors.white,
-                      height: 50,
-                    ),
-                    onTap: () async {
-                      openSharingFile(context);
-                    },
-                  ),
+                  CustomIconButton(
+                      icon: sharingIcon,
+                      onPressed: () {
+                        openDialogSharingFile(context, '.raw');
+                      }),
+                  const SizedBox(width: 20),
+                  CustomIconButton(
+                      icon: sharingScreenShotIcon,
+                      onPressed: () {
+                        openDialogSharingFile(context, '.jpg');
+                      }),
                   const Spacer(),
                   Visibility(
                       visible: isConnectedESP,
-                      child: GestureDetector(
-                        child: Image.asset(
-                          nextIcon,
-                          color: Colors.white,
-                          height: 50,
-                        ),
-                        onTap: () {
+                      child: CustomIconButton(
+                        icon: nextIcon,
+                        onPressed: () {
                           Navigator.push(
                             context,
                             PageTransition(

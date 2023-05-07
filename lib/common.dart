@@ -4,17 +4,21 @@ import 'package:lecle_downloads_path_provider/lecle_downloads_path_provider.dart
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
 
-Future<void> openDialogSharingFile(BuildContext context, String extension) async {
+//TODO chequar otra opcion
+Future<void> openDialogSharingFile(
+    BuildContext context, String extension, String title) async {
   var rootPath = await DownloadsPath.downloadsDirectory();
   //print('Folder: $rootPath');
-  String? fileToShare = await FilesystemPicker.openDialog(
+
+  String? fileToShare = await FilesystemPicker.open(
     fileTileSelectMode: FileTileSelectMode.wholeTile,
     theme: FilesystemPickerTheme(
       topBar: FilesystemPickerTopBarThemeData(
-        backgroundColor: Colors.white30,
+        elevation: 10,
+        backgroundColor: Colors.amberAccent,
       ),
     ),
-    title: 'Archivos descargados [raw]',
+    title: title,
     context: context,
     rootDirectory: rootPath!,
     fsType: FilesystemType.file,
@@ -28,7 +32,7 @@ Future<void> openDialogSharingFile(BuildContext context, String extension) async
   }
 }
 
-void shareSelectedFile(String file){
+void shareSelectedFile(String file) {
   // TODO: Cuando se cambió de versión el ShareXFile, comenzaron los errores en build. En la actualización el soporte del ShareXFile, dejo de funcionar
   Share.shareFiles([file]);
   //Share.shareXFiles(XFile(fileToShare), text: 'Archivo descargado');

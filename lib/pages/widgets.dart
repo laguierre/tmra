@@ -2,8 +2,7 @@ import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
+
 import 'package:lecle_downloads_path_provider/lecle_downloads_path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../constants.dart';
@@ -73,7 +72,7 @@ class InfoConfig extends StatelessWidget {
         ));
   }
 }
-Future<void> downloadScreenshotFile(String fileName, Uint8List file2Write) async {
+Future<void> writeScreenshotFile(String fileName, Uint8List file2Write) async {
   await Permission.storage.request();
   final time = DateTime.now()
       .toIso8601String()

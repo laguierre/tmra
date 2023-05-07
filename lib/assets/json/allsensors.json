@@ -5,7 +5,7 @@
     "1.3"
   ],
   "DAQ": [
-    "2.2",
+    "3.4",
     "3.4"
   ],
   "WIFI": [
@@ -13,18 +13,18 @@
     "ESP-12"
   ],
   "channelUsed": [
-    "0x0",
+    "0x80",
     "0xFFFFFFFF"
   ],
   "LogLastAddress": "1200",
   "TimeStamp (UTC)": "24/12/2022 04:40:38",
   "DownloadLastAddress": "800",
   "Download TimeStamp (UTC)": "10/04/2023 10:11:12",
+  "Tension de bateria":"13.94",
   "controlledChannel": [
     "0x80",
     "0x360"
   ],
-  "Tension de bateria":"12.00",
   "channels": [
     {
       "ch": "0",
@@ -69,7 +69,7 @@
     {
       "ch": "8",
       "nombre": "Nivel freatico | Altura del arroyo (CS451)",
-      "valor": "0.00"
+      "valor": "0.09123"
     },
     {
       "ch": "9",

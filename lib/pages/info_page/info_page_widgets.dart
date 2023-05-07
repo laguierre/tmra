@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
-import 'package:permission_handler/permission_handler.dart';
+
 import 'package:screenshot/screenshot.dart';
 import 'package:tmra/models/model_sensors.dart';
 import 'package:tmra/pages/widgets.dart';
@@ -54,7 +53,7 @@ class EMInfo extends StatelessWidget {
                       final name = 'EM${info.em}_info_$time';
                       final result =
                           await ImageGallerySaver.saveImage(image, name: name);*/
-                      downloadScreenshotFile('EM${info.em}_info', image);
+                      writeScreenshotFile('EM${info.em}_info', image);
                       snackBar(
                           context,
                           'Captura guardada',

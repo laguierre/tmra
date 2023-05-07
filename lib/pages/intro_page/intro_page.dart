@@ -172,13 +172,13 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
                   CustomIconButton(
                       icon: sharingIcon,
                       onPressed: () {
-                        openDialogSharingFile(context, '.raw');
+                        openDialogSharingFile(context, '.raw', 'Archivos descargados [raw]');
                       }),
                   const SizedBox(width: 20),
                   CustomIconButton(
                       icon: sharingScreenShotIcon,
                       onPressed: () {
-                        openDialogSharingFile(context, '.jpg');
+                        openDialogSharingFile(context, '.jpg', 'Capturas de pantalla');
                       }),
                   const Spacer(),
                   Visibility(

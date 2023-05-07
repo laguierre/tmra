@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:intl/intl.dart';
 import 'package:lecle_downloads_path_provider/lecle_downloads_path_provider.dart';
 import 'package:path_provider/path_provider.dart';
@@ -89,17 +88,7 @@ class _DownloadPageState extends State<DownloadPage> {
                                   MediaQuery.of(context).devicePixelRatio;
                               final image = await screenshotController.capture(
                                   pixelRatio: pixelRatio);
-                              //Save screenshot.
-                              /*await [Permission.storage].request();
-                              final time = DateTime.now()
-                                  .toIso8601String()
-                                  .replaceAll('.', '-')
-                                  .replaceAll(':', '-');
-
-                              final result =
-                              await ImageGallerySaver.saveImage(
-                                  image!, name: name);*/
-                              downloadScreenshotFile(
+                              writeScreenshotFile(
                                   'EM${widget.info.em}_download', image!);
 
                               snackBar(
@@ -161,7 +150,7 @@ class _DownloadPageState extends State<DownloadPage> {
                   CustomIconButton(
                       icon: openFolderIcon,
                       onPressed: () {
-                        openDialogSharingFile(context, '.raw');
+                        openDialogSharingFile(context, '.raw', 'Archivos descargados [raw]');
                       }),
                 ]),
                 const SizedBox(height: 20),
@@ -309,7 +298,7 @@ class _DownloadPageState extends State<DownloadPage> {
                   style:
                       ElevatedButton.styleFrom(backgroundColor: Colors.green),
                   onPressed: () async {
-                    openDialogSharingFile(context, '.raw');
+                    openDialogSharingFile(context, '.raw', 'Archivos descargados [raw]');
                   },
                   child: const Text('Abrir en explorador')),
               ElevatedButton(

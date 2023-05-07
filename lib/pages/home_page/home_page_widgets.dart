@@ -4,7 +4,6 @@ import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tmra/constants.dart';
@@ -187,8 +186,9 @@ class HomePageTopAppBar extends StatelessWidget {
             )),
         const SizedBox(width: 5),
         IconButton(
-          splashColor: kSplashColor,
+            splashColor: kSplashColor,
             onPressed: () async {
+              double k = (info.channels!.length / kCaptureScreenshot);
               snackBar(context, 'Comenzando captura...',
                   const Duration(milliseconds: kDurationSnackBar + 1000));
               double pixelRatio = MediaQuery.of(context).devicePixelRatio;
@@ -202,12 +202,12 @@ class HomePageTopAppBar extends StatelessWidget {
                     sensors: sensors),
                 context: context,
                 pixelRatio: pixelRatio,
-                targetSize: size *
-                    (info.channels!.length / kCaptureScreenshot).toDouble(),
+
                 ///Tamaño de la pantalla a capturar
+                targetSize: size * (k + 1),
               );
 
-              downloadScreenshotFile('EM${info.em}', image);
+              writeScreenshotFile('EM${info.em}', image);
               snackBar(context, 'Captura guardada',
                   const Duration(milliseconds: kDurationSnackBar + 1000));
             },

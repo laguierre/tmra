@@ -9,7 +9,7 @@ class SensorsTMRAServices {
   Future<Sensors> getSensorsValues(bool testMode) async {
     Sensors info = Sensors();
 
-    ///Datos en Duro
+    ///Datos en duro
     if (testMode) {
       final String response =
           await rootBundle.loadString('lib/assets/json/allsensors.json');

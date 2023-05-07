@@ -1,25 +1,30 @@
 {
-  "EM":"0",
+  "EM":"'TEST'",
   "CPU":[
-    "3.3",
+    "3.4",
     "1.3"
   ],
   "DAQ":[
-    "3.3",
-    "3.3"
+    "3.4",
+    "3.4"
   ],
   "WIFI":[
-    "2.2 [23-01-23]",
+    "2.4 [09-03-23]",
     "ESP-12"
   ],
   "channelUsed":[
     "0x80",
     "0x1E00303"
   ],
-  "LogLastAddress":"13865",
+  "LogLastAddress":"1200",
   "TimeStamp (UTC)": "24/12/2022 04:40:38",
+  "DownloadLastAddress": "800",
   "Download TimeStamp (UTC)":"01/01/2022 00:25:16",
   "Tension de bateria":"13.94",
+  "controlledChannel": [
+    "0x80",
+    "0x360"
+  ],
   "channels":[
     {
       "ch":"0",

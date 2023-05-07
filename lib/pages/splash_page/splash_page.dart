@@ -1,7 +1,6 @@
 import 'dart:math';
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:tmra/constants.dart';
 import 'package:tmra/pages/intro_page/intro_page.dart';
 

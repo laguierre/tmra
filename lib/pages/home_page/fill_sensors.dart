@@ -67,9 +67,8 @@ List<SensorType> fillSensor(Sensors info) {
         sensorType.variableName.add('Nivel freático | Altura del arroyo');
         double? value = double.tryParse(info.channels![i].valor!);
         sensorType.variableValue.add(
-            '${info.channels![i].valor!} mbns| ${value! * 0.704} mts + C'); //* 0.704
-        sensorType.lines = 2.3;
-
+            '${info.channels![i].valor!} mbns | ${value! * 0.704} mts + C'); //* 0.704
+        sensorType.lines = 2.8;
         break;
       case '9':
         sensorType.variableName.add('Temperatura del agua');
@@ -106,7 +105,7 @@ List<SensorType> fillSensor(Sensors info) {
       case '15':
         sensorType.variableName.add('Termistor');
         sensorType.variableValue.add('${info.channels![i].valor!}°C');
-        sensorType.lines = 4.5;
+        sensorType.lines = 5;
         sensors.add(sensorType);
         break;
       case '16':

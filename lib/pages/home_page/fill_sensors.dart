@@ -134,7 +134,7 @@ List<SensorType> fillSensor(Sensors info) {
       case '20':
         sensorType.variableName.add('Temp. suelo: ');
         sensorType.variableValue.add('${info.channels![i].valor!}°C');
-        sensorType.lines = 3.7;
+        sensorType.lines = 3.9;
         sensors.add(sensorType);
         break;
       case '21':

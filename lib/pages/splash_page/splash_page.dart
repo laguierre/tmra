@@ -16,8 +16,10 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     super.initState();
     Future.delayed(Duration(milliseconds: kDurationSplash), () {
-      Navigator.pushAndRemoveUntil(context,
-          MaterialPageRoute(builder: (_) => const IntroPage()), (route) => false);
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => const IntroPage()),
+          (route) => false);
     });
   }
 
@@ -37,34 +39,39 @@ class _SplashPageState extends State<SplashPage> {
             height: double.infinity,
           ),
           FadeInUpBig(
-            duration: Duration(milliseconds: kDurationSplash * 2 ~/ 3),
-            child: Align(
-              alignment: const Alignment(0, -0.3),
-              child: Container(
-                width: double.infinity,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 30, vertical: 80),
-                child: Image.asset(
-                  ihredaLogo,
-                  fit: BoxFit.contain,
-                ),
-              ),
-            ),
-          ),
+              duration: Duration(milliseconds: kDurationSplash * 2 ~/ 3),
+              child: Align(
+                  alignment: const Alignment(0, -0.3),
+                  child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 30, vertical: 80),
+                      child: Image.asset(
+                        ihredaLogo,
+                        fit: BoxFit.contain,
+                      )))),
           FadeInRight(
-            duration: Duration(milliseconds: kDurationSplash * 2 ~/ 3),
-            child: Align(
-              alignment: const Alignment(1, 1),
-              child: SizedBox(
-                height: dg * 0.12,
-                width: double.infinity,
-                child: Image.asset(
-                  redimecLogo,
-                  fit: BoxFit.contain,
-                ),
-              ),
-            ),
-          ),
+              duration: Duration(milliseconds: kDurationSplash * 2 ~/ 3),
+              child: Align(
+                  alignment: const Alignment(1, 0.9),
+                  child: SizedBox(
+                      height: dg * 0.12,
+                      width: double.infinity,
+                      child: Image.asset(
+                        redimecLogo,
+                        fit: BoxFit.contain,
+                      )))),
+          FadeInRight(
+              duration: Duration(milliseconds: kDurationSplash * 2 ~/ 3),
+              child: Align(
+                  alignment: const Alignment(0.9, 0.95),
+                  child: Text(
+                    kVersion,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold),
+                  )))
         ],
       ),
     );

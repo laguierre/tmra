@@ -64,108 +64,105 @@ class _DownloadPageState extends State<DownloadPage> {
     double sizeButton = 65;
 
     return Scaffold(
-      extendBody: false,
-      backgroundColor: Colors.black,
-      body: Screenshot(
-        controller: screenshotController,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
-          child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                    margin: const EdgeInsets.only(top: 50),
-                    child: Row(
+        extendBody: false,
+        backgroundColor: Colors.black,
+        body: Screenshot(
+            controller: screenshotController,
+            child: Padding(
+                padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+                child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        StationName(info: widget.info),
-                        const Spacer(),
-                        IconButton(
-                            splashColor: kSplashColor,
-                            onPressed: () async {
-                              double pixelRatio =
-                                  MediaQuery.of(context).devicePixelRatio;
-                              final image = await screenshotController.capture(
-                                  pixelRatio: pixelRatio);
-                              writeScreenshotFile(
-                                  'EM${widget.info.em}_download', image!);
+                        Container(
+                            margin: const EdgeInsets.only(top: 50),
+                            child: Row(
+                              children: [
+                                StationName(info: widget.info),
+                                const Spacer(),
+                                IconButton(
+                                    splashColor: kSplashColor,
+                                    onPressed: () async {
+                                      double pixelRatio = MediaQuery.of(context)
+                                          .devicePixelRatio;
+                                      final image = await screenshotController
+                                          .capture(pixelRatio: pixelRatio);
+                                      writeScreenshotFile(
+                                          'EM${widget.info.em}_download',
+                                          image!);
 
-                              snackBar(
-                                  context,
-                                  'Captura guardada',
-                                  const Duration(
-                                      milliseconds: kDurationSnackBar + 1000));
-                            },
-                            icon: Image.asset(
-                              screenShotLogo,
-                              fit: BoxFit.fitHeight,
-                              color: Colors.white,
-                            ))
+                                      snackBar(
+                                          context,
+                                          'Captura guardada',
+                                          const Duration(
+                                              milliseconds:
+                                                  kDurationSnackBar + 1000));
+                                    },
+                                    icon: Image.asset(
+                                      screenShotLogo,
+                                      fit: BoxFit.fitHeight,
+                                      color: Colors.white,
+                                    ))
+                              ],
+                            )),
+                        const SizedBox(height: 30),
+                        const Text(
+                          'Índice límite INFERIOR',
+                          style: TextStyle(
+                              color: Colors.white, fontSize: kFontSize),
+                        ),
+                        const SizedBox(height: 15),
+                        CustomFieldText(
+                            textEditingController: infTextEditingController),
+                        const SizedBox(height: 15),
+                        const Text(
+                          'Índice límite SUPERIOR',
+                          style: TextStyle(
+                              color: Colors.white, fontSize: kFontSize),
+                        ),
+                        const SizedBox(height: 15),
+                        CustomFieldText(
+                            textEditingController: supTextEditingController),
+                        const SizedBox(height: 15),
+                        InfoLine(
+                            text: 'Última fecha: ', boldText: timeDownload),
+                        const SizedBox(height: 7),
+                        InfoLine(
+                            text: 'Último índice bajado: ',
+                            boldText: widget.info.downloadLastAdress!),
+                        const SizedBox(height: 7),
+                        InfoLine(
+                            text: 'Último índice grabado: ',
+                            boldText: widget.info.logLastAddress!),
+                        const SizedBox(height: 45),
+                        downloadButtons(context, widget.info.wifi![0]),
+                        const SizedBox(height: 40),
+                        Row(children: [
+                          const Spacer(),
+                          CustomIconButton(
+                              icon: sharingIcon,
+                              onPressed: () {
+                                openDialogSharingFile(context, '.raw',
+                                    'Archivos descargados [raw]');
+                              }),
+                          const SizedBox(width: 20),
+                          CustomIconButton(
+                              icon: sharingScreenShotIcon,
+                              onPressed: () {
+                                openDialogSharingFile(
+                                    context, '.jpg', 'Capturas de pantalla');
+                              }),
+                        ]),
+                        const SizedBox(height: 20),
+                        isDownload
+                            ? ProgressBar(
+                                receivedDataPercent: receivedDataPercent,
+                                receivedData: receivedData,
+                                totalData: totalData)
+                            : Container(),
                       ],
-                    )),
-                const SizedBox(height: 30),
-                const Text(
-                  'Índice límite INFERIOR',
-                  style: TextStyle(color: Colors.white, fontSize: kFontSize),
-                ),
-                const SizedBox(height: 15),
-                CustomFieldText(
-                    textEditingController: infTextEditingController),
-                const SizedBox(height: 15),
-                const Text(
-                  'Índice límite SUPERIOR',
-                  style: TextStyle(color: Colors.white, fontSize: kFontSize),
-                ),
-                const SizedBox(height: 15),
-                CustomFieldText(
-                    textEditingController: supTextEditingController),
-                const SizedBox(height: 15),
-                InfoLine(text: 'Última fecha: ', boldText: timeDownload),
-                const SizedBox(height: 7),
-                InfoLine(
-                    text: 'Último índice bajado: ',
-                    boldText: widget.info.downloadLastAdress!),
-                const SizedBox(height: 7),
-                InfoLine(
-                    text: 'Último índice grabado: ',
-                    boldText: widget.info.logLastAddress!),
-                const SizedBox(height: 45),
-                downloadButtons(context, widget.info.wifi![0]),
-                const SizedBox(height: 40),
-                Row(children: [
-                  const Spacer(),
-                  Visibility(
-                      visible: isSharing,
-                      child: CustomIconButton(
-                        icon: sharingIcon,
-                        onPressed: () async {
-                          final file = '$downloadsDirectoryPath/$fileName';
-                          if (await File(file).exists()) {
-                            shareSelectedFile(file);
-                          }
-                        },
-                      )),
-                  const SizedBox(width: 20),
-                  CustomIconButton(
-                      icon: openFolderIcon,
-                      onPressed: () {
-                        openDialogSharingFile(context, '.raw', 'Archivos descargados [raw]');
-                      }),
-                ]),
-                const SizedBox(height: 20),
-                isDownload
-                    ? ProgressBar(
-                        receivedDataPercent: receivedDataPercent,
-                        receivedData: receivedData,
-                        totalData: totalData)
-                    : Container(),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
+                    )))));
   }
 
   Row downloadButtons(BuildContext context, String wifiSw) {
@@ -187,9 +184,10 @@ class _DownloadPageState extends State<DownloadPage> {
                 url: Uri.parse('http://192.168.4.1/confDownload.html'));
           },
         ),
-        version >= 2.4 ? const SizedBox(width: 30) : Container(),
-        version >= 2.4
-            ? CustomButton(
+
+        if(version >= 2.4) const SizedBox(width: 30),
+        if(version >= 2.4)
+            CustomButton(
                 icon: 'lib/assets/icons/save.png',
                 text: 'Bajar archivo',
                 function: () async {
@@ -220,7 +218,6 @@ class _DownloadPageState extends State<DownloadPage> {
                         const Duration(milliseconds: kDurationSnackBar));
                   }
                 })
-            : Container()
       ],
     );
   }
@@ -298,7 +295,8 @@ class _DownloadPageState extends State<DownloadPage> {
                   style:
                       ElevatedButton.styleFrom(backgroundColor: Colors.green),
                   onPressed: () async {
-                    openDialogSharingFile(context, '.raw', 'Archivos descargados [raw]');
+                    openDialogSharingFile(
+                        context, '.raw', 'Archivos descargados [raw]');
                   },
                   child: const Text('Abrir en explorador')),
               ElevatedButton(

@@ -1,16 +1,11 @@
-# tmra
+# TMRA In Situ APP
 
-A new Flutter project.
+Aplicación para ver en el sitio los sensores y realizar la bajada de los datos en la EM.
 
-## Getting Started
+## v0.1
 
-This project is a starting point for a Flutter application.
+Usa el widget Screen 
 
-A few resources to get you started if this is your first Flutter project:
+## v0.1b
+Usar el widget para captura de pantalla "widget_screenshot" [link](https://pub.dev/packages/widget_screenshot)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.

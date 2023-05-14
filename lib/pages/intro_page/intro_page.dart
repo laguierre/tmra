@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,7 +12,6 @@ import 'package:tmra/common.dart';
 import 'package:tmra/constants.dart';
 import 'package:tmra/pages/home_page/home_page.dart';
 import 'package:wifi_iot/wifi_iot.dart';
-
 import '../widgets.dart';
 
 class IntroPage extends StatefulWidget {

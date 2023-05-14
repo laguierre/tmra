@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:screenshot/screenshot.dart';
 import 'package:tmra/models/model_sensors.dart';
 import 'package:tmra/pages/widgets.dart';
+import 'package:widget_screenshot/widget_screenshot.dart';
 import '../../constants.dart';
 import '../snackbar.dart';
 
@@ -10,13 +10,13 @@ class EMInfo extends StatelessWidget {
   const EMInfo({
     super.key,
     required this.info,
-    required this.screenshotController,
-    required this.size,
+    required this.size, required this.scrollController, required this.infoKey,
   });
 
   final Sensors info;
-  final ScreenshotController screenshotController;
   final Size size;
+  final ScrollController scrollController;
+  final GlobalKey infoKey;
 
   @override
   Widget build(BuildContext context) {
@@ -32,28 +32,16 @@ class EMInfo extends StatelessWidget {
                 IconButton(
                   splashColor: kSplashColor,
                     onPressed: () async {
-                      double pixelRatio =
-                          MediaQuery.of(context).devicePixelRatio;
-                      final image =
-                          await screenshotController.captureFromWidget(
-                        EMInfo(
-                            info: info,
-                            screenshotController: screenshotController,
-                            size: size),
-                        context: context,
-                        pixelRatio: pixelRatio,
-                        targetSize: size * 2,
-                      );
-                      //Save screenshot.
-                      /*await [Permission.storage].request();
-                      final time = DateTime.now()
-                          .toIso8601String()
-                          .replaceAll('.', '-')
-                          .replaceAll(':', '-');
-                      final name = 'EM${info.em}_info_$time';
-                      final result =
-                          await ImageGallerySaver.saveImage(image, name: name);*/
-                      writeScreenshotFile('EM${info.em}_info', image);
+                      WidgetShotRenderRepaintBoundary sensorsBoundary =
+                      infoKey.currentContext!.findRenderObject()
+                      as WidgetShotRenderRepaintBoundary;
+                      var image = await sensorsBoundary.screenshot(
+                          backgroundColor: Colors.black,
+                          format: ShotFormat.png,
+                          scrollController: scrollController,
+
+                          pixelRatio: 1);
+                      writeScreenshotFile('EM${info.em}_info', image!);
                       snackBar(
                           context,
                           'Captura guardada',

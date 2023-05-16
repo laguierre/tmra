@@ -351,7 +351,7 @@ packages:
       name: permission_handler_android
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "10.2.0"
+    version: "10.2.1"
   permission_handler_apple:
     dependency: transitive
     description:
@@ -622,7 +622,7 @@ packages:
       name: widget_screenshot
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.7"
+    version: "0.0.8"
   wifi_iot:
     dependency: "direct main"
     description:

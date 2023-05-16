@@ -6,7 +6,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tmra/constants.dart';
-import 'package:tmra/pages/home_page/home_page.dart';
 import 'package:tmra/pages/widgets.dart';
 import 'package:widget_screenshot/widget_screenshot.dart';
 import '../../models/model_sensors.dart';
@@ -195,17 +194,16 @@ class HomePageTopAppBar extends StatelessWidget {
               snackBar(context, 'Comenzando captura...',
                   const Duration(milliseconds: kDurationSnackBar + 1000));
 
-              WidgetShotRenderRepaintBoundary headerBoundary =
-                  headerEMKey.currentContext!.findRenderObject()
-                      as WidgetShotRenderRepaintBoundary;
+              var headerBoundary = headerEMKey.currentContext!
+                  .findRenderObject() as WidgetShotRenderRepaintBoundary;
               var headerImage = await headerBoundary.screenshot(
                   backgroundColor: Colors.black,
                   format: ShotFormat.png,
                   pixelRatio: 1);
 
-              WidgetShotRenderRepaintBoundary sensorsBoundary =
-                  sensorsEMKey.currentContext!.findRenderObject()
-                      as WidgetShotRenderRepaintBoundary;
+              // ignore: use_build_context_synchronously
+              var sensorsBoundary = sensorsEMKey.currentContext!
+                  .findRenderObject() as WidgetShotRenderRepaintBoundary;
               var resultImage = await sensorsBoundary.screenshot(
                   backgroundColor: Colors.black,
                   format: ShotFormat.png,

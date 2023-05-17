@@ -232,6 +232,7 @@ List<SensorType> fillSensor(Sensors info) {
 }
 
 String subtractUTC(String time, int hours) {
+  time = time.replaceAll('  ', ' ');
     DateTime timeStamp = DateFormat("dd/MM/yyyy HH:mm:ss")
         .parse(time)
         .subtract(Duration(hours: hours));

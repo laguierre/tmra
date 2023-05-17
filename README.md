@@ -1,13 +1,9 @@
 # TMRA In Situ APP
-
-Aplicación para ver en el sitio los sensores y realizar la bajada de los datos en la EM.
-
+- Aplicación para ver en el sitio los sensores y realizar la bajada de los datos en la EM.
 ## v0.1
-
-Usa el widget "screenshot"  [link](https://pub.dev/packages/screenshot)
-
+- Usa el widget "screenshot"  [link](https://pub.dev/packages/screenshot)
 ## v0.1b
-Usar el widget para captura de pantalla "widget_screenshot" [link](https://pub.dev/packages/widget_screenshot)
-
+- Usar el widget para captura de pantalla "widget_screenshot" [link](https://pub.dev/packages/widget_screenshot)
 ## v0.1c
-Se agrega la navegación legada y se cambian la unidad del sensor CS451 por PSI
+- Se agrega la navegación legada y se cambian la unidad del sensor CS451 por PSI.
+- Compatibilidad hacia version WiFi 2.1

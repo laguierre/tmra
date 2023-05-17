@@ -12,7 +12,7 @@ class SensorsTMRAServices {
     ///Datos en duro
     if (testMode) {
       final String response =
-          await rootBundle.loadString('lib/assets/json/allsensors.json');
+          await rootBundle.loadString('lib/assets/json/2v1.json');
       final decodedData = await json.decode(response);
       info = Sensors.fromJson(decodedData);
     }

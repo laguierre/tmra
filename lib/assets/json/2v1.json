@@ -1,0 +1,149 @@
+{
+  "EM":"0",
+  "CPU":[
+    "3.3",
+    "1.3"
+  ],
+  "DAQ":[
+    "2.2",
+    "3.3"
+  ],
+  "WIFI":[
+    "2.1 [07-12-22]",
+    "ESP-12"
+  ],
+  "channelUsed":[
+    "0x0",
+    "0xFFEFBFB"
+  ],
+  "LogLastAddress":"100",
+  "TimeStamp (UTC)":"18/12/2022 13:56:31",
+  "Tension de bateria":"12.00",
+  "channels":[
+    {
+      "ch":"0",
+      "nombre":"Precipitación acumulada (PMB25)",
+      "valor":"0.00"
+    },
+    {
+      "ch":"1",
+      "nombre":"Intensidad precipitación (PMB25)",
+      "valor":"0.00"
+    },
+    {
+      "ch":"3",
+      "nombre":"Dirección del viento (WINDSONIC 2D)",
+      "valor":"0.00"
+    },
+    {
+      "ch":"4",
+      "nombre":"Velocidad del viento (WINDSONIC 2D)",
+      "valor":"0.00"
+    },
+    {
+      "ch":"5",
+      "nombre":"Temperatura del aire (CS215)",
+      "valor":"0.00"
+    },
+    {
+      "ch":"6",
+      "nombre":"Humedad del aire (CS215)",
+      "valor":"0.00"
+    },
+    {
+      "ch":"7",
+      "nombre":"Presion atmosferica (CS100)",
+      "valor":"0.00"
+    },
+    {
+      "ch":"8",
+      "nombre":"Nivel freatico | Altura del arroyo (CS451)",
+      "valor":"0.00"
+    },
+    {
+      "ch":"9",
+      "nombre":"Temperatura del agua (CS451)",
+      "valor":"0.00"
+    },
+    {
+      "ch":"11",
+      "nombre":"Piranómetro Sup SW (CNR4)",
+      "valor":"0.00"
+    },
+    {
+      "ch":"12",
+      "nombre":"Piranómetro Inf SW (CNR4)",
+      "valor":"0.00"
+    },
+    {
+      "ch":"13",
+      "nombre":"Piranómetro Sup LW (CNR4)",
+      "valor":"0.00"
+    },
+    {
+      "ch":"14",
+      "nombre":"Piranómetro Inf LW (CNR4)",
+      "valor":"0.00"
+    },
+    {
+      "ch":"15",
+      "nombre":"Termistor (CNR4)",
+      "valor":"0.00"
+    },
+    {
+      "ch":"17",
+      "nombre":"Permitividad (Superficie) (CS655)",
+      "valor":"0.00"
+    },
+    {
+      "ch":"18",
+      "nombre":"Cont. volumetrico (Superficie) (CS655)",
+      "valor":"0.00"
+    },
+    {
+      "ch":"19",
+      "nombre":"Conductividad (Superficie) (CS655)",
+      "valor":"0.00"
+    },
+    {
+      "ch":"20",
+      "nombre":"Temp. suelo (Superficie) (CS655)",
+      "valor":"0.00"
+    },
+    {
+      "ch":"21",
+      "nombre":"Incidente NIR (SNR)",
+      "valor":"0.00"
+    },
+    {
+      "ch":"22",
+      "nombre":"Incidente RED (SNR)",
+      "valor":"0.00"
+    },
+    {
+      "ch":"23",
+      "nombre":"Reflectado NIR (SNR)",
+      "valor":"0.00"
+    },
+    {
+      "ch":"24",
+      "nombre":"Reflectado RED (SNR)",
+      "valor":"0.00"
+    },
+    {
+      "ch":"25",
+      "nombre":"Flujo de calor suelo (HFP01)",
+      "valor":"0.00"
+    },
+    {
+      "ch":"26",
+      "nombre":"Temp. de superficie (SI-111)",
+      "valor":"0.00"
+    },
+    {
+      "ch":"27",
+      "nombre":"Temp. del cuerpo (SI-111)",
+      "valor":"0.00"
+    }
+  ]
+}

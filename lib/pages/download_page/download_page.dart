@@ -45,7 +45,7 @@ class _DownloadPageState extends State<DownloadPage> {
   @override
   void initState() {
     infTextEditingController =
-        TextEditingController(text: widget.info.downloadLastAdress);
+        TextEditingController(text: widget.info.downloadLastAddress);
     supTextEditingController =
         TextEditingController(text: widget.info.logLastAddress);
     timeStamp = subtractUTC(widget.info.timeStampUtc!, 3);
@@ -131,7 +131,7 @@ class _DownloadPageState extends State<DownloadPage> {
                       const SizedBox(height: 7),
                       InfoLine(
                           text: 'Último índice bajado: ',
-                          boldText: widget.info.downloadLastAdress!),
+                          boldText: widget.info.downloadLastAddress!),
                       const SizedBox(height: 7),
                       InfoLine(
                           text: 'Último índice grabado: ',

@@ -5,6 +5,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -113,7 +114,7 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
         child: Container(
           height: size.height,
           width: size.width,
-          padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
+          padding: const EdgeInsets.fromLTRB(15, 50, 15, 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -170,17 +171,30 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
                   CustomIconButton(
                       icon: sharingIcon,
                       onPressed: () {
-                        openDialogSharingFile(context, '.raw', 'Archivos descargados [raw]');
+                        openDialogSharingFile(
+                            context, '.raw', 'Archivos descargados [raw]');
                       }),
                   const SizedBox(width: 20),
                   CustomIconButton(
                       icon: sharingScreenShotIcon,
                       onPressed: () {
-                        openDialogSharingFile(context, '.jpg', 'Capturas de pantalla');
+                        openDialogSharingFile(
+                            context, '.jpg', 'Capturas de pantalla');
                       }),
+                  const SizedBox(width: 20),
+                  Visibility(
+                    visible: isConnectedESP && !switchSimulation,
+                    child: CustomIconButton(
+                      icon: webIcon,
+                      onPressed: () {
+                        InAppBrowser.openWithSystemBrowser(
+                            url: Uri.parse('http://192.168.4.1'));
+                      },
+                    ),
+                  ),
                   const Spacer(),
                   Visibility(
-                      visible: isConnectedESP,
+                      visible: isConnectedESP || switchSimulation,
                       child: CustomIconButton(
                         icon: nextIcon,
                         onPressed: () {
@@ -223,11 +237,13 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
                 if (value) {
                   thumbColor = Colors.white;
                   testMode = 'ON';
-                  isConnectedESP = true;
+                  switchSimulation = true;
+                  //isConnectedESP = true;
                 } else {
                   thumbColor = Colors.black;
                   testMode = 'OFF';
-                  isConnectedESP = false;
+                  switchSimulation = false;
+                  //isConnectedESP = false;
                 }
               });
             }),

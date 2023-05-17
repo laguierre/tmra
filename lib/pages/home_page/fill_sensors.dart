@@ -64,10 +64,10 @@ List<SensorType> fillSensor(Sensors info) {
         sensorType = SensorType();
         sensorType.sensorName = 'CS451';
         sensorType.imageSensor = sensorsImagesList[5];
-        sensorType.variableName.add('Nivel freático | Altura del arroyo');
+        sensorType.variableName.add('Presión (PSI) | mts + C');
         double? value = double.tryParse(info.channels![i].valor!);
         sensorType.variableValue.add(
-            '${info.channels![i].valor!} mbns | ${value! * 0.704} mts + C'); //* 0.704
+            '${info.channels![i].valor!} (PSI) | ${(value! * 0.704).toStringAsFixed(4)} mts + Cte.'); //* 0.704
         sensorType.lines = 2.8;
         break;
       case '9':

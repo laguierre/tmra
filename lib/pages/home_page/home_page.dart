@@ -207,7 +207,7 @@ class HeaderInfo extends StatelessWidget {
                   icon: batteryIcon),
               InfoConfig(
                   title: 'Último valor bajado: ',
-                  value: '${info.downloadLastAdress!} \n[$timeDownload]',
+                  value: '${info.downloadLastAddress!} \n[$timeDownload]',
                   size: kFontSize - 1.5,
                   icon: downloadIcon),
               InfoConfig(

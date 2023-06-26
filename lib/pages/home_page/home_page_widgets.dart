@@ -4,11 +4,10 @@ import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:screenshot/screenshot.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tmra/constants.dart';
-import 'package:tmra/pages/home_page/home_page.dart';
 import 'package:tmra/pages/widgets.dart';
+import 'package:widget_screenshot/widget_screenshot.dart';
 import '../../models/model_sensors.dart';
 import '../../models/sensors_type.dart';
 import '../snackbar.dart';
@@ -147,17 +146,20 @@ class HomePageTopAppBar extends StatelessWidget {
     Key? key,
     required this.info,
     required this.testMode,
-    required this.screenshotController,
     required this.timeDownload,
     required this.timeStampUtc,
     required this.sensors,
+    required this.headerEMKey,
+    required this.sensorsEMKey,
+    required this.scrollController,
   }) : super(key: key);
 
   final Sensors info;
   final bool testMode;
-  final ScreenshotController screenshotController;
   final String timeDownload, timeStampUtc;
   final List<SensorType> sensors;
+  final GlobalKey headerEMKey, sensorsEMKey;
+  final ScrollController scrollController;
 
   @override
   Widget build(BuildContext context) {
@@ -191,23 +193,29 @@ class HomePageTopAppBar extends StatelessWidget {
               double k = (info.channels!.length / kCaptureScreenshot);
               snackBar(context, 'Comenzando captura...',
                   const Duration(milliseconds: kDurationSnackBar + 1000));
-              double pixelRatio = MediaQuery.of(context).devicePixelRatio;
-              final image = await screenshotController.captureFromWidget(
-                EMInfoSensorInfo(
-                    info: info,
-                    testMode: testMode,
-                    screenshotController: screenshotController,
-                    timeDownload: timeDownload,
-                    timeStampUtc: timeStampUtc,
-                    sensors: sensors),
-                context: context,
-                pixelRatio: pixelRatio,
 
-                ///Tamaño de la pantalla a capturar
-                targetSize: size * (k + 1),
-              );
+              var headerBoundary = headerEMKey.currentContext!
+                  .findRenderObject() as WidgetShotRenderRepaintBoundary;
+              var headerImage = await headerBoundary.screenshot(
+                  backgroundColor: Colors.black,
+                  format: ShotFormat.png,
+                  pixelRatio: 1);
 
-              writeScreenshotFile('EM${info.em}', image);
+              // ignore: use_build_context_synchronously
+              var sensorsBoundary = sensorsEMKey.currentContext!
+                  .findRenderObject() as WidgetShotRenderRepaintBoundary;
+              var resultImage = await sensorsBoundary.screenshot(
+                  backgroundColor: Colors.black,
+                  format: ShotFormat.png,
+                  scrollController: scrollController,
+                  extraImage: [
+                    if (headerImage != null)
+                      ImageParam.start(
+                          headerImage, headerEMKey.currentContext!.size!)
+                  ],
+                  pixelRatio: 1);
+
+              writeScreenshotFile('EM${info.em}', resultImage!);
               snackBar(context, 'Captura guardada',
                   const Duration(milliseconds: kDurationSnackBar + 1000));
             },
@@ -305,36 +313,32 @@ class GlassmorphismContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: width,
-      height: height,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(40),
-        color: Colors.white.withOpacity(0.1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.white.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 10,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(40),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.05),
-              borderRadius: BorderRadius.circular(20),
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(40),
+          color: Colors.white.withOpacity(0.1),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.white.withOpacity(0.1),
+              spreadRadius: 1,
+              blurRadius: 10,
+              offset: const Offset(0, 10),
             ),
-            child: Center(
-              child: widget,
-            ),
-          ),
+          ],
         ),
-      ),
-    );
+        child: ClipRRect(
+            borderRadius: BorderRadius.circular(40),
+            child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.05),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Center(
+                      child: widget,
+                    )))));
   }
 }
 

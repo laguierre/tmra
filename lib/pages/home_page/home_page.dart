@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
-import 'package:screenshot/screenshot.dart';
 import 'package:tmra/common.dart';
 import 'package:tmra/constants.dart';
 import 'package:tmra/models/model_sensors.dart';
@@ -9,6 +8,7 @@ import 'package:tmra/models/sensors_type.dart';
 import 'package:tmra/pages/download_page/download_page.dart';
 import 'package:tmra/pages/home_page/fill_sensors.dart';
 import 'package:tmra/services/services_sensors.dart';
+import 'package:widget_screenshot/widget_screenshot.dart';
 import '../info_page/info_page.dart';
 import 'home_page_widgets.dart';
 
@@ -29,7 +29,11 @@ class _HomePageState extends State<HomePage> {
   String timeStampUtc = '';
   String timeDownload = '';
   late PageController _pageController;
-  ScreenshotController screenshotController = ScreenshotController();
+
+  ///Para captura de pantalla
+  GlobalKey headerEMKey = GlobalKey();
+  GlobalKey sensorsEMKey = GlobalKey();
+  ScrollController scrollController = ScrollController();
 
   void getSensorInfo() async {
     info = await services.getSensorsValues(widget.testMode);
@@ -78,15 +82,26 @@ class _HomePageState extends State<HomePage> {
                         getSensorInfo();
                       },
                       child: sensors.isNotEmpty
-                          ? Screenshot(
-                              controller: screenshotController,
-                              child: EMInfoSensorInfo(
-                                  info: info,
-                                  testMode: widget.testMode,
-                                  screenshotController: screenshotController,
-                                  timeDownload: timeDownload,
-                                  timeStampUtc: timeStampUtc,
-                                  sensors: sensors),
+                          ? Column(
+                              children: [
+                                HeaderInfo(
+                                    headerEMKey: headerEMKey,
+                                    info: info,
+                                    widget: widget,
+                                    timeDownload: timeDownload,
+                                    timeStampUtc: timeStampUtc,
+                                    sensors: sensors,
+                                    sensorsEMKey: sensorsEMKey,
+                                    scrollController: scrollController),
+                                Expanded(
+                                  child: WidgetShot(
+                                      key: sensorsEMKey,
+                                      child: EMSensors(
+                                        sensors: sensors,
+                                        scrollController: scrollController,
+                                      )),
+                                ),
+                              ],
                             )
                           : Stack(
                               children: [
@@ -136,76 +151,79 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class EMInfoSensorInfo extends StatelessWidget {
-  const EMInfoSensorInfo({
+class HeaderInfo extends StatelessWidget {
+  const HeaderInfo({
     super.key,
+    required this.headerEMKey,
     required this.info,
-    required this.testMode,
-    required this.screenshotController,
+    required this.widget,
     required this.timeDownload,
     required this.timeStampUtc,
     required this.sensors,
+    required this.sensorsEMKey,
+    required this.scrollController,
   });
 
+  final GlobalKey<State<StatefulWidget>> headerEMKey;
   final Sensors info;
-  final bool testMode;
-  final ScreenshotController screenshotController;
+  final HomePage widget;
   final String timeDownload;
   final String timeStampUtc;
   final List<SensorType> sensors;
+  final GlobalKey<State<StatefulWidget>> sensorsEMKey;
+  final ScrollController scrollController;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-            padding:
-                const EdgeInsets.fromLTRB(kPadding, 50, kPadding, kPadding),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                HomePageTopAppBar(
-                  info: info,
-                  testMode: testMode,
-                  screenshotController: screenshotController,
-                  timeDownload: timeDownload,
-                  timeStampUtc: timeStampUtc,
-                  sensors: sensors,
-                ),
-                const Divider(
-                  color: Colors.white,
-                ),
-                const SizedBox(height: 10),
-                InfoConfig(
-                    title: 'Batería: ',
-                    value: '${info.tensionDeBateria}V',
-                    size: kFontSize,
-                    icon: batteryIcon),
-                InfoConfig(
-                    title: 'Último valor bajado: ',
-                    value: '${info.downloadLastAdress!} \n[$timeDownload]',
-                    size: kFontSize - 1.5,
-                    icon: downloadIcon),
-                InfoConfig(
-                    title: 'Último valor grabado: ',
-                    value: info.logLastAddress!,
-                    size: kFontSize,
-                    icon: cpuIcon),
-                InfoConfig(
-                    title: 'Time Stamp: ',
-                    value: testMode
-                        ? DateFormat(
-                                'yyyy/MM/dd HH:mm:ss') //TODO chequear el doble espacio acá//
-                            .format(DateTime.now())
-                        : timeStampUtc, //info.timeStampUtc!,
-                    size: kFontSize - 1,
-                    icon: clockIcon),
-              ],
-            )),
-        Expanded(
-          child: EMSensors(sensors: sensors),
-        ),
-      ],
+    return WidgetShot(
+      key: headerEMKey,
+      child: Padding(
+          padding: const EdgeInsets.fromLTRB(kPadding, 50, kPadding, kPadding),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              HomePageTopAppBar(
+                info: info,
+                testMode: widget.testMode,
+                timeDownload: timeDownload,
+                timeStampUtc: timeStampUtc,
+                sensors: sensors,
+                headerEMKey: headerEMKey,
+                sensorsEMKey: sensorsEMKey,
+                scrollController: scrollController,
+              ),
+              const Divider(
+                height: 10,
+                color: Colors.white,
+              ),
+              const SizedBox(height: 10),
+              InfoConfig(
+                  title: 'Batería: ',
+                  value: '${info.tensionDeBateria}V',
+                  size: kFontSize,
+                  icon: batteryIcon),
+              InfoConfig(
+                  title: 'Último valor bajado: ',
+                  value: '${info.downloadLastAddress!} \n[$timeDownload]',
+                  size: kFontSize - 1.5,
+                  icon: downloadIcon),
+              InfoConfig(
+                  title: 'Último valor grabado: ',
+                  value: info.logLastAddress!,
+                  size: kFontSize,
+                  icon: cpuIcon),
+              InfoConfig(
+                  title: 'Time Stamp: ',
+                  value: widget.testMode
+                      ? DateFormat(
+                              'yyyy/MM/dd HH:mm:ss') //TODO chequear el doble espacio acá//
+                          .format(DateTime.now())
+                      : timeStampUtc,
+                  //info.timeStampUtc!,
+                  size: kFontSize - 1,
+                  icon: clockIcon),
+            ],
+          )),
     );
   }
 }
@@ -215,13 +233,16 @@ class EMSensors extends StatelessWidget {
   const EMSensors({
     super.key,
     required this.sensors,
+    required this.scrollController,
   });
 
   final List<SensorType> sensors;
+  final ScrollController scrollController;
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+        controller: scrollController,
         padding: const EdgeInsets.only(
             top: 0, bottom: kPaddingBottomScrollViews, left: 5, right: 5),
         physics: const BouncingScrollPhysics(),

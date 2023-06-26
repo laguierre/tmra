@@ -1,16 +1,9 @@
-# tmra
-
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# TMRA In Situ APP
+- Aplicación para ver en el sitio los sensores y realizar la bajada de los datos en la EM.
+## v0.1
+- Usa el widget "screenshot"  [link](https://pub.dev/packages/screenshot)
+## v0.1b
+- Usar el widget para captura de pantalla "widget_screenshot" [link](https://pub.dev/packages/widget_screenshot)
+## v0.1c
+- Se agrega la navegación legada y se cambian la unidad del sensor CS451 por PSI.
+- Compatibilidad hacia version WiFi 2.1

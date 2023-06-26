@@ -6,10 +6,10 @@ import 'package:intl/intl.dart';
 import 'package:lecle_downloads_path_provider/lecle_downloads_path_provider.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:screenshot/screenshot.dart';
 import 'package:tmra/common.dart';
 import 'package:tmra/constants.dart';
 import 'package:tmra/pages/snackbar.dart';
+import 'package:widget_screenshot/widget_screenshot.dart';
 import '../../models/model_sensors.dart';
 import '../widgets.dart';
 import '../home_page/fill_sensors.dart';
@@ -39,12 +39,13 @@ class _DownloadPageState extends State<DownloadPage> {
   String fileName = '';
   bool isSharing = false;
   late String timeStamp, timeDownload;
-  ScreenshotController screenshotController = ScreenshotController();
+  GlobalKey downloadEMKey = GlobalKey();
+  ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
     infTextEditingController =
-        TextEditingController(text: widget.info.downloadLastAdress);
+        TextEditingController(text: widget.info.downloadLastAddress);
     supTextEditingController =
         TextEditingController(text: widget.info.logLastAddress);
     timeStamp = subtractUTC(widget.info.timeStampUtc!, 3);
@@ -61,108 +62,109 @@ class _DownloadPageState extends State<DownloadPage> {
 
   @override
   Widget build(BuildContext context) {
-    double sizeButton = 65;
-
     return Scaffold(
         extendBody: false,
         backgroundColor: Colors.black,
-        body: Screenshot(
-            controller: screenshotController,
-            child: Padding(
-                padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
-                child: SingleChildScrollView(
-                    physics: const BouncingScrollPhysics(),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                            margin: const EdgeInsets.only(top: 50),
-                            child: Row(
-                              children: [
-                                StationName(info: widget.info),
-                                const Spacer(),
-                                IconButton(
-                                    splashColor: kSplashColor,
-                                    onPressed: () async {
-                                      double pixelRatio = MediaQuery.of(context)
-                                          .devicePixelRatio;
-                                      final image = await screenshotController
-                                          .capture(pixelRatio: pixelRatio);
-                                      writeScreenshotFile(
-                                          'EM${widget.info.em}_download',
-                                          image!);
-
-                                      snackBar(
-                                          context,
-                                          'Captura guardada',
-                                          const Duration(
-                                              milliseconds:
-                                                  kDurationSnackBar + 1000));
-                                    },
-                                    icon: Image.asset(
-                                      screenShotLogo,
-                                      fit: BoxFit.fitHeight,
-                                      color: Colors.white,
-                                    ))
-                              ],
-                            )),
-                        const SizedBox(height: 30),
-                        const Text(
-                          'Índice límite INFERIOR',
-                          style: TextStyle(
-                              color: Colors.white, fontSize: kFontSize),
-                        ),
-                        const SizedBox(height: 15),
-                        CustomFieldText(
-                            textEditingController: infTextEditingController),
-                        const SizedBox(height: 15),
-                        const Text(
-                          'Índice límite SUPERIOR',
-                          style: TextStyle(
-                              color: Colors.white, fontSize: kFontSize),
-                        ),
-                        const SizedBox(height: 15),
-                        CustomFieldText(
-                            textEditingController: supTextEditingController),
-                        const SizedBox(height: 15),
-                        InfoLine(
-                            text: 'Última fecha: ', boldText: timeDownload),
-                        const SizedBox(height: 7),
-                        InfoLine(
-                            text: 'Último índice bajado: ',
-                            boldText: widget.info.downloadLastAdress!),
-                        const SizedBox(height: 7),
-                        InfoLine(
-                            text: 'Último índice grabado: ',
-                            boldText: widget.info.logLastAddress!),
-                        const SizedBox(height: 45),
-                        downloadButtons(context, widget.info.wifi![0]),
-                        const SizedBox(height: 40),
-                        Row(children: [
-                          const Spacer(),
-                          CustomIconButton(
-                              icon: sharingIcon,
-                              onPressed: () {
-                                openDialogSharingFile(context, '.raw',
-                                    'Archivos descargados [raw]');
-                              }),
-                          const SizedBox(width: 20),
-                          CustomIconButton(
-                              icon: sharingScreenShotIcon,
-                              onPressed: () {
-                                openDialogSharingFile(
-                                    context, '.jpg', 'Capturas de pantalla');
-                              }),
-                        ]),
-                        const SizedBox(height: 20),
-                        isDownload
-                            ? ProgressBar(
-                                receivedDataPercent: receivedDataPercent,
-                                receivedData: receivedData,
-                                totalData: totalData)
-                            : Container(),
-                      ],
-                    )))));
+        body: WidgetShot(
+          key: downloadEMKey,
+          child: Padding(
+              padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+              child: SingleChildScrollView(
+                controller: scrollController,
+                  physics: const BouncingScrollPhysics(),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                          margin: const EdgeInsets.only(top: 50),
+                          child: Row(
+                            children: [
+                              StationName(info: widget.info),
+                              const Spacer(),
+                              IconButton(
+                                  splashColor: kSplashColor,
+                                  onPressed: () async {
+                                    WidgetShotRenderRepaintBoundary sensorsBoundary =
+                                    downloadEMKey.currentContext!.findRenderObject()
+                                    as WidgetShotRenderRepaintBoundary;
+                                    var resultImage = await sensorsBoundary.screenshot(
+                                        backgroundColor: Colors.black,
+                                        format: ShotFormat.png,
+                                        scrollController: scrollController,
+                                        pixelRatio: 1);
+                                    writeScreenshotFile('EM${widget.info.em}', resultImage!);
+                                    snackBar(
+                                        context,
+                                        'Captura guardada',
+                                        const Duration(
+                                            milliseconds:
+                                            kDurationSnackBar + 1000));
+                                  },
+                                  icon: Image.asset(
+                                    screenShotLogo,
+                                    fit: BoxFit.fitHeight,
+                                    color: Colors.white,
+                                  ))
+                            ],
+                          )),
+                      const SizedBox(height: 30),
+                      const Text(
+                        'Índice límite INFERIOR',
+                        style: TextStyle(
+                            color: Colors.white, fontSize: kFontSize),
+                      ),
+                      const SizedBox(height: 15),
+                      CustomFieldText(
+                          textEditingController: infTextEditingController),
+                      const SizedBox(height: 15),
+                      const Text(
+                        'Índice límite SUPERIOR',
+                        style: TextStyle(
+                            color: Colors.white, fontSize: kFontSize),
+                      ),
+                      const SizedBox(height: 15),
+                      CustomFieldText(
+                          textEditingController: supTextEditingController),
+                      const SizedBox(height: 15),
+                      InfoLine(
+                          text: 'Última fecha: ', boldText: timeDownload),
+                      const SizedBox(height: 7),
+                      InfoLine(
+                          text: 'Último índice bajado: ',
+                          boldText: widget.info.downloadLastAddress!),
+                      const SizedBox(height: 7),
+                      InfoLine(
+                          text: 'Último índice grabado: ',
+                          boldText: widget.info.logLastAddress!),
+                      const SizedBox(height: 45),
+                      downloadButtons(context, widget.info.wifi![0]),
+                      const SizedBox(height: 40),
+                      Row(children: [
+                        const Spacer(),
+                        CustomIconButton(
+                            icon: sharingIcon,
+                            onPressed: () {
+                              openDialogSharingFile(context, '.raw',
+                                  'Archivos descargados [raw]');
+                            }),
+                        const SizedBox(width: 20),
+                        CustomIconButton(
+                            icon: sharingScreenShotIcon,
+                            onPressed: () {
+                              openDialogSharingFile(
+                                  context, '.jpg', 'Capturas de pantalla');
+                            }),
+                      ]),
+                      const SizedBox(height: 20),
+                      isDownload
+                          ? ProgressBar(
+                          receivedDataPercent: receivedDataPercent,
+                          receivedData: receivedData,
+                          totalData: totalData)
+                          : Container(),
+                    ],
+                  ))),
+        ));
   }
 
   Row downloadButtons(BuildContext context, String wifiSw) {

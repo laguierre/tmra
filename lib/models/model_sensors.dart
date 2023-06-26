@@ -1,6 +1,6 @@
 class Sensors {
   String? em;
-  String? downloadLastAdress;
+  String? downloadLastAddress;
   String? logLastAddress;
   String? timeStampUtc;
   String? timeDownloadUtc;
@@ -19,7 +19,7 @@ class Sensors {
       this.wifi,
       this.channelUsed,
       this.controlledChannel,
-      this.downloadLastAdress,
+      this.downloadLastAddress,
       this.logLastAddress,
       this.timeStampUtc,
       this.tensionDeBateria,
@@ -28,15 +28,27 @@ class Sensors {
 
   Sensors.fromJson(Map<String, dynamic> json) {
     em = json['EM'];
-    cpu = json['CPU'].cast<String>();
-    daq = json['DAQ'].cast<String>();
-    wifi = json['WIFI'].cast<String>();
-    channelUsed = json['channelUsed'].cast<String>();
-    controlledChannel = json['controlledChannel'].cast<String>() ?? [];
-    downloadLastAdress = json['DownloadLastAddress'] ?? '0';
-    timeDownloadUtc = json['Download TimeStamp (UTC)'] ?? '24/12/2022  04:40:38';
+    cpu = json['CPU'].cast<String>() ?? [];
+    daq = json['DAQ'].cast<String>() ?? [];
+    wifi = json['WIFI'].cast<String>() ?? [];
+    channelUsed = json['channelUsed'].cast<String>() ?? ['N/A', 'N/A'];
+    if(json.containsKey('controlledChannel')) {
+      controlledChannel =
+          json['controlledChannel'].cast<String>() ?? ['N/A', 'N/A'];
+    }
+    else{
+      controlledChannel = ['N/A', 'N/A'];
+    }
+    if (json.containsKey('DownloadLastAddress')) {
+      downloadLastAddress = json['DownloadLastAddress'] ?? 'N/A';
+    }
+    else{
+      downloadLastAddress = '0';
+    }
+    timeDownloadUtc =
+        json['Download TimeStamp (UTC)'] ?? '24/12/2022 04:40:38';
     logLastAddress = json['LogLastAddress'] ?? '0';
-    timeStampUtc = json['TimeStamp (UTC)'] ?? "24/12/2022  04:40:38";
+    timeStampUtc = json['TimeStamp (UTC)'] ?? "24/12/2022 04:40:38";
     tensionDeBateria = json['Tension de bateria'] ?? "0.0";
     //if (json['channels'] != null)
     {

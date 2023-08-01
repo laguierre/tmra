@@ -33,7 +33,6 @@ List<SensorType> fillSensor(Sensors info) {
         sensorType.imageSensor = sensorsImagesList[2];
         sensorType.variableName.add('Dirección del viento');
         sensorType.variableValue.add('${info.channels![i].valor!}°');
-        //sensorType.fontSize = 18;
         break;
       case '4':
         sensorType.variableName.add('Intensidad del viento');

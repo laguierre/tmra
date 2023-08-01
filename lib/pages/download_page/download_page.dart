@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:lecle_downloads_path_provider/lecle_downloads_path_provider.dart';
 import 'package:path_provider/path_provider.dart';
@@ -70,7 +71,7 @@ class _DownloadPageState extends State<DownloadPage> {
           child: Padding(
               padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
               child: SingleChildScrollView(
-                controller: scrollController,
+                  controller: scrollController,
                   physics: const BouncingScrollPhysics(),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -84,21 +85,25 @@ class _DownloadPageState extends State<DownloadPage> {
                               IconButton(
                                   splashColor: kSplashColor,
                                   onPressed: () async {
-                                    WidgetShotRenderRepaintBoundary sensorsBoundary =
-                                    downloadEMKey.currentContext!.findRenderObject()
-                                    as WidgetShotRenderRepaintBoundary;
-                                    var resultImage = await sensorsBoundary.screenshot(
-                                        backgroundColor: Colors.black,
-                                        format: ShotFormat.png,
-                                        scrollController: scrollController,
-                                        pixelRatio: 1);
-                                    writeScreenshotFile('EM${widget.info.em}', resultImage!);
+                                    WidgetShotRenderRepaintBoundary
+                                        sensorsBoundary = downloadEMKey
+                                                .currentContext!
+                                                .findRenderObject()
+                                            as WidgetShotRenderRepaintBoundary;
+                                    var resultImage =
+                                        await sensorsBoundary.screenshot(
+                                            backgroundColor: Colors.black,
+                                            format: ShotFormat.png,
+                                            scrollController: scrollController,
+                                            pixelRatio: 1);
+                                    writeScreenshotFile(
+                                        'EM${widget.info.em}', resultImage!);
                                     snackBar(
                                         context,
                                         'Captura guardada',
                                         const Duration(
                                             milliseconds:
-                                            kDurationSnackBar + 1000));
+                                                kDurationSnackBar + 1000));
                                   },
                                   icon: Image.asset(
                                     screenShotLogo,
@@ -108,26 +113,33 @@ class _DownloadPageState extends State<DownloadPage> {
                             ],
                           )),
                       const SizedBox(height: 30),
-                      const Text(
+                      Text(
                         'Índice límite INFERIOR',
+                        textScaleFactor: 1.0,
                         style: TextStyle(
-                            color: Colors.white, fontSize: kFontSize),
+                          color: Colors.white,
+                          fontSize: 21.sp
+                          //fontSize: kFontSize,
+                        ),
                       ),
                       const SizedBox(height: 15),
                       CustomFieldText(
                           textEditingController: infTextEditingController),
                       const SizedBox(height: 15),
-                      const Text(
+                      Text(
                         'Índice límite SUPERIOR',
+                        textScaleFactor: 1.0,
                         style: TextStyle(
-                            color: Colors.white, fontSize: kFontSize),
+                          fontSize: 21.sp,
+                          color: Colors.white,
+                          //fontSize: kFontSize,
+                        ),
                       ),
                       const SizedBox(height: 15),
                       CustomFieldText(
                           textEditingController: supTextEditingController),
                       const SizedBox(height: 15),
-                      InfoLine(
-                          text: 'Última fecha: ', boldText: timeDownload),
+                      InfoLine(text: 'Última fecha: ', boldText: timeDownload),
                       const SizedBox(height: 7),
                       InfoLine(
                           text: 'Último índice bajado: ',
@@ -158,9 +170,9 @@ class _DownloadPageState extends State<DownloadPage> {
                       const SizedBox(height: 20),
                       isDownload
                           ? ProgressBar(
-                          receivedDataPercent: receivedDataPercent,
-                          receivedData: receivedData,
-                          totalData: totalData)
+                              receivedDataPercent: receivedDataPercent,
+                              receivedData: receivedData,
+                              totalData: totalData)
                           : Container(),
                     ],
                   ))),
@@ -186,40 +198,36 @@ class _DownloadPageState extends State<DownloadPage> {
                 url: Uri.parse('http://192.168.4.1/confDownload.html'));
           },
         ),
-
-        if(version >= 2.4) const SizedBox(width: 30),
-        if(version >= 2.4)
-            CustomButton(
-                icon: 'lib/assets/icons/save.png',
-                text: 'Bajar archivo',
-                function: () async {
-                  FocusScopeNode currentFocus = FocusScope.of(context);
-                  if (!currentFocus.hasPrimaryFocus) {
-                    currentFocus.unfocus();
-                  }
-                  if (int.parse(supTextEditingController.text) >
-                      int.parse(infTextEditingController.text)) {
-                    if (!widget.testMode) {
-                      await downloadFile(context);
-                    } else {
-                      fileName =
-                          'EM${widget.info.em!.toUpperCase()}_${DateFormat('yyyyMMdd').format(DateTime.now())}_${infTextEditingController.text}_${supTextEditingController.text}.raw';
-                      snackBar(
-                          context,
-                          'Archivo simulado!!! ($fileName)',
-                          const Duration(
-                              milliseconds: kDurationSnackBar + 1000));
-                      infTextEditingController.text =
-                          supTextEditingController.text;
-                      timeDownload = DateFormat('dd/MM/yyyy HH:MM:ss')
-                          .format(DateTime.now());
-                      setState(() {});
-                    }
+        if (version >= 2.4) const SizedBox(width: 30),
+        if (version >= 2.4)
+          CustomButton(
+              icon: 'lib/assets/icons/save.png',
+              text: 'Bajar archivo',
+              function: () async {
+                FocusScopeNode currentFocus = FocusScope.of(context);
+                if (!currentFocus.hasPrimaryFocus) {
+                  currentFocus.unfocus();
+                }
+                if (int.parse(supTextEditingController.text) >
+                    int.parse(infTextEditingController.text)) {
+                  if (!widget.testMode) {
+                    await downloadFile(context);
                   } else {
-                    snackBar(context, 'Límite INFERIOR es mayor a SUPERIOR',
-                        const Duration(milliseconds: kDurationSnackBar));
+                    fileName =
+                        'EM${widget.info.em!.toUpperCase()}_${DateFormat('yyyyMMdd').format(DateTime.now())}_${infTextEditingController.text}_${supTextEditingController.text}.raw';
+                    snackBar(context, 'Archivo simulado!!! ($fileName)',
+                        const Duration(milliseconds: kDurationSnackBar + 1000));
+                    infTextEditingController.text =
+                        supTextEditingController.text;
+                    timeDownload = DateFormat('dd/MM/yyyy HH:MM:ss')
+                        .format(DateTime.now());
+                    setState(() {});
                   }
-                })
+                } else {
+                  snackBar(context, 'Límite INFERIOR es mayor a SUPERIOR',
+                      const Duration(milliseconds: kDurationSnackBar));
+                }
+              })
       ],
     );
   }

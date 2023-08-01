@@ -7,3 +7,4 @@
 ## v0.1c
 - Se agrega la navegación legada y se cambian la unidad del sensor CS451 por PSI.
 - Compatibilidad hacia version WiFi 2.1
+- [010823] Se usa el package para ajustar la fuente https://pub.dev/packages/flutter_screenutil

@@ -1,9 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 import '../../constants.dart';
-
 
 class InfoLine extends StatelessWidget {
   const InfoLine({Key? key, required this.text, required this.boldText})
@@ -16,12 +16,19 @@ class InfoLine extends StatelessWidget {
       children: [
         const Spacer(),
         Text(text,
-            style:
-            const TextStyle(color: Colors.white, fontSize: kFontSize - 2)),
+            textScaleFactor: 1.0,
+            style: TextStyle(
+              fontSize: 18.sp,
+              color: Colors.white,
+              //fontSize: kFontSize - 2,
+            )),
         Text(boldText,
-            style: const TextStyle(
+            textScaleFactor: 1.0,
+            style: TextStyle(
+                fontSize: 18.sp,
                 color: Colors.white,
-                fontSize: kFontSize - 2,
+                //fontSize: kFontSize - 2,
+
                 fontWeight: FontWeight.bold)),
       ],
     );
@@ -71,10 +78,10 @@ class ProgressBar extends StatelessWidget {
 class CustomButton extends StatelessWidget {
   const CustomButton(
       {Key? key,
-        required this.function,
-        required this.icon,
-        required this.text,
-        this.kPadding = 15})
+      required this.function,
+      required this.icon,
+      required this.text,
+      this.kPadding = 15})
       : super(key: key);
 
   final VoidCallback function;
@@ -85,38 +92,44 @@ class CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Row(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-                color: Colors.yellowAccent,
-                borderRadius: BorderRadius.circular(15)),
-            width: MediaQuery.of(context).size.width * 0.45 - kPadding,
-            child: IconButton(
-                onPressed: function,
-                icon: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Image.asset(icon, color: Colors.black),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: AutoSizeText(text,
-                          stepGranularity: 0.1,
-                          maxLines: 1,
-                          maxFontSize: 24,
-                          minFontSize: 16,
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                          )),
-                    ),
-                  ],
-                )),
-          ),
-        ],
-      )
-    );
+        child: Row(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+              color: Colors.yellowAccent,
+              borderRadius: BorderRadius.circular(15)),
+          width: MediaQuery.of(context).size.width * 0.45 - kPadding,
+          child: IconButton(
+              onPressed: function,
+              icon: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image.asset(icon, color: Colors.black),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    // child: AutoSizeText(text,
+                    //     stepGranularity: 0.1,
+                    //     maxLines: 1,
+                    //     maxFontSize: 24,
+                    //     minFontSize: 16,
+                    //     style: const TextStyle(
+                    //       color: Colors.black,
+                    //       fontWeight: FontWeight.bold,
+                    //     )),
+                    child: Text(text,
+                        textScaleFactor: 1.0,
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        )),
+                  ),
+                ],
+              )),
+        ),
+      ],
+    ));
   }
 }
 
@@ -131,31 +144,29 @@ class CustomFieldText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      alignment: Alignment.center,
-      height: 50,
-      decoration: BoxDecoration(
-          color: Colors.white, borderRadius: BorderRadius.circular(20)),
-      child: TextField(
-        textAlign: TextAlign.right,
-        onChanged: (text) {},
-        controller: textEditingController,
-        keyboardType: TextInputType.number,
-        decoration: const InputDecoration(
-          focusedBorder: InputBorder.none,
-          enabledBorder: InputBorder.none,
-          border: InputBorder.none,
-          hintStyle:
-          TextStyle(color: Colors.grey, decoration: TextDecoration.none),
-          contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-          isDense: true,
-        ),
-        style: const TextStyle(
-          fontSize: 26.0,
-          decoration: TextDecoration.none,
-          color: Colors.black,
-        )
-      )
-    );
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        alignment: Alignment.center,
+        height: 50,
+        decoration: BoxDecoration(
+            color: Colors.white, borderRadius: BorderRadius.circular(20)),
+        child: TextField(
+            textAlign: TextAlign.right,
+            onChanged: (text) {},
+            controller: textEditingController,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              focusedBorder: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              border: InputBorder.none,
+              hintStyle: TextStyle(fontSize: 20.sp,
+                  color: Colors.grey, decoration: TextDecoration.none),
+              contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+              isDense: true,
+            ),
+            style: TextStyle(
+              fontSize: 24.sp,
+              decoration: TextDecoration.none,
+              color: Colors.black,
+            )));
   }
 }

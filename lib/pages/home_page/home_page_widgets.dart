@@ -1,9 +1,8 @@
 import 'dart:math';
 import 'dart:ui';
-
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tmra/constants.dart';
 import 'package:tmra/pages/widgets.dart';
@@ -26,8 +25,7 @@ class SensorCard extends StatelessWidget {
 
     double dg =
         sqrt((widthScreen * widthScreen) + (heightScreen * heightScreen));
-    //debugPrint('->>>>Screen Diagonal: $dg');
-    double height = dg < 780 ? 0.10 * dg * info.lines : 0.079 * dg * info.lines;
+    double height = dg < 780 ? 0.11 * dg * info.lines : 0.09 * dg * info.lines;
     return Row(
       children: [
         ConstrainedBox(
@@ -79,22 +77,40 @@ class SensorCard extends StatelessWidget {
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: info.variableName.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return AutoSizeText.rich(
+                    // return AutoSizeText.rich(
+                    //   textScaleFactor: 1.0,
+                    //   TextSpan(
+                    //       text: '${info.variableName[index]} ',
+                    //       style: const TextStyle(
+                    //         color: Colors.black,
+                    //         fontWeight: FontWeight.normal,
+                    //       ),
+                    //       children: [
+                    //         TextSpan(
+                    //             text: '\n${info.variableValue[index]}\n',
+                    //             style: const TextStyle(
+                    //                 fontWeight: FontWeight.bold)),
+                    //       ]),
+                    //   minFontSize: 18,
+                    //   stepGranularity: 0.1,
+                    // );
+                    return Text.rich(
                       textScaleFactor: 1.0,
                       TextSpan(
-                          text: '${info.variableName[index]} ',
-                          style: const TextStyle(
+                          text: info.variableName[index],
+                          style: TextStyle(
+                            fontSize: 18.sp,
                             color: Colors.black,
                             fontWeight: FontWeight.normal,
                           ),
                           children: [
                             TextSpan(
                                 text: '\n${info.variableValue[index]}\n',
-                                style: const TextStyle(
+                                style: TextStyle(
+                                    fontSize: 19.sp,
                                     fontWeight: FontWeight.bold)),
                           ]),
-                      minFontSize: 18,
-                      stepGranularity: 0.1,
+
                     );
                   },
                 ))),
@@ -125,16 +141,26 @@ class _ImageSensor extends StatelessWidget {
           fit: BoxFit.fitHeight,
         ),
         const SizedBox(height: 10),
-        AutoSizeText(
+        // AutoSizeText(
+        //   info.sensorName,
+        //   textAlign: TextAlign.center,
+        //   style: TextStyle(
+        //       color: Colors.white,
+        //       fontWeight: FontWeight.bold,
+        //       fontSize: info.fontSize),
+        //   minFontSize: 16,
+        //   maxFontSize: 20,
+        //   stepGranularity: 0.1,
+        // ),
+        Text(
           info.sensorName,
           textAlign: TextAlign.center,
+          textScaleFactor: 1.0,
           style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
-              fontSize: info.fontSize),
-          minFontSize: 16,
-          maxFontSize: 20,
-          stepGranularity: 0.1,
+              fontSize: 19.sp),
+
         ),
       ],
     );
@@ -251,24 +277,37 @@ class InfoConfig extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 7),
       alignment: Alignment.centerLeft,
       width: double.infinity,
-      height: 40,
+      height: 45,
       child: Row(
         children: [
           if (icon != '') Image.asset(icon, color: color, height: 30),
           if (icon != '') const SizedBox(width: 12),
+          // Expanded(
+          //   child: AutoSizeText.rich(
+          //     TextSpan(children: [
+          //       TextSpan(text: title, style: TextStyle(color: color)),
+          //       TextSpan(
+          //           text: value,
+          //           style:
+          //               TextStyle(color: color, fontWeight: FontWeight.bold)),
+          //     ]),
+          //     //maxLines: 2,
+          //     minFontSize: size,
+          //     maxFontSize: size + 1,
+          //     stepGranularity: 0.1,
+          //   ),
+          // )
           Expanded(
-            child: AutoSizeText.rich(
+            child: Text.rich(
+              textScaleFactor: 1.0,
               TextSpan(children: [
-                TextSpan(text: title, style: TextStyle(color: color)),
+                TextSpan(text: title, style: TextStyle(fontSize: 18.sp, color: color)),
                 TextSpan(
                     text: value,
                     style:
-                        TextStyle(color: color, fontWeight: FontWeight.bold)),
+                    TextStyle(fontSize: 17.sp, color: color, fontWeight: FontWeight.bold)),
               ]),
-              //maxLines: 2,
-              minFontSize: size,
-              maxFontSize: size + 1,
-              stepGranularity: 0.1,
+
             ),
           )
         ],

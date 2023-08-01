@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:tmra/common.dart';
 import 'package:tmra/constants.dart';
@@ -216,7 +217,7 @@ class HeaderInfo extends StatelessWidget {
                   title: 'Time Stamp: ',
                   value: widget.testMode
                       ? DateFormat(
-                              'yyyy/MM/dd HH:mm:ss') //TODO chequear el doble espacio acá//
+                              'yyyy/MM/dd HH:mm:ss')
                           .format(DateTime.now())
                       : timeStampUtc,
                   //info.timeStampUtc!,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void snackBar(BuildContext context, String text, Duration duration) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -10,8 +11,9 @@ void snackBar(BuildContext context, String text, Duration duration) {
       margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       content: Text(text,
-          style: const TextStyle(
+          textScaleFactor: 1.0,
+          style: TextStyle(
               fontWeight: FontWeight.bold,
               color: Colors.black,
-              fontSize: 17))));
+              fontSize: 17.sp))));
 }

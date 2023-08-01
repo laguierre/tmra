@@ -63,8 +63,8 @@ class _SplashPageState extends State<SplashPage> {
                       )))),
           FadeInRight(
               duration: Duration(milliseconds: kDurationSplash * 2 ~/ 3),
-              child: Align(
-                  alignment: const Alignment(0.9, 0.95),
+              child: const Align(
+                  alignment: Alignment(0.9, 0.95),
                   child: Text(
                     kVersion,
                     style: TextStyle(

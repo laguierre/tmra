@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:tmra/constants.dart';
 import 'package:tmra/models/model_sensors.dart';
 import 'package:widget_screenshot/widget_screenshot.dart';
-
 import 'info_page_widgets.dart';
 
 class InfoBoards extends StatelessWidget {
@@ -24,7 +23,7 @@ class InfoBoards extends StatelessWidget {
           extendBody: true,
           backgroundColor: Colors.black,
           body: Padding(
-              padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+              padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
               child: SingleChildScrollView(
                 controller: scrollController,
                 padding:

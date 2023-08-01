@@ -23,7 +23,7 @@
   "Tension de bateria":"13.94",
   "controlledChannel": [
     "0x80",
-    "0x360"
+    "0xFFFFF360"
   ],
   "channels": [
     {

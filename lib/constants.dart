@@ -10,7 +10,7 @@ const kDotHeight = 16.0;
 const kDurationSnackBar = 1000;
 
 const kSplashColor = Colors.amberAccent;
-const kVersion = 'v0.1c';
+const kVersion = 'v0.1d';
 
 List<String> sensorsImagesList = [
   'lib/assets/images/sensors/pmb25.png',        //0 *

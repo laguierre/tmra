@@ -1,9 +1,9 @@
 import 'dart:math';
 import 'dart:ui';
-
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tmra/constants.dart';
 import 'package:tmra/pages/widgets.dart';
@@ -20,44 +20,20 @@ class SensorCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double widthScreen = MediaQuery.of(context).size.width;
-    double heightScreen = MediaQuery.of(context).size.height;
-    double ratio = 0.32;
-
-    double dg =
-        sqrt((widthScreen * widthScreen) + (heightScreen * heightScreen));
-    //debugPrint('->>>>Screen Diagonal: $dg');
-    double height = dg < 780 ? 0.10 * dg * info.lines : 0.079 * dg * info.lines;
     return Row(
       children: [
-        ConstrainedBox(
-          constraints: BoxConstraints(
-            minHeight: 150,
-            maxWidth: MediaQuery.of(context).size.width * ratio,
-            minWidth: MediaQuery.of(context).size.width * ratio,
-          ),
-          child: _ImageSensor(
-            info: info,
-            height: 0.17 * dg,
-            //width: width,
-          ),
-        ),
-        ConstrainedBox(
-            constraints: BoxConstraints(
-              minHeight: 100,
-              maxHeight: height,
-              maxWidth:
-                  MediaQuery.of(context).size.width * (1 - ratio) - kPadding,
-              minWidth:
-                  MediaQuery.of(context).size.width * (1 - ratio) - kPadding,
-            ),
+        Expanded(
+            flex: 1,
+            child: _ImageSensor(
+              info: info,
+              height: 90.sp,
+            )),
+        Expanded(
+            flex: 2,
             child: Container(
                 alignment: Alignment.center,
-                padding: EdgeInsets.only(
-                  top: heightScreen * 0.025,
-                  left: widthScreen * 0.04,
-                  right: widthScreen * 0.04,
-                ),
+                margin: const EdgeInsets.only(right: kPadding),
+                padding: EdgeInsets.all(12.sp),
                 decoration: BoxDecoration(
                   boxShadow: [
                     BoxShadow(
@@ -67,35 +43,29 @@ class SensorCard extends StatelessWidget {
                       offset: const Offset(1, 5), // changes position of shadow
                     ),
                   ],
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(25 * dg * 0.001),
-                      bottomLeft: Radius.circular(25 * dg * 0.001),
-                      topRight: Radius.circular(25 * dg * 0.001),
-                      bottomRight: Radius.circular(25 * dg * 0.001)),
+                  borderRadius: BorderRadius.all(Radius.circular(20.sp)),
                   color: Colors.white,
                 ),
                 child: ListView.builder(
+                  shrinkWrap: true,
                   padding: const EdgeInsets.only(top: 0),
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: info.variableName.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return AutoSizeText.rich(
-                      textScaleFactor: 1.0,
-                      TextSpan(
-                          text: '${info.variableName[index]} ',
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.normal,
-                          ),
-                          children: [
-                            TextSpan(
-                                text: '\n${info.variableValue[index]}\n',
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold)),
-                          ]),
-                      minFontSize: 18,
-                      stepGranularity: 0.1,
-                    );
+                    return Text.rich(TextSpan(
+                        text: info.variableName[index],
+                        style: TextStyle(
+                          fontSize: 18.sp,
+                          color: Colors.black,
+                          fontWeight: FontWeight.normal,
+                        ),
+                        children: [
+                          TextSpan(
+                              text: '\n${info.variableValue[index]}\n',
+                              style: TextStyle(
+                                  fontSize: 19.sp,
+                                  fontWeight: FontWeight.bold)),
+                        ]));
                   },
                 ))),
       ],
@@ -107,7 +77,6 @@ class _ImageSensor extends StatelessWidget {
   const _ImageSensor({
     required this.info,
     required this.height,
-    // required this.width,
   });
 
   final SensorType info;
@@ -125,16 +94,13 @@ class _ImageSensor extends StatelessWidget {
           fit: BoxFit.fitHeight,
         ),
         const SizedBox(height: 10),
-        AutoSizeText(
+        Text(
           info.sensorName,
           textAlign: TextAlign.center,
           style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
-              fontSize: info.fontSize),
-          minFontSize: 16,
-          maxFontSize: 20,
-          stepGranularity: 0.1,
+              fontSize: 19.sp),
         ),
       ],
     );
@@ -163,9 +129,6 @@ class HomePageTopAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
-    double dg = sqrt((size.width * size.width) + (size.height * size.height));
-    double kCaptureScreenshot = dg < 780 ? 5 : 8;
     return Row(
       children: [
         StationName(info: info),
@@ -190,20 +153,28 @@ class HomePageTopAppBar extends StatelessWidget {
         IconButton(
             splashColor: kSplashColor,
             onPressed: () async {
-              double k = (info.channels!.length / kCaptureScreenshot);
               snackBar(context, 'Comenzando captura...',
                   const Duration(milliseconds: kDurationSnackBar + 1000));
 
               var headerBoundary = headerEMKey.currentContext!
                   .findRenderObject() as WidgetShotRenderRepaintBoundary;
-              var headerImage = await headerBoundary.screenshot(
-                  backgroundColor: Colors.black,
-                  format: ShotFormat.png,
-                  pixelRatio: 1);
+              if (headerBoundary.debugNeedsPaint) {
+                await Future.delayed(const Duration(milliseconds: 1000));
+    }
+                var headerImage = await headerBoundary.screenshot(
+                    backgroundColor: Colors.black,
+                    format: ShotFormat.png,
+                    pixelRatio: 1);
 
+              if (headerBoundary.debugNeedsPaint) {
+                await Future.delayed(const Duration(milliseconds: 1000));
+              }
               // ignore: use_build_context_synchronously
               var sensorsBoundary = sensorsEMKey.currentContext!
                   .findRenderObject() as WidgetShotRenderRepaintBoundary;
+              if (sensorsBoundary.debugNeedsPaint) {
+                await Future.delayed(const Duration(milliseconds: 1000));
+              }
               var resultImage = await sensorsBoundary.screenshot(
                   backgroundColor: Colors.black,
                   format: ShotFormat.png,
@@ -248,28 +219,25 @@ class InfoConfig extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 7),
+      margin: EdgeInsets.only(bottom: 10.sp),
       alignment: Alignment.centerLeft,
       width: double.infinity,
-      height: 40,
       child: Row(
         children: [
-          if (icon != '') Image.asset(icon, color: color, height: 30),
-          if (icon != '') const SizedBox(width: 12),
-          Expanded(
-            child: AutoSizeText.rich(
-              TextSpan(children: [
-                TextSpan(text: title, style: TextStyle(color: color)),
-                TextSpan(
-                    text: value,
-                    style:
-                        TextStyle(color: color, fontWeight: FontWeight.bold)),
-              ]),
-              //maxLines: 2,
-              minFontSize: size,
-              maxFontSize: size + 1,
-              stepGranularity: 0.1,
-            ),
+          if (icon != '') Image.asset(icon, color: color, height: 28.sp),
+          if (icon != '')  SizedBox(width: 12.sp),
+          Text.rich(
+            TextSpan(children: [
+              TextSpan(
+                  text: title,
+                  style: TextStyle(fontSize: kFontSize.sp, color: color)),
+              TextSpan(
+                  text: value,
+                  style: TextStyle(
+                      fontSize: (kFontSize-2.5).sp,
+                      color: color,
+                      fontWeight: FontWeight.bold)),
+            ]),
           )
         ],
       ),

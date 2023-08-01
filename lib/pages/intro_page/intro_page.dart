@@ -6,6 +6,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -106,120 +107,120 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    double dg = sqrt(size.height * size.height + size.width * size.width);
     return Scaffold(
-      extendBody: true,
-      backgroundColor: Colors.black,
-      body: SingleChildScrollView(
-        child: Container(
-          height: size.height,
-          width: size.width,
-          padding: const EdgeInsets.fromLTRB(15, 50, 15, 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const _TopAppBar(),
-              Column(
-                children: [
-                  const SizedBox(height: 50),
-                  Icon(isConnectedESP ? Icons.wifi_outlined : iconWiFi,
-                      color: Colors.white, size: 100),
-                  const SizedBox(height: 15),
-                  Text(wifiName,
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: kFontSize + 4,
-                          fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 50),
-                ],
-              ),
-              Visibility(
-                visible: !isConnectedESP,
-                child: GestureDetector(
-                  child: Container(
-                    alignment: Alignment.center,
-                    margin: const EdgeInsets.symmetric(horizontal: 45),
-                    height: 50,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(15)),
-                    child: AutoSizeText(
-                      textWiFi,
-                      maxLines: 1,
-                      maxFontSize: kFontSize + 1,
-                      minFontSize: kFontSize - 3,
-                      style: const TextStyle(
-                          color: Colors.black, fontWeight: FontWeight.bold),
+        extendBody: true,
+        backgroundColor: Colors.black,
+        body: SingleChildScrollView(
+            child: Container(
+                height: size.height,
+                width: size.width,
+                padding: const EdgeInsets.fromLTRB(15, 50, 15, 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const _TopAppBar(),
+                    Column(
+                      children: [
+                        const SizedBox(height: 50),
+                        Icon(isConnectedESP ? Icons.wifi_outlined : iconWiFi,
+                            color: Colors.white, size: 100),
+                        const SizedBox(height: 15),
+                        Text(wifiName,
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: kFontSize + 4,
+                                fontWeight: FontWeight.bold)),
+                        SizedBox(height: 50.sp),
+                      ],
                     ),
-                  ),
-                  onTap: () async {
-                    _listenForPermissionStatus();
-                    if (!isConnectedESP) {
-                      WiFiForIoTPlugin.setEnabled(false,
-                          shouldOpenSettings: true);
-                    }
-                    setState(() {});
-                  },
-                ),
-              ),
-              const Spacer(),
-              debugMode(),
-              SizedBox(height: dg * 0.08),
-              Row(
-                children: [
-                  const SizedBox(width: 20),
-                  CustomIconButton(
-                      icon: sharingIcon,
-                      onPressed: () {
-                        openDialogSharingFile(
-                            context, '.raw', 'Archivos descargados [raw]');
-                      }),
-                  const SizedBox(width: 20),
-                  CustomIconButton(
-                      icon: sharingScreenShotIcon,
-                      onPressed: () {
-                        openDialogSharingFile(
-                            context, '.jpg', 'Capturas de pantalla');
-                      }),
-                  const SizedBox(width: 20),
-                  Visibility(
-                    visible: isConnectedESP && !switchSimulation,
-                    child: CustomIconButton(
-                      icon: webIcon,
-                      onPressed: () {
-                        InAppBrowser.openWithSystemBrowser(
-                            url: Uri.parse('http://192.168.4.1'));
-                      },
-                    ),
-                  ),
-                  const Spacer(),
-                  Visibility(
-                      visible: isConnectedESP || switchSimulation,
-                      child: CustomIconButton(
-                        icon: nextIcon,
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            PageTransition(
-                                type: PageTransitionType.rightToLeft,
-                                child: HomePage(
-                                  wifiName: wifiName,
-                                  testMode: switchSimulation,
-                                ),
-                                inheritTheme: true,
-                                ctx: context),
-                          );
+                    Visibility(
+                      visible: !isConnectedESP,
+                      child: GestureDetector(
+                        child: Container(
+                          alignment: Alignment.center,
+                          margin: const EdgeInsets.symmetric(horizontal: 45),
+                          height: 50.sp,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(15)),
+                          child: AutoSizeText(
+                            textWiFi,
+                            maxLines: 1,
+                            maxFontSize: kFontSize + 1,
+                            minFontSize: kFontSize - 3,
+                            style: const TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        onTap: () async {
+                          _listenForPermissionStatus();
+                          if (!isConnectedESP) {
+                            WiFiForIoTPlugin.setEnabled(false,
+                                shouldOpenSettings: true);
+                          }
+                          setState(() {});
                         },
-                      )),
-                  const SizedBox(width: 20)
-                ],
-              ),
-              const SizedBox(height: 10),
-            ],
-          ),
-        ),
-      ),
-    );
+                      ),
+                    ),
+                    const Spacer(),
+                    debugMode(),
+                    SizedBox(height: 50.sp),
+                    SizedBox(
+                      height: 50.sp,
+                      child: Row(
+                        children: [
+                          SizedBox(width: 10.sp),
+                          CustomIconButton(
+                              icon: sharingIcon,
+                              onPressed: () {
+                                openDialogSharingFile(context, '.raw',
+                                    'Archivos descargados [raw]');
+                              }),
+                          SizedBox(width: 20.sp),
+                          CustomIconButton(
+                              icon: sharingScreenShotIcon,
+                              onPressed: () {
+                                openDialogSharingFile(
+                                    context, '.jpg', 'Capturas de pantalla');
+                              }),
+                          SizedBox(width: 20.sp),
+                          Visibility(
+                            visible: isConnectedESP && !switchSimulation,
+                            child: CustomIconButton(
+                              icon: webIcon,
+                              onPressed: () {
+                                InAppBrowser.openWithSystemBrowser(
+                                    url: Uri.parse('http://192.168.4.1'));
+                              },
+                            ),
+                          ),
+                          const Spacer(),
+                          Visibility(
+                              visible: isConnectedESP || switchSimulation,
+                              child: CustomIconButton(
+                                icon: nextIcon,
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    PageTransition(
+                                        type: PageTransitionType.rightToLeft,
+                                        child: HomePage(
+                                          wifiName: wifiName,
+                                          testMode: switchSimulation,
+                                        ),
+                                        inheritTheme: true,
+                                        ctx: context),
+                                  );
+                                },
+                              )),
+                          SizedBox(width: 20.sp)
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 10.sp),
+                  ],
+                ))));
   }
 
   Row debugMode() {
@@ -238,12 +239,10 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
                   thumbColor = Colors.white;
                   testMode = 'ON';
                   switchSimulation = true;
-                  //isConnectedESP = true;
                 } else {
                   thumbColor = Colors.black;
                   testMode = 'OFF';
                   switchSimulation = false;
-                  //isConnectedESP = false;
                 }
               });
             }),
@@ -263,9 +262,9 @@ class _TopAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
+        children: [
           Text('Conectarse a una EM',
               style: TextStyle(
                   color: Colors.white,
@@ -291,7 +290,6 @@ class NetworkConnectivity {
     ConnectivityResult result = await _networkConnectivity.checkConnectivity();
     _checkStatus(result);
     _networkConnectivity.onConnectivityChanged.listen((result) {
-      //print(result);
       _checkStatus(result);
     });
   }
@@ -306,6 +304,5 @@ class NetworkConnectivity {
     }
     _controller.sink.add({result: isOnline});
   }
-
   void disposeStream() => _controller.close();
 }

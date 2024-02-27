@@ -11,6 +11,4 @@
 ## v0.1d
 - Se hace adaptación reactiva y se cambia todo a .sp. 
 - Se actualizan algunas deprecated
-## v0.1d
-- Se ajustaron las fuentes, los tamaños.
 - Apareció un error en el widget_screenshot sobre las pantallas largas, aplicando un pequeño delay funciona nuevamente

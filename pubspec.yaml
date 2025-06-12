@@ -37,29 +37,29 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   #provider: ^6.0.4
-  page_transition: ^2.0.9
+  page_transition:
   path_provider: ^2.0.11
   wifi_iot: ^0.3.18
   plugin_wifi_connect: ^1.0.2
   network_info_plus: ^3.0.1
   permission_handler: ^10.2.0
-  external_path: ^1.0.3
+  external_path:
   sync_http: ^0.3.1
   dio: ^5.0.0
   webview_flutter: ^4.0.2
   flutter_inappwebview: ^5.7.2+3
-  flutter_file_downloader: ^1.1.0+1
+  flutter_file_downloader:
   lecle_downloads_path_provider: ^0.0.2+8
   intl: ^0.18.0
   percent_indicator: ^4.2.3
   auto_size_text: ^3.0.0
-  connectivity_plus: ^3.0.3
+  connectivity_plus:
   animate_do: ^3.0.2
   smooth_page_indicator: ^1.1.0
   share_plus: ^4.5.3
   filesystem_picker: ^4.1.0
   image_gallery_saver: ^1.7.1
-  flutter_image_compress: ^1.1.3
+  flutter_image_compress:
   widget_screenshot: ^0.0.9 #TODO dejó de funcionar en una actualización de Android, y da error en la captura de una pantalla grande
   flutter_screenutil: ^5.7.0
 

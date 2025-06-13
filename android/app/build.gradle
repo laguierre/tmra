@@ -1,3 +1,8 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
 if (localPropertiesFile.exists()) {
@@ -7,30 +12,21 @@ if (localPropertiesFile.exists()) {
 }
 
 def flutterRoot = localProperties.getProperty('flutter.sdk')
-if (flutterRoot == null) {
-    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
-}
 
-def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
-if (flutterVersionCode == null) {
-    flutterVersionCode = '1'
-}
-
-def flutterVersionName = localProperties.getProperty('flutter.versionName')
-if (flutterVersionName == null) {
-    flutterVersionName = '1.0'
-}
-
-// ✅ Migrado al bloque 'plugins' si usás AGP 8+, ver nota más abajo
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode') ?: '1'
+def flutterVersionName = localProperties.getProperty('flutter.versionName') ?: '1.0'
 
 android {
-    namespace 'com.example.tmra' // ✅ solo tu namespace
+    namespace 'com.example.tmra'
+    compileSdk 35
 
-    compileSdkVersion 34
-    ndkVersion flutter.ndkVersion
+    defaultConfig {
+        applicationId "com.example.tmra"
+        minSdk 21
+        targetSdk 35
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
+    }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -45,14 +41,6 @@ android {
         main.java.srcDirs += 'src/main/kotlin'
     }
 
-    defaultConfig {
-        applicationId "com.example.tmra"
-        minSdkVersion 21
-        targetSdkVersion 33
-        versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
-    }
-
     buildTypes {
         release {
             signingConfig signingConfigs.debug
@@ -60,10 +48,9 @@ android {
     }
 }
 
-flutter {
-    source '../..'
-}
-
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
+
+// Aplicar Flutter plugin al final
+apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"

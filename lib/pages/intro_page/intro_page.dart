@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:math';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
@@ -191,7 +190,7 @@ class _IntroPageState extends State<IntroPage> with WidgetsBindingObserver {
                               icon: webIcon,
                               onPressed: () {
                                 InAppBrowser.openWithSystemBrowser(
-                                    url: Uri.parse('http://192.168.4.1'));
+                                    url: WebUri('http://192.168.4.1'));
                               },
                             ),
                           ),
@@ -286,13 +285,27 @@ class NetworkConnectivity {
 
   Stream get myStream => _controller.stream;
 
+  // void initialise() async {
+  //   ConnectivityResult result = await _networkConnectivity.checkConnectivity();
+  //   _checkStatus(result);
+  //   _networkConnectivity.onConnectivityChanged.listen((result) {
+  //     _checkStatus(result);
+  //   });
+  // }
+
   void initialise() async {
-    ConnectivityResult result = await _networkConnectivity.checkConnectivity();
-    _checkStatus(result);
-    _networkConnectivity.onConnectivityChanged.listen((result) {
+    List<ConnectivityResult> results = await _networkConnectivity.checkConnectivity();
+    for (var result in results) {
       _checkStatus(result);
+    }
+
+    _networkConnectivity.onConnectivityChanged.listen((results) {
+      for (var result in results) {
+        _checkStatus(result);
+      }
     });
   }
+
 
   void _checkStatus(ConnectivityResult result) async {
     bool isOnline = false;

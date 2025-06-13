@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -81,7 +80,7 @@ Future<void> writeScreenshotFile(String fileName, Uint8List file2Write) async {
 
   var hasStoragePermission = await Permission.manageExternalStorage.isGranted;
   if (!hasStoragePermission) {
-    final status = await Permission.manageExternalStorage.request().isGranted;
+    await Permission.manageExternalStorage.request().isGranted;
     debugPrint('Has Permission');
   } else {
     debugPrint('Has not Permission!!!');

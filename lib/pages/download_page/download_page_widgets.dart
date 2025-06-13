@@ -1,9 +1,7 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
-import '../../constants.dart';
 
 class InfoLine extends StatelessWidget {
   const InfoLine({Key? key, required this.text, required this.boldText})

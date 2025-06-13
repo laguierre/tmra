@@ -203,7 +203,7 @@ class _DownloadPageState extends State<DownloadPage> {
               isDownload = false;
             });
             InAppBrowser.openWithSystemBrowser(
-                url: Uri.parse('http://192.168.4.1/confDownload.html'));
+                url: WebUri('http://192.168.4.1/confDownload.html'));
           },
         ),
         if (version >= 2.4) const SizedBox(width: 30),
@@ -246,7 +246,7 @@ class _DownloadPageState extends State<DownloadPage> {
     ///Ver aca
     var hasStoragePermission = await Permission.manageExternalStorage.isGranted;
     if (!hasStoragePermission) {
-      final status = await Permission.manageExternalStorage.request().isGranted;
+      await Permission.manageExternalStorage.request().isGranted;
       debugPrint('Has Permission');
     } else {
       debugPrint('Has not Permission!!!');
@@ -262,7 +262,7 @@ class _DownloadPageState extends State<DownloadPage> {
         'EM${widget.info.em!.toUpperCase()}_${DateFormat('yyyyMMdd').format(DateTime.now())}_${infTextEditingController.text}_${supTextEditingController.text}.raw';
 
     final Dio dio = Dio();
-    final response = await dio.download(
+    await dio.download(
       address,
       '$downloadsDirectoryPath/$fileName',
       onReceiveProgress: (received, total) async {

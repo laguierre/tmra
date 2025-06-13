@@ -1,8 +1,6 @@
-import 'dart:math';
 import 'dart:ui';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tmra/constants.dart';
@@ -139,7 +137,7 @@ class HomePageTopAppBar extends StatelessWidget {
               ///Example: http://192.168.4.1/setDateTime.html?dia=9&mes=3&anio=23&hs=12&min=56&seg=40
               ///         http://192.168.4.1/setDateTime.html?dia=13&mes=3&anio=23&hs=18&min=22&seg=44
               if (!testMode) {
-                Response<dynamic> response = await sendUTCDate(context);
+                await sendUTCDate(context);
               } else {
                 snackBar(context, 'TEST - Envio de TimeStamp',
                     const Duration(milliseconds: kDurationSnackBar));

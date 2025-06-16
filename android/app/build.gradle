@@ -26,6 +26,15 @@ android {
         targetSdk 35
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+
+        // 👇 Necesario para que permission_handler funcione correctamente
+        manifestPlaceholders = [
+                permissionPhotos                : "true",
+                permissionVideos                : "true",
+                permissionAudio                 : "true",
+                permissionStorage               : "true",
+                permissionManageExternalStorage: "true"
+        ]
     }
 
     compileOptions {
@@ -43,6 +52,8 @@ android {
 
     buildTypes {
         release {
+            shrinkResources false
+            minifyEnabled false
             signingConfig signingConfigs.debug
         }
     }
@@ -52,5 +63,5 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
-// Aplicar Flutter plugin al final
+// 🔚 Aplicar el plugin de Flutter al final del archivo
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"

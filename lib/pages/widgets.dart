@@ -70,26 +70,27 @@ class InfoConfig extends StatelessWidget {
         ));
   }
 }
+Future<void> writeScreenshotFile(String fileName, Uint8List imageBytes) async {
+  try {
+    // Obtener la ruta del directorio de descargas
+    final downloadsDirectory = await DownloadsPath.downloadsDirectory();
+    if (downloadsDirectory == null) {
+      debugPrint("No se pudo obtener el directorio de descargas.");
+      return;
+    }
 
-Future<void> writeScreenshotFile(String fileName, Uint8List file2Write) async {
-  await Permission.storage.request();
-  final time = DateTime.now()
-      .toIso8601String()
-      .replaceAll('.', '-')
-      .replaceAll(':', '-');
+    // Crear la ruta completa del archivo
+    final filePath = '${downloadsDirectory.path}/$fileName.png';
+    final file = File(filePath);
 
-  var hasStoragePermission = await Permission.manageExternalStorage.isGranted;
-  if (!hasStoragePermission) {
-    await Permission.manageExternalStorage.request().isGranted;
-    debugPrint('Has Permission');
-  } else {
-    debugPrint('Has not Permission!!!');
+    // Escribir los bytes en el archivo
+    await file.writeAsBytes(imageBytes);
+    debugPrint("Captura guardada en: $filePath");
+
+  } catch (e) {
+    debugPrint("Error al guardar la captura: $e");
   }
-  var downloadsDirectoryPath = (await DownloadsPath.downloadsDirectory())?.path;
-  String path2Download = '$downloadsDirectoryPath/${fileName}_$time.jpg';
-  File(path2Download).writeAsBytes(file2Write);
 }
-
 class CustomIconButton extends StatelessWidget {
   const CustomIconButton({
     super.key,

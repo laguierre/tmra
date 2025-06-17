@@ -2,17 +2,20 @@ import 'dart:ui';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:screenshot/screenshot.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:tmra/constants.dart';
 import 'package:tmra/pages/widgets.dart';
 import 'package:widget_screenshot/widget_screenshot.dart';
+
 import '../../models/model_sensors.dart';
 import '../../models/sensors_type.dart';
 import '../snackbar.dart';
+import '../../common.dart'; // Importa funciones y clases comunes
+
+import '../../constants.dart'; // Aquí asumo que tienes constantes como kPadding, kSplashColor, etc.
 
 class SensorCard extends StatelessWidget {
-  const SensorCard({Key? key, required this.info, required this.index})
-      : super(key: key);
+  const SensorCard({Key? key, required this.info, required this.index}) : super(key: key);
   final SensorType info;
   final int index;
 
@@ -60,14 +63,12 @@ class SensorCard extends StatelessWidget {
                         children: [
                           TextSpan(
                               text: '\n${info.variableValue[index]}\n',
-                              style: TextStyle(
-                                  fontSize: 19.sp,
-                                  fontWeight: FontWeight.bold)),
+                              style: TextStyle(fontSize: 19.sp, fontWeight: FontWeight.bold)),
                         ]));
                   },
                 ))),
       ],
-    ); //_WithStack(info: info, height: height, width: width);
+    );
   }
 }
 
@@ -95,10 +96,7 @@ class _ImageSensor extends StatelessWidget {
         Text(
           info.sensorName,
           textAlign: TextAlign.center,
-          style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 19.sp),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 19.sp),
         ),
       ],
     );
@@ -134,13 +132,10 @@ class HomePageTopAppBar extends StatelessWidget {
         IconButton(
             splashColor: kSplashColor,
             onPressed: () async {
-              ///Example: http://192.168.4.1/setDateTime.html?dia=9&mes=3&anio=23&hs=12&min=56&seg=40
-              ///         http://192.168.4.1/setDateTime.html?dia=13&mes=3&anio=23&hs=18&min=22&seg=44
               if (!testMode) {
                 await sendUTCDate(context);
               } else {
-                snackBar(context, 'TEST - Envio de TimeStamp',
-                    const Duration(milliseconds: kDurationSnackBar));
+                snackBar(context, 'TEST - Envio de TimeStamp', const Duration(milliseconds: kDurationSnackBar));
               }
             },
             icon: Image.asset(
@@ -149,50 +144,72 @@ class HomePageTopAppBar extends StatelessWidget {
             )),
         const SizedBox(width: 5),
         IconButton(
-            splashColor: kSplashColor,
-            onPressed: () async {
-              snackBar(context, 'Comenzando captura...',
-                  const Duration(milliseconds: kDurationSnackBar + 1000));
+          splashColor: kSplashColor,
+          onPressed: () async {
+            // Pedir permiso para almacenamiento
+            bool granted = await requestStoragePermission();
+            if (!granted) {
+              snackBar(context, 'Permiso de almacenamiento denegado', const Duration(seconds: 2));
+              return;
+            }
 
-              var headerBoundary = headerEMKey.currentContext!
-                  .findRenderObject() as WidgetShotRenderRepaintBoundary;
-              if (headerBoundary.debugNeedsPaint) {
-                await Future.delayed(const Duration(milliseconds: 1000));
-    }
-                var headerImage = await headerBoundary.screenshot(
-                    backgroundColor: Colors.black,
-                    format: ShotFormat.png,
-                    pixelRatio: 1);
+            snackBar(context, 'Comenzando captura...', const Duration(milliseconds: kDurationSnackBar + 1000));
 
-              if (headerBoundary.debugNeedsPaint) {
-                await Future.delayed(const Duration(milliseconds: 1000));
-              }
-              // ignore: use_build_context_synchronously
-              var sensorsBoundary = sensorsEMKey.currentContext!
-                  .findRenderObject() as WidgetShotRenderRepaintBoundary;
-              if (sensorsBoundary.debugNeedsPaint) {
-                await Future.delayed(const Duration(milliseconds: 1000));
-              }
-              var resultImage = await sensorsBoundary.screenshot(
-                  backgroundColor: Colors.black,
-                  format: ShotFormat.png,
-                  scrollController: scrollController,
-                  extraImage: [
-                    if (headerImage != null)
-                      ImageParam.start(
-                          headerImage, headerEMKey.currentContext!.size!)
-                  ],
-                  pixelRatio: 1);
+            /*var headerBoundary = headerEMKey.currentContext!.findRenderObject() as WidgetShotRenderRepaintBoundary;
+            if (headerBoundary.debugNeedsPaint) {
+              await Future.delayed(const Duration(milliseconds: 1000));
+            }
+            var headerImage = await headerBoundary.screenshot(
+                backgroundColor: Colors.black, format: ShotFormat.png, pixelRatio: 1);
 
-              writeScreenshotFile('EM${info.em}', resultImage!);
-              snackBar(context, 'Captura guardada',
-                  const Duration(milliseconds: kDurationSnackBar + 1000));
-            },
-            icon: Image.asset(
-              screenShotLogo,
-              fit: BoxFit.fitHeight,
-              color: Colors.white,
-            )),
+            if (headerBoundary.debugNeedsPaint) {
+              await Future.delayed(const Duration(milliseconds: 1000));
+            }
+            var sensorsBoundary = sensorsEMKey.currentContext!.findRenderObject() as WidgetShotRenderRepaintBoundary;
+            if (sensorsBoundary.debugNeedsPaint) {
+              await Future.delayed(const Duration(milliseconds: 1000));
+            }
+            var resultImage = await sensorsBoundary.screenshot(
+              backgroundColor: Colors.black,
+              format: ShotFormat.png,
+              scrollController: scrollController,
+              extraImage: [
+                if (headerImage != null) ImageParam.start(headerImage, headerEMKey.currentContext!.size!)
+              ],
+              pixelRatio: 1,
+            );*/
+
+            // Captura del widget entero
+            ScreenshotController screenshotController = ScreenshotController();
+
+            final image = await screenshotController.capture(
+              delay: const Duration(milliseconds: 200), // opcional, por si hay animaciones
+              pixelRatio: 1.5, // o el valor que necesites
+            );
+
+
+            showDialog(
+                useSafeArea: false,
+                context: context,
+                builder: (context) {
+                  return Scaffold(
+                    appBar: AppBar(
+                      title: Text('Captura'),
+                    ),
+                    body: Center(
+                      child: Image.memory(image!),
+                    ),
+                  );
+                });
+            //writeScreenshotFile('EM${info.em}', resultImage!);
+            snackBar(context, 'Captura guardada', const Duration(milliseconds: kDurationSnackBar + 1000));
+          },
+          icon: Image.asset(
+            screenShotLogo,
+            fit: BoxFit.fitHeight,
+            color: Colors.white,
+          ),
+        ),
       ],
     );
   }
@@ -223,18 +240,13 @@ class InfoConfig extends StatelessWidget {
       child: Row(
         children: [
           if (icon != '') Image.asset(icon, color: color, height: 28.sp),
-          if (icon != '')  SizedBox(width: 12.sp),
+          if (icon != '') SizedBox(width: 12.sp),
           Text.rich(
             TextSpan(children: [
-              TextSpan(
-                  text: title,
-                  style: TextStyle(fontSize: kFontSize.sp, color: color)),
+              TextSpan(text: title, style: TextStyle(fontSize: kFontSize.sp, color: color)),
               TextSpan(
                   text: value,
-                  style: TextStyle(
-                      fontSize: (kFontSize-2.5).sp,
-                      color: color,
-                      fontWeight: FontWeight.bold)),
+                  style: TextStyle(fontSize: (kFontSize - 2.5).sp, color: color, fontWeight: FontWeight.bold)),
             ]),
           )
         ],
@@ -244,11 +256,11 @@ class InfoConfig extends StatelessWidget {
 }
 
 Future<Response<dynamic>> sendUTCDate(BuildContext context) async {
-  DateTime actualTimeUTC = DateTime.now().add(const Duration(hours: 3));
+  DateTime actualTimeUTC = DateTime.now().toUtc().add(const Duration(hours: 3));
   final url = Uri.http(urlBase, 'setDateTime.html', {
     'dia': actualTimeUTC.day.toString(),
     'mes': actualTimeUTC.month.toString(),
-    'anio': (actualTimeUTC.year.toInt() - 2000).toString(),
+    'anio': (actualTimeUTC.year - 2000).toString(),
     'hs': actualTimeUTC.hour.toString(),
     'min': actualTimeUTC.minute.toString(),
     'seg': actualTimeUTC.second.toString(),
@@ -258,8 +270,7 @@ Future<Response<dynamic>> sendUTCDate(BuildContext context) async {
   final dio = Dio();
   final response = await dio.get(url.toString());
   if (response.statusCode == 200) {
-    snackBar(context, 'Envio de TimeStamp',
-        const Duration(milliseconds: kDurationSnackBar));
+    snackBar(context, 'Envio de TimeStamp', const Duration(milliseconds: kDurationSnackBar));
   }
   return response;
 }
@@ -326,16 +337,16 @@ class CustomPageView extends StatelessWidget {
       bottom: 20,
       child: GlassmorphismContainer(
           widget: SmoothPageIndicator(
-        controller: _pageController,
-        count: kPageCount,
-        effect: const ScaleEffect(
-          spacing: 18,
-          scale: 1.5,
-          dotHeight: kDotHeight,
-          dotWidth: kDotHeight,
-          activeDotColor: Colors.yellowAccent,
-        ),
-      )),
+            controller: _pageController,
+            count: kPageCount,
+            effect: const ScaleEffect(
+              spacing: 18,
+              scale: 1.5,
+              dotHeight: kDotHeight,
+              dotWidth: kDotHeight,
+              activeDotColor: Colors.yellowAccent,
+            ),
+          )),
     );
   }
 }

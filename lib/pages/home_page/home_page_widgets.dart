@@ -2,17 +2,13 @@ import 'dart:ui';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:screenshot/screenshot.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:tmra/common.dart';
+import 'package:tmra/models/model_sensors.dart';
 import 'package:tmra/pages/widgets.dart';
-import 'package:widget_screenshot/widget_screenshot.dart';
-
-import '../../models/model_sensors.dart';
 import '../../models/sensors_type.dart';
 import '../snackbar.dart';
-import '../../common.dart'; // Importa funciones y clases comunes
-
-import '../../constants.dart'; // Aquí asumo que tienes constantes como kPadding, kSplashColor, etc.
+import '../../constants.dart';
 
 class SensorCard extends StatelessWidget {
   const SensorCard({Key? key, required this.info, required this.index}) : super(key: key);
@@ -103,157 +99,90 @@ class _ImageSensor extends StatelessWidget {
   }
 }
 
-class HomePageTopAppBar extends StatelessWidget {
-  const HomePageTopAppBar({
-    Key? key,
-    required this.info,
-    required this.testMode,
-    required this.timeDownload,
-    required this.timeStampUtc,
-    required this.sensors,
-    required this.headerEMKey,
-    required this.sensorsEMKey,
-    required this.scrollController,
-  }) : super(key: key);
-
-  final Sensors info;
-  final bool testMode;
-  final String timeDownload, timeStampUtc;
-  final List<SensorType> sensors;
-  final GlobalKey headerEMKey, sensorsEMKey;
-  final ScrollController scrollController;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        StationName(info: info),
-        const Spacer(),
-        IconButton(
-            splashColor: kSplashColor,
-            onPressed: () async {
-              if (!testMode) {
-                await sendUTCDate(context);
-              } else {
-                snackBar(context, 'TEST - Envio de TimeStamp', const Duration(milliseconds: kDurationSnackBar));
-              }
-            },
-            icon: Image.asset(
-              reloadClockIcon,
-              color: Colors.white,
-            )),
-        const SizedBox(width: 5),
-        IconButton(
-          splashColor: kSplashColor,
-          onPressed: () async {
-            // Pedir permiso para almacenamiento
-            bool granted = await requestStoragePermission();
-            if (!granted) {
-              snackBar(context, 'Permiso de almacenamiento denegado', const Duration(seconds: 2));
-              return;
-            }
-
-            snackBar(context, 'Comenzando captura...', const Duration(milliseconds: kDurationSnackBar + 1000));
-
-            /*var headerBoundary = headerEMKey.currentContext!.findRenderObject() as WidgetShotRenderRepaintBoundary;
-            if (headerBoundary.debugNeedsPaint) {
-              await Future.delayed(const Duration(milliseconds: 1000));
-            }
-            var headerImage = await headerBoundary.screenshot(
-                backgroundColor: Colors.black, format: ShotFormat.png, pixelRatio: 1);
-
-            if (headerBoundary.debugNeedsPaint) {
-              await Future.delayed(const Duration(milliseconds: 1000));
-            }
-            var sensorsBoundary = sensorsEMKey.currentContext!.findRenderObject() as WidgetShotRenderRepaintBoundary;
-            if (sensorsBoundary.debugNeedsPaint) {
-              await Future.delayed(const Duration(milliseconds: 1000));
-            }
-            var resultImage = await sensorsBoundary.screenshot(
-              backgroundColor: Colors.black,
-              format: ShotFormat.png,
-              scrollController: scrollController,
-              extraImage: [
-                if (headerImage != null) ImageParam.start(headerImage, headerEMKey.currentContext!.size!)
-              ],
-              pixelRatio: 1,
-            );*/
-
-            // Captura del widget entero
-            ScreenshotController screenshotController = ScreenshotController();
-
-            final image = await screenshotController.capture(
-              delay: const Duration(milliseconds: 200), // opcional, por si hay animaciones
-              pixelRatio: 1.5, // o el valor que necesites
-            );
-
-
-            showDialog(
-                useSafeArea: false,
-                context: context,
-                builder: (context) {
-                  return Scaffold(
-                    appBar: AppBar(
-                      title: Text('Captura'),
-                    ),
-                    body: Center(
-                      child: Image.memory(image!),
-                    ),
-                  );
-                });
-            //writeScreenshotFile('EM${info.em}', resultImage!);
-            snackBar(context, 'Captura guardada', const Duration(milliseconds: kDurationSnackBar + 1000));
-          },
-          icon: Image.asset(
-            screenShotLogo,
-            fit: BoxFit.fitHeight,
-            color: Colors.white,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class InfoConfig extends StatelessWidget {
-  const InfoConfig({
-    Key? key,
-    required this.title,
-    required this.value,
-    this.size = kFontSize,
-    required this.icon,
-    this.color = Colors.white,
-  }) : super(key: key);
-
-  final String title;
-  final String value;
-  final double size;
-  final String icon;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 10.sp),
-      alignment: Alignment.centerLeft,
-      width: double.infinity,
-      child: Row(
-        children: [
-          if (icon != '') Image.asset(icon, color: color, height: 28.sp),
-          if (icon != '') SizedBox(width: 12.sp),
-          Text.rich(
-            TextSpan(children: [
-              TextSpan(text: title, style: TextStyle(fontSize: kFontSize.sp, color: color)),
-              TextSpan(
-                  text: value,
-                  style: TextStyle(fontSize: (kFontSize - 2.5).sp, color: color, fontWeight: FontWeight.bold)),
-            ]),
-          )
-        ],
-      ),
-    );
-  }
-}
+// class HomePageTopAppBar extends StatelessWidget {
+//   const HomePageTopAppBar({
+//     Key? key,
+//     required this.info,
+//     required this.testMode,
+//     required this.timeDownload,
+//     required this.timeStampUtc,
+//     required this.sensors,
+//     required this.headerEMKey,
+//     required this.sensorsEMKey,
+//     required this.scrollController,
+//   }) : super(key: key);
+//
+//   final Sensors info;
+//   final bool testMode;
+//   final String timeDownload, timeStampUtc;
+//   final List<SensorType> sensors;
+//   final GlobalKey headerEMKey, sensorsEMKey;
+//   final ScrollController scrollController;
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Row(
+//       children: [
+//         StationName(info: info),
+//         const Spacer(),
+//         IconButton(
+//             splashColor: kSplashColor,
+//             onPressed: () async {
+//               if (!testMode) {
+//                 await sendUTCDate(context);
+//               } else {
+//                 snackBar(context, 'TEST - Envio de TimeStamp', const Duration(milliseconds: kDurationSnackBar));
+//               }
+//             },
+//             icon: Image.asset(
+//               reloadClockIcon,
+//               color: Colors.white,
+//             )),
+//         const SizedBox(width: 5),
+//         IconButton(
+//           splashColor: kSplashColor,
+//           onPressed: () async {
+//             // Pedir permiso para almacenamiento
+//             bool granted = await requestStoragePermission();
+//             if (!granted) {
+//               snackBar(context, 'Permiso de almacenamiento denegado', const Duration(seconds: 2));
+//               return;
+//             }
+//
+//             snackBar(context, 'Comenzando captura...', const Duration(milliseconds: kDurationSnackBar + 1000));
+//
+//             final image = await screenshotController.capture(
+//               delay: const Duration(milliseconds: 200), // opcional, por si hay animaciones
+//               pixelRatio: 1.5, // o el valor que necesites
+//             );
+//
+//
+//             showDialog(
+//                 useSafeArea: false,
+//                 context: context,
+//                 builder: (context) {
+//                   return Scaffold(
+//                     appBar: AppBar(
+//                       title: Text('Captura'),
+//                     ),
+//                     body: Center(
+//                       child: Image.memory(image!),
+//                     ),
+//                   );
+//                 });
+//             //writeScreenshotFile('EM${info.em}', resultImage!);
+//             snackBar(context, 'Captura guardada', const Duration(milliseconds: kDurationSnackBar + 1000));
+//           },
+//           icon: Image.asset(
+//             screenShotLogo,
+//             fit: BoxFit.fitHeight,
+//             color: Colors.white,
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+// }
 
 Future<Response<dynamic>> sendUTCDate(BuildContext context) async {
   DateTime actualTimeUTC = DateTime.now().toUtc().add(const Duration(hours: 3));

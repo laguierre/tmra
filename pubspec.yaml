@@ -42,6 +42,7 @@ dependencies:
   widget_screenshot: #TODO dejó de funcionar en una actualización de Android, y da error en la captura de una pantalla grande
     path: ./packages/widget_screenshot
   flutter_screenutil:
+  screenshot:
 
 dev_dependencies:
   flutter_test:

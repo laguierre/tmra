@@ -63,6 +63,7 @@ class _DownloadPageState extends State<DownloadPage> {
 
   @override
   Widget build(BuildContext context) {
+    late String? file;
     return Scaffold(
         extendBody: false,
         backgroundColor: Colors.black,
@@ -99,11 +100,11 @@ class _DownloadPageState extends State<DownloadPage> {
                                               format: ShotFormat.png,
                                               scrollController: scrollController,
                                               pixelRatio: 1);
-                                      writeScreenshotFile(
-                                          'EM${widget.info.em}', resultImage!);
+                                      file = await writeScreenshotFile(
+                                          'EM${widget.info.em}_download', resultImage!);
                                       snackBar(
                                           context,
-                                          'Captura guardada',
+                                          'Captura guardada en $file',
                                           const Duration(
                                               milliseconds:
                                                   kDurationSnackBar + 1000));

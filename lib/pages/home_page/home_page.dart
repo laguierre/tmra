@@ -75,7 +75,7 @@ class _HomePageState extends State<HomePage> {
                   RefreshIndicator(
                       strokeWidth: 3,
                       displacement:
-                      MediaQuery.of(context).size.height / 2 - 200,
+                          MediaQuery.of(context).size.height / 2 - 200,
                       color: Colors.black,
                       backgroundColor: Colors.white,
                       onRefresh: () async {
@@ -83,56 +83,52 @@ class _HomePageState extends State<HomePage> {
                       },
                       child: sensors.isNotEmpty
                           ? Column(
-                        children: [
-                          HeaderInfo(
-                              headerEMKey: headerEMKey,
-                              info: info,
-                              widget: widget,
-                              timeDownload: timeDownload,
-                              timeStampUtc: timeStampUtc,
-                              sensors: sensors,
-                              sensorsEMKey: sensorsEMKey,
-                              scrollController: scrollController),
-                          Expanded(
-                            child: WidgetShot(
-                                key: sensorsEMKey,
-                                child: EMSensors(
-                                  sensors: sensors,
-                                  scrollController: scrollController,
-                                )),
-                          ),
-                        ],
-                      )
-                          : Stack(
-                        children: [
-                          const Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text('Espere...',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 18)),
-                                SizedBox(height: 20),
-                                CircularProgressIndicator(
-                                  color: Colors.white,
+                                HeaderInfo(
+                                    headerEMKey: headerEMKey,
+                                    info: info,
+                                    widget: widget,
+                                    timeDownload: timeDownload,
+                                    timeStampUtc: timeStampUtc,
+                                    sensors: sensors,
+                                    sensorsEMKey: sensorsEMKey,
+                                    scrollController: scrollController),
+                                Expanded(
+                                  child: WidgetShot(
+                                      key: sensorsEMKey,
+                                      child: EMSensors(
+                                        sensors: sensors,
+                                        scrollController: scrollController,
+                                      )),
                                 ),
                               ],
-                            ),
-                          ),
-                          Positioned(
-                            right: 40,
-                            bottom: 40,
-                            child: CircleCustomButton(
-                              sizeButton: 70,
-                              icon: reloadingIcon,
-                              function: () {
-                                getSensorInfo();
-                              },
-                            ),
-                          ),
-                        ],
-                      )),
+                            )
+                          : Stack(
+                              children: [
+                                const Center(
+                                    child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text('Espere...',
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 18)),
+                                    SizedBox(height: 20),
+                                    CircularProgressIndicator(
+                                        color: Colors.white),
+                                  ],
+                                )),
+                                Positioned(
+                                    right: 40,
+                                    bottom: 40,
+                                    child: CircleCustomButton(
+                                      sizeButton: 70,
+                                      icon: reloadingIcon,
+                                      function: () {
+                                        getSensorInfo();
+                                      },
+                                    ))
+                              ],
+                            )),
 
                   ///Page 2
                   InfoBoards(info: info),
@@ -213,14 +209,12 @@ class HeaderInfo extends StatelessWidget {
               InfoConfig(
                   title: 'Último valor grabado: ',
                   value: info.logLastAddress!,
-                  size: kFontSize-1.5,
+                  size: kFontSize - 1.5,
                   icon: cpuIcon),
               InfoConfig(
                   title: 'Time Stamp: ',
                   value: widget.testMode
-                      ? DateFormat(
-                      'yyyy/MM/dd HH:mm:ss')
-                      .format(DateTime.now())
+                      ? DateFormat('yyyy/MM/dd HH:mm:ss').format(DateTime.now())
                       : timeStampUtc,
                   //info.timeStampUtc!,
                   size: kFontSize - 1,
@@ -246,7 +240,7 @@ class EMSensors extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.builder(
         controller: scrollController,
-        padding:  EdgeInsets.only(
+        padding: EdgeInsets.only(
             top: 0, bottom: kPaddingBottomScrollViews, left: 0.sp, right: 0.sp),
         physics: const BouncingScrollPhysics(),
         itemCount: sensors.length,

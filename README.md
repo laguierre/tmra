@@ -12,8 +12,11 @@
 - Se hace adaptación reactiva y se cambia todo a .sp. 
 - Se actualizan algunas deprecated
 - Apareció un error en el widget_screenshot sobre las pantallas largas, aplicando un pequeño delay funciona nuevamente
+## v0.1e
+- Existió un problema con widget_screenshot, quité el delay.
+- Cambie el lugar de guardado para el almacenamiento y permisos.
+- Solucionado los problemas del scroll y captura. El problema era que no pedía permiso en Android 15 y APIs altos.
 
 ## TODO
 - Cuando el archivo es grande, se tendría que particionar en 300k.
 - Una vez que el archivo termina de guardarse, se debería actualizar los límites inferior con el bueno valor guardado.
-- Al modelo de celulares que no hacen el scroll de la captura de la primera pantalla.

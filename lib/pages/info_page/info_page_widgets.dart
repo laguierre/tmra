@@ -47,10 +47,11 @@ class EMInfo extends StatelessWidget {
                             format: ShotFormat.png,
                             scrollController: scrollController,
                             pixelRatio: 1);
-                        writeScreenshotFile('EM${info.em}_info', image!);
+                        String? file;
+                        file = await writeScreenshotFile('EM${info.em}_info', image!);
                         snackBar(
                             context,
-                            'Captura guardada',
+                            'Captura guardada en $file',
                             const Duration(
                                 milliseconds: kDurationSnackBar + 1000));
                       },

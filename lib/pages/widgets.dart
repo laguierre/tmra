@@ -51,7 +51,7 @@ class InfoConfig extends StatelessWidget {
         child: Row(
           children: [
             if (icon != '') Image.asset(icon, color: color, height: 22.sp),
-            if (icon != '')  SizedBox(width: 12.sp),
+            if (icon != '') SizedBox(width: 12.sp),
             Expanded(
                 child: Text.rich(
               TextSpan(children: [
@@ -70,27 +70,28 @@ class InfoConfig extends StatelessWidget {
         ));
   }
 }
-Future<void> writeScreenshotFile(String fileName, Uint8List imageBytes) async {
+
+Future<String?> writeScreenshotFile(
+    String fileName, Uint8List imageBytes) async {
   try {
     // Obtener la ruta del directorio de descargas
     final downloadsDirectory = await DownloadsPath.downloadsDirectory();
     if (downloadsDirectory == null) {
       debugPrint("No se pudo obtener el directorio de descargas.");
-      return;
+      return "Error";
     }
-
-    // Crear la ruta completa del archivo
     final filePath = '${downloadsDirectory.path}/$fileName.png';
     final file = File(filePath);
 
-    // Escribir los bytes en el archivo
     await file.writeAsBytes(imageBytes);
     debugPrint("Captura guardada en: $filePath");
-
+    return filePath;
   } catch (e) {
     debugPrint("Error al guardar la captura: $e");
   }
+  return null;
 }
+
 class CustomIconButton extends StatelessWidget {
   const CustomIconButton({
     super.key,
@@ -115,4 +116,3 @@ class CustomIconButton extends StatelessWidget {
         ));
   }
 }
-

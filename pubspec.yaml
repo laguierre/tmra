@@ -13,6 +13,8 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.2
   #provider: ^6.0.4
+  file_saver: ^0.2.8
+  mime: ^1.0.4
   page_transition:
   path_provider:
   wifi_iot:
@@ -42,6 +44,7 @@ dependencies:
   widget_screenshot: #TODO dejó de funcionar en una actualización de Android, y da error en la captura de una pantalla grande
     path: ./packages/widget_screenshot
   flutter_screenutil:
+
 
 dev_dependencies:
   flutter_test:

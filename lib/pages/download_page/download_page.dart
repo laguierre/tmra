@@ -63,6 +63,7 @@ class _DownloadPageState extends State<DownloadPage> {
 
   @override
   Widget build(BuildContext context) {
+    late String? file;
     return Scaffold(
         extendBody: false,
         backgroundColor: Colors.black,
@@ -71,7 +72,7 @@ class _DownloadPageState extends State<DownloadPage> {
           child: Padding(
               padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
               child: SingleChildScrollView(
-                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                  keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                   controller: scrollController,
                   physics: const BouncingScrollPhysics(),
                   child: Column(
@@ -89,24 +90,24 @@ class _DownloadPageState extends State<DownloadPage> {
                                     splashColor: kSplashColor,
                                     onPressed: () async {
                                       WidgetShotRenderRepaintBoundary
-                                          sensorsBoundary = downloadEMKey
-                                                  .currentContext!
-                                                  .findRenderObject()
-                                              as WidgetShotRenderRepaintBoundary;
+                                      sensorsBoundary = downloadEMKey
+                                          .currentContext!
+                                          .findRenderObject()
+                                      as WidgetShotRenderRepaintBoundary;
                                       var resultImage =
-                                          await sensorsBoundary.screenshot(
-                                              backgroundColor: Colors.black,
-                                              format: ShotFormat.png,
-                                              scrollController: scrollController,
-                                              pixelRatio: 1);
-                                      writeScreenshotFile(
-                                          'EM${widget.info.em}', resultImage!);
+                                      await sensorsBoundary.screenshot(
+                                          backgroundColor: Colors.black,
+                                          format: ShotFormat.png,
+                                          scrollController: scrollController,
+                                          pixelRatio: 1);
+                                      file = await writeScreenshotFile(
+                                          'EM${widget.info.em}_download', resultImage!);
                                       snackBar(
                                           context,
-                                          'Captura guardada',
+                                          'Captura guardada en $file',
                                           const Duration(
                                               milliseconds:
-                                                  kDurationSnackBar + 1000));
+                                              kDurationSnackBar + 1000));
                                     },
                                     icon: Image.asset(
                                       screenShotLogo,
@@ -120,15 +121,15 @@ class _DownloadPageState extends State<DownloadPage> {
                         height: 10,
                         color: Colors.white,
                       ),
-                       SizedBox(height: 30.sp),
+                      SizedBox(height: 30.sp),
                       Text(
                         'Índice límite INFERIOR',
                         style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20.sp
+                            color: Colors.white,
+                            fontSize: 20.sp
                         ),
                       ),
-                       SizedBox(height: 15.sp),
+                      SizedBox(height: 15.sp),
                       CustomFieldText(
                           textEditingController: infTextEditingController),
                       const SizedBox(height: 15),
@@ -140,22 +141,22 @@ class _DownloadPageState extends State<DownloadPage> {
                           //fontSize: kFontSize,
                         ),
                       ),
-                       SizedBox(height: 15.sp),
+                      SizedBox(height: 15.sp),
                       CustomFieldText(
                           textEditingController: supTextEditingController),
-                       SizedBox(height: 15.sp),
+                      SizedBox(height: 15.sp),
                       InfoLine(text: 'Última fecha: ', boldText: timeDownload),
-                       SizedBox(height: 7.sp),
+                      SizedBox(height: 7.sp),
                       InfoLine(
                           text: 'Último índice bajado: ',
                           boldText: widget.info.downloadLastAddress!),
-                       SizedBox(height: 7.sp),
+                      SizedBox(height: 7.sp),
                       InfoLine(
                           text: 'Último índice grabado: ',
                           boldText: widget.info.logLastAddress!),
-                       SizedBox(height: 45.sp),
+                      SizedBox(height: 45.sp),
                       downloadButtons(context, widget.info.wifi![0]),
-                       SizedBox(height: 40.sp),
+                      SizedBox(height: 40.sp),
                       SizedBox(
                         height: 40.sp,
                         child: Row(children: [
@@ -178,9 +179,9 @@ class _DownloadPageState extends State<DownloadPage> {
                       const SizedBox(height: 20),
                       isDownload
                           ? ProgressBar(
-                              receivedDataPercent: receivedDataPercent,
-                              receivedData: receivedData,
-                              totalData: totalData)
+                          receivedDataPercent: receivedDataPercent,
+                          receivedData: receivedData,
+                          totalData: totalData)
                           : Container(),
                     ],
                   ))),
@@ -222,7 +223,7 @@ class _DownloadPageState extends State<DownloadPage> {
                     await downloadFile(context);
                   } else {
                     fileName =
-                        'EM${widget.info.em!.toUpperCase()}_${DateFormat('yyyyMMdd').format(DateTime.now())}_${infTextEditingController.text}_${supTextEditingController.text}.raw';
+                    'EM${widget.info.em!.toUpperCase()}_${DateFormat('yyyyMMdd').format(DateTime.now())}_${infTextEditingController.text}_${supTextEditingController.text}.raw';
                     snackBar(context, 'Archivo simulado!!! ($fileName)',
                         const Duration(milliseconds: kDurationSnackBar + 1000));
                     infTextEditingController.text =
@@ -259,7 +260,7 @@ class _DownloadPageState extends State<DownloadPage> {
         'http://192.168.4.1/downloadFile.html?inf=${infTextEditingController.text}&sup=${supTextEditingController.text}';
 
     fileName =
-        'EM${widget.info.em!.toUpperCase()}_${DateFormat('yyyyMMdd').format(DateTime.now())}_${infTextEditingController.text}_${supTextEditingController.text}.raw';
+    'EM${widget.info.em!.toUpperCase()}_${DateFormat('yyyyMMdd').format(DateTime.now())}_${infTextEditingController.text}_${supTextEditingController.text}.raw';
 
     final Dio dio = Dio();
     await dio.download(
@@ -311,7 +312,7 @@ class _DownloadPageState extends State<DownloadPage> {
             actions: [
               ElevatedButton(
                   style:
-                      ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                  ElevatedButton.styleFrom(backgroundColor: Colors.green),
                   onPressed: () async {
                     openDialogSharingFile(
                         context, '.raw', 'Archivos descargados [raw]');
@@ -319,7 +320,7 @@ class _DownloadPageState extends State<DownloadPage> {
                   child: const Text('Abrir en explorador')),
               ElevatedButton(
                   style:
-                      ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                  ElevatedButton.styleFrom(backgroundColor: Colors.green),
                   onPressed: () async {
                     if (await File(file).exists()) {
                       shareSelectedFile(file);
@@ -328,7 +329,7 @@ class _DownloadPageState extends State<DownloadPage> {
                   child: const Text('Compartir')),
               ElevatedButton(
                   style:
-                      ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                  ElevatedButton.styleFrom(backgroundColor: Colors.green),
                   onPressed: () {
                     Navigator.pop(context);
                   },

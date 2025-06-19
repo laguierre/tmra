@@ -40,17 +40,18 @@ class EMInfo extends StatelessWidget {
                       splashColor: kSplashColor,
                       onPressed: () async {
                         WidgetShotRenderRepaintBoundary sensorsBoundary =
-                            infoKey.currentContext!.findRenderObject()
-                                as WidgetShotRenderRepaintBoundary;
+                        infoKey.currentContext!.findRenderObject()
+                        as WidgetShotRenderRepaintBoundary;
                         var image = await sensorsBoundary.screenshot(
                             backgroundColor: Colors.black,
                             format: ShotFormat.png,
                             scrollController: scrollController,
                             pixelRatio: 1);
-                        writeScreenshotFile('EM${info.em}_info', image!);
+                        String? file;
+                        file = await writeScreenshotFile('EM${info.em}_info', image!);
                         snackBar(
                             context,
-                            'Captura guardada',
+                            'Captura guardada en $file',
                             const Duration(
                                 milliseconds: kDurationSnackBar + 1000));
                       },
@@ -106,46 +107,46 @@ class EMInfo extends StatelessWidget {
             ),
             child: IntrinsicHeight(
                 child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                InfoConfig(
-                  icon: cpuIcon,
-                  title: '',
-                  value: 'CPU Board Info',
-                  size: fontSizeTitle,
-                ),
-                InfoConfig(
-                    icon: '',
-                    title: 'Sw version: ',
-                    value: info.cpu![0],
-                    size: fontSize),
-                InfoConfig(
-                    icon: '',
-                    title: 'Hw version: ',
-                    value: info.cpu![1],
-                    size: fontSize),
-                InfoConfig(
-                    title: 'Channel Used [0]: ',
-                    value: info.channelUsed![0],
-                    size: fontSize,
-                    icon: ""),
-                InfoConfig(
-                    title: 'Channel Used [1]: ',
-                    value: info.channelUsed![1],
-                    size: fontSize,
-                    icon: ""),
-                InfoConfig(
-                    title: 'Controlled Channel Used [0]: ',
-                    value: info.controlledChannel![0],
-                    size: fontSize,
-                    icon: ""),
-                InfoConfig(
-                    title: 'Controlled Channel Used [1]: ',
-                    value: info.controlledChannel![1],
-                    size: fontSize,
-                    icon: ""),
-              ],
-            ))),
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    InfoConfig(
+                      icon: cpuIcon,
+                      title: '',
+                      value: 'CPU Board Info',
+                      size: fontSizeTitle,
+                    ),
+                    InfoConfig(
+                        icon: '',
+                        title: 'Sw version: ',
+                        value: info.cpu![0],
+                        size: fontSize),
+                    InfoConfig(
+                        icon: '',
+                        title: 'Hw version: ',
+                        value: info.cpu![1],
+                        size: fontSize),
+                    InfoConfig(
+                        title: 'Channel Used [0]: ',
+                        value: info.channelUsed![0],
+                        size: fontSize,
+                        icon: ""),
+                    InfoConfig(
+                        title: 'Channel Used [1]: ',
+                        value: info.channelUsed![1],
+                        size: fontSize,
+                        icon: ""),
+                    InfoConfig(
+                        title: 'Controlled Channel Used [0]: ',
+                        value: info.controlledChannel![0],
+                        size: fontSize,
+                        icon: ""),
+                    InfoConfig(
+                        title: 'Controlled Channel Used [1]: ',
+                        value: info.controlledChannel![1],
+                        size: fontSize,
+                        icon: ""),
+                  ],
+                ))),
         Container(
             margin: EdgeInsets.only(top: 10.sp, bottom: 10.sp),
             padding: EdgeInsets.symmetric(horizontal: 20.sp, vertical: 10.sp),

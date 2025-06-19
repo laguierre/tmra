@@ -27,7 +27,7 @@ class InfoBoards extends StatelessWidget {
               child: SingleChildScrollView(
                 controller: scrollController,
                 padding:
-                    const EdgeInsets.only(bottom: kPaddingBottomScrollViews),
+                const EdgeInsets.only(bottom: kPaddingBottomScrollViews),
                 physics: const BouncingScrollPhysics(),
                 child: EMInfo(
                     info: info,

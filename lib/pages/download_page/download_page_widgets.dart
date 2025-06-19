@@ -74,10 +74,10 @@ class ProgressBar extends StatelessWidget {
 class CustomButton extends StatelessWidget {
   const CustomButton(
       {Key? key,
-      required this.function,
-      required this.icon,
-      required this.text,
-      this.kPadding = 15})
+        required this.function,
+        required this.icon,
+        required this.text,
+        this.kPadding = 15})
       : super(key: key);
 
   final VoidCallback function;
@@ -89,36 +89,36 @@ class CustomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
         child: Row(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-              color: Colors.yellowAccent,
-              borderRadius: BorderRadius.circular(15.sp)),
-          width: MediaQuery.of(context).size.width * 0.45 - kPadding,
-          child: IconButton(
-              onPressed: function,
-              icon: SizedBox(
-                height: 32.sp,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Image.asset(icon, color: Colors.black),
-                    SizedBox(width: 10.sp),
-                    Expanded(
-                      child: Text(text,
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                          )),
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                  color: Colors.yellowAccent,
+                  borderRadius: BorderRadius.circular(15.sp)),
+              width: MediaQuery.of(context).size.width * 0.45 - kPadding,
+              child: IconButton(
+                  onPressed: function,
+                  icon: SizedBox(
+                    height: 32.sp,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Image.asset(icon, color: Colors.black),
+                        SizedBox(width: 10.sp),
+                        Expanded(
+                          child: Text(text,
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              )),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              )),
-        ),
-      ],
-    ));
+                  )),
+            ),
+          ],
+        ));
   }
 }
 
@@ -152,7 +152,7 @@ class CustomFieldText extends StatelessWidget {
                   color: Colors.grey,
                   decoration: TextDecoration.none),
               contentPadding:
-                  const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+              const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
               isDense: true,
             ),
             style: TextStyle(

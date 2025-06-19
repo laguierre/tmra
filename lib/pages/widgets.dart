@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -51,46 +52,72 @@ class InfoConfig extends StatelessWidget {
         child: Row(
           children: [
             if (icon != '') Image.asset(icon, color: color, height: 22.sp),
-            if (icon != '')  SizedBox(width: 12.sp),
+            if (icon != '') SizedBox(width: 12.sp),
             Expanded(
                 child: Text.rich(
-              TextSpan(children: [
-                TextSpan(
-                    text: title,
-                    style: TextStyle(fontSize: size, color: color)),
-                TextSpan(
-                    text: value,
-                    style: TextStyle(
-                        fontSize: size,
-                        color: color,
-                        fontWeight: FontWeight.bold)),
-              ]),
-            ))
+                  TextSpan(children: [
+                    TextSpan(
+                        text: title,
+                        style: TextStyle(fontSize: size, color: color)),
+                    TextSpan(
+                        text: value,
+                        style: TextStyle(
+                            fontSize: size,
+                            color: color,
+                            fontWeight: FontWeight.bold)),
+                  ]),
+                ))
           ],
         ));
   }
 }
-Future<void> writeScreenshotFile(String fileName, Uint8List imageBytes) async {
+
+Future<String?> writeScreenshotFile(String fileName, Uint8List imageBytes) async {
   try {
-    // Obtener la ruta del directorio de descargas
-    final downloadsDirectory = await DownloadsPath.downloadsDirectory();
-    if (downloadsDirectory == null) {
-      debugPrint("No se pudo obtener el directorio de descargas.");
-      return;
+    // Limpia el nombre del archivo
+    final safeFileName = fileName.replaceAll(RegExp(r'[^\w\s_-]'), '_');
+
+    final savedPath = await FileSaver.instance.saveFile(
+      name: safeFileName,
+      bytes: imageBytes,
+      ext: 'png',
+      mimeType: MimeType.png,
+    );
+
+    if (savedPath != null) {
+      debugPrint("Captura guardada en: $savedPath");
+    } else {
+      debugPrint("No se pudo guardar la captura.");
     }
 
-    // Crear la ruta completa del archivo
-    final filePath = '${downloadsDirectory.path}/$fileName.png';
-    final file = File(filePath);
-
-    // Escribir los bytes en el archivo
-    await file.writeAsBytes(imageBytes);
-    debugPrint("Captura guardada en: $filePath");
-
+    return savedPath;
   } catch (e) {
     debugPrint("Error al guardar la captura: $e");
+    return null;
   }
 }
+
+// Future<String?> writeScreenshotFile(
+//     String fileName, Uint8List imageBytes) async {
+//   try {
+//     // Obtener la ruta del directorio de descargas
+//     final downloadsDirectory = await DownloadsPath.downloadsDirectory();
+//     if (downloadsDirectory == null) {
+//       debugPrint("No se pudo obtener el directorio de descargas.");
+//       return "Error";
+//     }
+//     final filePath = '${downloadsDirectory.path}/$fileName.png';
+//     final file = File(filePath);
+//
+//     await file.writeAsBytes(imageBytes);
+//     debugPrint("Captura guardada en: $filePath");
+//     return filePath;
+//   } catch (e) {
+//     debugPrint("Error al guardar la captura: $e");
+//   }
+//   return null;
+// }
+
 class CustomIconButton extends StatelessWidget {
   const CustomIconButton({
     super.key,
@@ -115,4 +142,3 @@ class CustomIconButton extends StatelessWidget {
         ));
   }
 }
-

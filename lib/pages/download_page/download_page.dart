@@ -104,7 +104,7 @@ class _DownloadPageState extends State<DownloadPage> {
                                           'EM${widget.info.em}_download', resultImage!);
                                       snackBar(
                                           context,
-                                          'Captura guardada en $file',
+                                          file!,
                                           const Duration(
                                               milliseconds:
                                               kDurationSnackBar + 1000));

@@ -3,11 +3,13 @@ import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 
 import 'package:lecle_downloads_path_provider/lecle_downloads_path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../constants.dart';
 import '../models/model_sensors.dart';
+import 'package:image/image.dart' as img;
 
 class StationName extends StatelessWidget {
   const StationName({
@@ -55,42 +57,49 @@ class InfoConfig extends StatelessWidget {
             if (icon != '') SizedBox(width: 12.sp),
             Expanded(
                 child: Text.rich(
-                  TextSpan(children: [
-                    TextSpan(
-                        text: title,
-                        style: TextStyle(fontSize: size, color: color)),
-                    TextSpan(
-                        text: value,
-                        style: TextStyle(
-                            fontSize: size,
-                            color: color,
-                            fontWeight: FontWeight.bold)),
-                  ]),
-                ))
+              TextSpan(children: [
+                TextSpan(
+                    text: title,
+                    style: TextStyle(fontSize: size, color: color)),
+                TextSpan(
+                    text: value,
+                    style: TextStyle(
+                        fontSize: size,
+                        color: color,
+                        fontWeight: FontWeight.bold)),
+              ]),
+            ))
           ],
         ));
   }
 }
 
-Future<String?> writeScreenshotFile(String fileName, Uint8List imageBytes) async {
+Future<String?> writeScreenshotFile(
+    String fileName, Uint8List imageBytes) async {
   try {
-    // Limpia el nombre del archivo
-    final safeFileName = fileName.replaceAll(RegExp(r'[^\w\s_-]'), '_');
+    final android13OrAbove = await Permission.photos.isGranted ||
+        await Permission.photos.request().isGranted;
 
-    final savedPath = await FileSaver.instance.saveFile(
-      name: safeFileName,
-      bytes: imageBytes,
-      ext: 'png',
-      mimeType: MimeType.png,
-    );
+    final legacyStorageGranted = await Permission.storage.request().isGranted;
 
-    if (savedPath != null) {
-      debugPrint("Captura guardada en: $savedPath");
-    } else {
-      debugPrint("No se pudo guardar la captura.");
+    if (!android13OrAbove && !legacyStorageGranted) {
+      debugPrint("Permiso de almacenamiento o fotos denegado.");
+      return "Permiso de almacenamiento o fotos denegado";
     }
 
-    return savedPath;
+    final result = await ImageGallerySaver.saveImage(
+      imageBytes,
+      name: fileName,
+      quality: 100,
+    );
+
+    if (result['isSuccess'] == true) {
+      debugPrint("✅ Imagen guardada en la galería.");
+    } else {
+      debugPrint("❌ Error al guardar imagen: $result");
+      return "Error al guardar imagen: $result";
+    }
+    return "Archivo guardado en Galería";
   } catch (e) {
     debugPrint("Error al guardar la captura: $e");
     return null;

@@ -195,7 +195,7 @@ class HomePageTopAppBar extends StatelessWidget {
               pixelRatio: 1,
             );
             String? file = await writeScreenshotFile('EM${info.em}', resultImage!);
-            snackBar(context, 'Captura guardada en $file',
+            snackBar(context, file!,
                 const Duration(milliseconds: kDurationSnackBar + 1000));
           },
           icon: Image.asset(

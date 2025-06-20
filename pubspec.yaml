@@ -45,6 +45,7 @@ dependencies:
     path: ./packages/widget_screenshot
   flutter_screenutil:
   screenshot:
+  image: ^4.5.4
 
 
 dev_dependencies:

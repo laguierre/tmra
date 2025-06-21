@@ -220,11 +220,29 @@ class _DownloadPageState extends State<DownloadPage> {
                 if (int.parse(supTextEditingController.text) >
                     int.parse(infTextEditingController.text)) {
                   if (!widget.testMode) {
-                    await downloadFile(context);
+                    bool isDownloadedFile = await downloadFile(context);
+                    if(isDownloadedFile){
+                      infTextEditingController.text =
+                          supTextEditingController.text;
+                      timeDownload = DateFormat('dd/MM/yyyy HH:MM:ss')
+                          .format(DateTime.now());
+                      setState(() {});
+                    }
                   } else {
-                    fileName =
-                    'EM${widget.info.em!.toUpperCase()}_${DateFormat('yyyyMMdd').format(DateTime.now())}_${infTextEditingController.text}_${supTextEditingController.text}.raw';
-                    snackBar(context, 'Archivo simulado!!! ($fileName)',
+                    final now = DateTime.now();
+                    final formatter = DateFormat("yyyy-MM-dd, HHmm");
+                    final timestamp = formatter.format(now);
+                    final emCode = widget.info.em!.toUpperCase();
+                    final subfolder = 'EM$emCode';
+                    final directory = Directory('/storage/emulated/0/Download/TMRA/$subfolder');
+                    if (!await directory.exists()) {
+                      await directory.create(recursive: true);
+                    }
+                    final fileName =
+                        'EM${emCode}_${infTextEditingController.text}_${supTextEditingController.text} [$timestamp].raw';
+                    final filePath = '${directory.path}/$fileName';
+
+                    snackBar(context, 'Archivo simulado!!! \n$filePath',
                         const Duration(milliseconds: kDurationSnackBar + 1000));
                     infTextEditingController.text =
                         supTextEditingController.text;
@@ -241,31 +259,44 @@ class _DownloadPageState extends State<DownloadPage> {
     );
   }
 
-  Future<void> downloadFile(BuildContext context) async {
+  Future<bool> downloadFile(BuildContext context) async {
     isDownload = true;
+    bool isDownloadedFile = false;
 
-    ///Ver aca
+    // ✅ Permisos de almacenamiento
     var hasStoragePermission = await Permission.manageExternalStorage.isGranted;
     if (!hasStoragePermission) {
-      await Permission.manageExternalStorage.request().isGranted;
-      debugPrint('Has Permission');
-    } else {
-      debugPrint('Has not Permission!!!');
+      await Permission.manageExternalStorage.request();
     }
 
-    //var dir = await getApplicationDocumentsDirectory();
-    downloadsDirectoryPath = (await DownloadsPath.downloadsDirectory())?.path;
-    //print('DownloadsPath: $downloadsDirectoryPath');
-    String address =
+    // ✅ Variables base
+    final emCode = widget.info.em!.toUpperCase(); // EM20, EMTEST, etc.
+    final now = DateTime.now();
+    final formatter = DateFormat("yyyy-MM-dd, HHmm");
+    final timestamp = formatter.format(now);
+
+    // ✅ Construir nombre de archivo
+    final fileName = 'EM${emCode}_${infTextEditingController.text}_${supTextEditingController.text} [$timestamp].raw';
+
+    // ✅ Carpeta destino
+    final subfolder = 'EM$emCode';
+    final directory = Directory('/storage/emulated/0/Download/TMRA/$subfolder');
+
+    if (!await directory.exists()) {
+      await directory.create(recursive: true);
+    }
+
+    final filePath = '${directory.path}/$fileName';
+
+    // ✅ Dirección del archivo .raw en el ESP
+    final address =
         'http://192.168.4.1/downloadFile.html?inf=${infTextEditingController.text}&sup=${supTextEditingController.text}';
 
-    fileName =
-    'EM${widget.info.em!.toUpperCase()}_${DateFormat('yyyyMMdd').format(DateTime.now())}_${infTextEditingController.text}_${supTextEditingController.text}.raw';
-
     final Dio dio = Dio();
+
     await dio.download(
       address,
-      '$downloadsDirectoryPath/$fileName',
+      filePath,
       onReceiveProgress: (received, total) async {
         debugPrint('Recibido: $received, Total: $total');
         setState(() {
@@ -273,22 +304,78 @@ class _DownloadPageState extends State<DownloadPage> {
           receivedData = received;
           totalData = total;
         });
+
         if (total != -1) {
           debugPrint("${(receivedDataPercent * 100).toStringAsFixed(0)}%");
         }
+
         if (received / total == 1) {
           Future.delayed(const Duration(seconds: 1), () async {
-            debugPrint('Archivo guardado $downloadsDirectoryPath');
-            snackBar(context, 'Archivo guardado $downloadsDirectoryPath',
+            debugPrint('✅ Archivo guardado: $filePath');
+            snackBar(context, 'Archivo guardado en:\n$filePath',
                 const Duration(milliseconds: kDurationSnackBar));
             setState(() {
               isSharing = true;
+              isDownloadedFile = true;
             });
           });
         }
       },
     );
+    return isDownloadedFile;
   }
+
+  /**Version 0.1d Funciona correctamente*/
+  // Future<void> downloadFile(BuildContext context) async {
+  //   isDownload = true;
+  //
+  //   ///Ver aca
+  //   var hasStoragePermission = await Permission.manageExternalStorage.isGranted;
+  //   if (!hasStoragePermission) {
+  //     await Permission.manageExternalStorage.request().isGranted;
+  //     debugPrint('Has Permission');
+  //   } else {
+  //     debugPrint('Has not Permission!!!');
+  //     snackBar(context, 'No tiene permisos',
+  //         const Duration(milliseconds: kDurationSnackBar));
+  //   }
+  //
+  //   //var dir = await getApplicationDocumentsDirectory();
+  //   downloadsDirectoryPath = (await DownloadsPath.downloadsDirectory())?.path;
+  //   //print('DownloadsPath: $downloadsDirectoryPath');
+  //   String address =
+  //       'http://192.168.4.1/downloadFile.html?inf=${infTextEditingController.text}&sup=${supTextEditingController.text}';
+  //
+  //   fileName =
+  //   'EM${widget.info.em!.toUpperCase()}_${DateFormat('yyyyMMdd').format(DateTime.now())}_${infTextEditingController.text}_${supTextEditingController.text}.raw';
+  //
+  //   final Dio dio = Dio();
+  //   await dio.download(
+  //     address,
+  //     '$downloadsDirectoryPath/$fileName',
+  //     onReceiveProgress: (received, total) async {
+  //       debugPrint('Recibido: $received, Total: $total');
+  //       setState(() {
+  //         receivedDataPercent = received / total;
+  //         receivedData = received;
+  //         totalData = total;
+  //       });
+  //       if (total != -1) {
+  //         debugPrint("${(receivedDataPercent * 100).toStringAsFixed(0)}%");
+  //       }
+  //       if (received / total == 1) {
+  //         Future.delayed(const Duration(seconds: 1), () async {
+  //           debugPrint('Archivo guardado $downloadsDirectoryPath');
+  //           snackBar(context, 'Archivo guardado $downloadsDirectoryPath',
+  //               const Duration(milliseconds: kDurationSnackBar));
+  //           setState(() {
+  //             isSharing = true;
+  //           });
+  //         });
+  //       }
+  //     },
+  //   );
+  // }
 
   Future<void> checkPermission() async {
     var hasStoragePermission = await Permission.storage.isGranted;

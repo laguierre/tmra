@@ -2,9 +2,9 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:filesystem_picker/filesystem_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:lecle_downloads_path_provider/lecle_downloads_path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:tmra/constants.dart';
 
 Future<int> getAndroidSdkInt() async {
   if (!Platform.isAndroid) return 0;
@@ -42,13 +42,11 @@ Future<bool> requestStoragePermission() async {
 /// [title] es el título que se muestra en el diálogo.
 Future<void> openDialogSharingFile(
     BuildContext context, String extension, String title) async {
-  //var rootPath = await DownloadsPath.downloadsDirectory();
-  Directory rootPath = Directory('/storage/emulated/0/Pictures');
-
+  Directory rootPath = Directory(downloadFolder);
 
   if (rootPath == null) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('No se pudo acceder a la carpeta Descargas')),
+      const SnackBar(content: Text(downloadFolder)),
     );
     return;
   }

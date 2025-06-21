@@ -1,11 +1,8 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:intl/intl.dart';
-
 import 'package:permission_handler/permission_handler.dart';
 import '../constants.dart';
 import '../models/model_sensors.dart';
@@ -85,32 +82,23 @@ Future<String?> writeScreenshotFile(String fileName, Uint8List imageBytes) async
       return "Permiso de almacenamiento o fotos denegado";
     }
 
-    // Timestamp
+    // 🕒 Formato seguro: [YYYY-MM-DD, HHmm]
     final now = DateTime.now();
-    final formatter = DateFormat('yyyyMMdd_HHmmss');
+    final formatter = DateFormat("yyyy-MM-dd, HHmm");
     final timestamp = formatter.format(now);
 
     // Quitar extensión .jpg si la tiene
     String nameWithoutExt = fileName.replaceAll(RegExp(r'\.jpg$', caseSensitive: false), '');
 
-    // Detectar sufijo "_download"
-    const suffix = '_download';
-    String baseName;
-    if (nameWithoutExt.endsWith(suffix)) {
-      baseName = nameWithoutExt.substring(0, nameWithoutExt.length - suffix.length);
-    } else {
-      baseName = nameWithoutExt;
-    }
+    // 🧠 Extraer nombre que empieza con EM (como EMTEST, EM20)
+    final match = RegExp(r'^(EM[^_]+)').firstMatch(nameWithoutExt);
+    final emFolder = match != null ? match.group(1)! : 'default';
 
-    // Extraer el prefijo EMxx (hasta "_" o fin)
-    final match = RegExp(r'^(EM[^_]+)').firstMatch(baseName);
-    final subfolder = match != null ? match.group(1)! : 'default';
+    // 📄 Nombre final del archivo
+    final newFileName = "$nameWithoutExt [$timestamp].jpg";
 
-    // Nombre de archivo final
-    final newFileName = '${baseName}_$timestamp${nameWithoutExt.endsWith(suffix) ? suffix : ''}.jpg';
-
-    // Crear carpeta en /Download/TMRA/EMxx/
-    final directory = Directory('/storage/emulated/0/Download/TMRA/$subfolder');
+    // 📁 Crear carpeta /Download/TMRA/EMxx/
+    final directory = Directory('/storage/emulated/0/Download/TMRA/$emFolder');
     if (!await directory.exists()) {
       await directory.create(recursive: true);
     }
@@ -126,6 +114,59 @@ Future<String?> writeScreenshotFile(String fileName, Uint8List imageBytes) async
     return null;
   }
 }
+// Future<String?> writeScreenshotFile(String fileName, Uint8List imageBytes) async {
+//   try {
+//     final android13OrAbove = await Permission.photos.isGranted ||
+//         await Permission.photos.request().isGranted;
+//
+//     final legacyStorageGranted = await Permission.storage.request().isGranted;
+//
+//     if (!android13OrAbove && !legacyStorageGranted) {
+//       debugPrint("❌ Permiso de almacenamiento o fotos denegado.");
+//       return "Permiso de almacenamiento o fotos denegado";
+//     }
+//
+//     // Timestamp
+//     final now = DateTime.now();
+//     final formatter = DateFormat('yyyyMMdd_HHmmss');
+//     final timestamp = formatter.format(now);
+//
+//     // Quitar extensión .jpg si la tiene
+//     String nameWithoutExt = fileName.replaceAll(RegExp(r'\.jpg$', caseSensitive: false), '');
+//
+//     // Detectar sufijo "_download"
+//     const suffix = '_download';
+//     String baseName;
+//     if (nameWithoutExt.endsWith(suffix)) {
+//       baseName = nameWithoutExt.substring(0, nameWithoutExt.length - suffix.length);
+//     } else {
+//       baseName = nameWithoutExt;
+//     }
+//
+//     // Extraer el prefijo EMxx (hasta "_" o fin)
+//     final match = RegExp(r'^(EM[^_]+)').firstMatch(baseName);
+//     final subfolder = match != null ? match.group(1)! : 'default';
+//
+//     // Nombre de archivo final
+//     final newFileName = '${baseName}_$timestamp${nameWithoutExt.endsWith(suffix) ? suffix : ''}.jpg';
+//
+//     // Crear carpeta en /Download/TMRA/EMxx/
+//     final directory = Directory('/storage/emulated/0/Download/TMRA/$subfolder');
+//     if (!await directory.exists()) {
+//       await directory.create(recursive: true);
+//     }
+//
+//     final path = '${directory.path}/$newFileName';
+//     final file = File(path);
+//     await file.writeAsBytes(imageBytes);
+//
+//     debugPrint("✅ Imagen guardada en: $path");
+//     return path;
+//   } catch (e) {
+//     debugPrint("❌ Error al guardar la captura: $e");
+//     return null;
+//   }
+// }
 
 /**Funciona*/
 // Future<String?> writeScreenshotFile(

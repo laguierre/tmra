@@ -48,7 +48,7 @@ class EMInfo extends StatelessWidget {
                             scrollController: scrollController,
                             pixelRatio: 1);
                         String? file;
-                        file = await writeScreenshotFile('EM${info.em}_info', image!);
+                        file = await writeScreenshotFile('EM${info.em}_info.jpg', image!);
                         snackBar(
                             context,
                             file!,

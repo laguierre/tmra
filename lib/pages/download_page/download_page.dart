@@ -101,7 +101,7 @@ class _DownloadPageState extends State<DownloadPage> {
                                           scrollController: scrollController,
                                           pixelRatio: 1);
                                       file = await writeScreenshotFile(
-                                          'EM${widget.info.em}_download', resultImage!);
+                                          'EM${widget.info.em}_download.jpg', resultImage!);
                                       snackBar(
                                           context,
                                           file!,

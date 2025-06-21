@@ -42,7 +42,9 @@ Future<bool> requestStoragePermission() async {
 /// [title] es el título que se muestra en el diálogo.
 Future<void> openDialogSharingFile(
     BuildContext context, String extension, String title) async {
-  var rootPath = await DownloadsPath.downloadsDirectory();
+  //var rootPath = await DownloadsPath.downloadsDirectory();
+  Directory rootPath = Directory('/storage/emulated/0/Pictures');
+
 
   if (rootPath == null) {
     ScaffoldMessenger.of(context).showSnackBar(

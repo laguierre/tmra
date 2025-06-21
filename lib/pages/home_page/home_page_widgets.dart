@@ -194,7 +194,7 @@ class HomePageTopAppBar extends StatelessWidget {
               ],
               pixelRatio: 1,
             );
-            String? file = await writeScreenshotFile('EM${info.em}', resultImage!);
+            String? file = await writeScreenshotFile('EM${info.em}.jpg', resultImage!);
             snackBar(context, file!,
                 const Duration(milliseconds: kDurationSnackBar + 1000));
           },

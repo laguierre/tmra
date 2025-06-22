@@ -11,7 +11,6 @@ void snackBar(BuildContext context, String text, Duration duration) {
       margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       content: Text(text,
-          textScaleFactor: 1.0,
           style: TextStyle(
               fontWeight: FontWeight.bold,
               color: Colors.black,

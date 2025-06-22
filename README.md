@@ -17,8 +17,14 @@
 - Cambié el lugar de guardado para el almacenamiento y permisos usando el package image: ^4.5.4.
 - Habilitado el modo invermiso para quitar la barra inferior de la pantalla.
 - Solucionado los problemas del scroll y captura. El problema era que no pedía permiso en Android 15 y APIs altos, se pasó a librería de imagenes.
-
+- Se agrega el paquete wakelock_plus para que la pantalla no se apague cuando está en uso la aplicacion.
+- Una vez que el archivo termina de guardarse, se actualizan límites inferior con el nuevo valor guardado.
+``PS D:\flutter_app\tmra> flutter --version    
+Flutter 3.24.3 • channel stable • https://github.com/flutter/flutter.git
+Framework • revision 2663184aa7 (9 months ago) • 2024-09-11 16:27:48 -0500
+Engine • revision 36335019a8
+Tools • Dart 3.5.3 • DevTools 2.37.3
+``
 ## TODO
 - Chequear donde se guarda el .raw
 - Cuando el archivo es grande, se tendría que particionar en 300k.
-- Una vez que el archivo termina de guardarse, se debería actualizar los límites inferior con el bueno valor guardado.

@@ -76,8 +76,8 @@ Future<void> openDialogSharingFile(
 
 /// Comparte el archivo dado en [filePath].
 void shareSelectedFile(String filePath) {
-  final xfile = XFile(filePath);
-  Share.shareXFiles([xfile], text: 'Archivo descargado');
+  final file = XFile(filePath);
+  Share.shareXFiles([file], text: 'Archivo descargado');
 }
 
 /// Botón circular personalizado con icono a partir de un asset.

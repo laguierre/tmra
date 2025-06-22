@@ -10,7 +10,7 @@
 - [010823] Se usa el package para ajustar la fuente https://pub.dev/packages/flutter_screenutil
 ## v0.1d
 - Se hace adaptación reactiva y se cambia todo a .sp. 
-- Se actualizan algunas deprecated
+- Se actualizan algunas deprecated.
 - Apareció un error en el widget_screenshot sobre las pantallas largas, aplicando un pequeño delay funciona nuevamente
 ## v0.1e
 - Existió un problema con widget_screenshot, quité el delay para el modo debug.
@@ -19,6 +19,7 @@
 - Solucionado los problemas del scroll y captura. El problema era que no pedía permiso en Android 15 y APIs altos, se pasó a librería de imagenes.
 - Se agrega el paquete wakelock_plus para que la pantalla no se apague cuando está en uso la aplicacion.
 - Una vez que el archivo termina de guardarse, se actualizan límites inferior con el nuevo valor guardado.
+- Se eliminó el deprecate de share_plus.
 ``PS D:\flutter_app\tmra> flutter --version    
 Flutter 3.24.3 • channel stable • https://github.com/flutter/flutter.git
 Framework • revision 2663184aa7 (9 months ago) • 2024-09-11 16:27:48 -0500
@@ -26,5 +27,6 @@ Engine • revision 36335019a8
 Tools • Dart 3.5.3 • DevTools 2.37.3
 ``
 ## TODO
+- Existe un posible problema de portabilidad para las versiones posteriores de flutter.
 - Chequear donde se guarda el .raw
 - Cuando el archivo es grande, se tendría que particionar en 300k.

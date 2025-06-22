@@ -75,10 +75,26 @@ Future<void> openDialogSharingFile(
 }
 
 /// Comparte el archivo dado en [filePath].
-void shareSelectedFile(String filePath) {
+Future<void> shareSelectedFile(String filePath) async {
+
   final file = XFile(filePath);
-  Share.shareXFiles([file], text: 'Archivo descargado');
+
+  final params = ShareParams(
+    text: 'Great picture',
+    files: [file],
+  );
+  final result = await SharePlus.instance.share(params);
+  if (result.status == ShareResultStatus.success) {
+    debugPrint('Thank you for sharing the picture!');
+  }
+  /*await Share.shareXFiles(
+    [file],
+    text: 'Archivo descargado',
+  );*/
 }
+
+
+
 
 /// Botón circular personalizado con icono a partir de un asset.
 /// [sizeButton] controla el tamaño, [icon] es la ruta asset y [function] la acción al pulsar.
